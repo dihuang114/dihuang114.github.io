@@ -450,6 +450,66 @@
     100% { opacity: 0; transform: translateY(-220px) scale(0); }
   }
 
+  /* ===== 数字查牌 ===== */
+  .seed-section {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .seed-input {
+    width: 260px;
+    padding: 9px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    letter-spacing: 0.1em;
+    color: #f0e6c8;
+    background: rgba(20, 20, 30, 0.7);
+    border: 1px solid rgba(200, 160, 60, 0.35);
+    border-radius: 4px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .seed-input:focus {
+    border-color: rgba(200, 160, 60, 0.7);
+    box-shadow: 0 0 12px rgba(200, 160, 60, 0.15);
+  }
+  .seed-input::placeholder {
+    color: rgba(200, 160, 60, 0.3);
+    letter-spacing: 0.05em;
+  }
+  .seed-btn {
+    padding: 9px 22px;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    font-family: inherit;
+    color: #0a0a0f;
+    background: linear-gradient(135deg, #c9a84c, #e2c86e);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .seed-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,160,60,0.4); }
+  .seed-hint {
+    font-size: 0.75rem;
+    color: rgba(200, 160, 60, 0.4);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  .seed-error {
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #e06050;
+    margin-top: 0.2rem;
+    min-height: 1.2em;
+    letter-spacing: 0.05em;
+  }
+
   /* ===== 手机端适配 ===== */
   @media (max-width: 600px) {
     body {
@@ -556,6 +616,11 @@
     .result-history span {
       font-size: 0.65rem;
     }
+
+    .seed-section { gap: 0.4rem; margin-bottom: 0.6rem; }
+    .seed-input { width: 200px; padding: 6px 10px; font-size: 0.78rem; }
+    .seed-btn { padding: 6px 14px; font-size: 0.75rem; }
+    .seed-hint { font-size: 0.6rem; }
   }
 </style>
 </head>
@@ -574,6 +639,13 @@
   <div class="legend-item"><span class="legend-dot colorless"></span>无色</div>
   <div class="legend-item"><span class="legend-dot status"></span>状态</div>
   <div class="legend-item"><span class="legend-dot curse"></span>诅咒</div>
+</div>
+
+<div class="seed-section">
+  <input type="text" class="seed-input" id="seedInput" placeholder="输入 3 个数字，空格分隔" maxlength="20" onkeydown="if(event.key==='Enter')lookupCards()">
+  <button class="seed-btn" onclick="lookupCards()">查 找</button>
+  <span class="seed-hint" id="seedHint"></span>
+  <div class="seed-error" id="seedError"></div>
 </div>
 
 <div class="cards-container" id="cardsContainer">
@@ -1022,6 +1094,13 @@ const uniqueCards = cardDatabase.filter(c => {
   return true;
 });
 
+// ===== 打乱一次，建立数字→卡牌映射 =====
+const numberedCards = shuffleArray(uniqueCards);
+// 显示范围
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('seedHint').textContent = '范围: 1 - ' + numberedCards.length;
+});
+
 // ===== 状态 =====
 let drawCount = 0;
 let isDrawing = false;
@@ -1122,6 +1201,77 @@ function drawCards() {
   });
 }
 
+// ===== 数字查牌 =====
+function lookupCards() {
+  if (isDrawing) return;
+  const input = document.getElementById('seedInput').value.trim();
+  const errEl = document.getElementById('seedError');
+  errEl.textContent = '';
+
+  if (!input) { errEl.textContent = '请输入数字'; return; }
+
+  const parts = input.split(/\s+/);
+  if (parts.length !== 3) { errEl.textContent = '请输入3个数字,空格分隔'; return; }
+
+  const nums = [];
+  for (const p of parts) {
+    const n = parseInt(p, 10);
+    if (isNaN(n) || n < 1 || n > numberedCards.length) {
+      errEl.textContent = '数字需在 1 - ' + numberedCards.length + ' 之间，当前: ' + p;
+      return;
+    }
+    nums.push(n);
+  }
+
+  isDrawing = true;
+  const btn = document.getElementById('drawBtn');
+  btn.disabled = true;
+  btn.textContent = '查 找 中 ...';
+
+  // 清空
+  for (let i = 1; i <= 3; i++) {
+    const slot = document.getElementById('slot' + i);
+    slot.innerHTML = '?';
+    slot.className = 'card-placeholder';
+  }
+
+  const picked = nums.map(n => numberedCards[n - 1]);
+
+  // 逐张展示
+  picked.forEach((card, index) => {
+    const isForged = (card.cls !== 'status' && card.cls !== 'curse') && Math.random() < 0.15;
+    card._forged = isForged;
+
+    setTimeout(() => {
+      const slot = document.getElementById('slot' + (index + 1));
+      const forgedClass = isForged ? ' forged' : '';
+      const forgedMark = isForged ? '<span class="forge-plus">+</span>' : '';
+      slot.className = 'card reveal ' + card.cls + forgedClass;
+      slot.innerHTML = `
+        <span class="card-class-label">${getClassLabel(card.cls)}</span>
+        <span class="card-name">${card.name}${forgedMark}</span>
+        <div class="card-divider"></div>
+        <span class="card-desc">${card.desc}</span>
+      `;
+      spawnParticles(slot, isForged ? '#ffd700' : getClassColor(card.cls));
+
+      if (index === 2) {
+        drawCount++;
+        document.getElementById('counter').textContent = '已抽取 ' + drawCount + ' 次';
+        btn.disabled = false;
+        btn.textContent = '再 抽 一 次';
+        isDrawing = false;
+
+        const history = document.getElementById('history');
+        const span = document.createElement('span');
+        span.textContent = '#' + drawCount + '  [' + nums.join(' ') + '] ' + picked.map(c => c.name + (c._forged ? '+' : '')).join(' · ');
+        history.prepend(span);
+        if (history.children.length > 10) history.removeChild(history.lastChild);
+      }
+    }, 1000 * (index + 1));
+  });
+}
+
 function getClassLabel(cls) {
   const map = {
     ironclad:'战士', silent:'猎手', defect:'机器人',
@@ -1138,7 +1288,6 @@ function getClassColor(cls) {
   return map[cls] || '#c9a84c';
 }
 
-// ===== 页面加载自动抽一次 =====
 </script>
 
 </body>
