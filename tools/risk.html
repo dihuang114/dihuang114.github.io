@@ -173,9 +173,28 @@ button:disabled {
   color: #737b85;
   border-color: rgba(255, 255, 255, 0.1);
 }
+#balance {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 @media (max-width: 760px) {
   #top {
     padding: 12px 16px;
+    gap: 8px;
+  }
+  .cluster {
+    min-width: 0;
+    flex-shrink: 1;
+    gap: 6px;
+  }
+  #balance {
+    font-size: 22px;
+    max-width: 90px;
+  }
+  .dim {
+    font-size: 14px;
   }
   #status {
     font-size: 15px;
@@ -216,7 +235,7 @@ button:disabled {
 <div id="ui">
   <div id="top">
     <div class="cluster">
-      <span class="dim">本金</span>
+      <span class="dim">金币</span>
       <span id="balance">1000</span>
     </div>
     <div id="status">准备就绪</div>
@@ -224,7 +243,7 @@ button:disabled {
   </div>
   <div id="stage">
     <div id="multiplier">x1.00</div>
-    <div id="roundStatus">最低投入为本金50%，按住开始</div>
+    <div id="roundStatus">最低投入为金币50%，按住开始</div>
     <div id="result"></div>
   </div>
   <div id="bottom">
@@ -379,7 +398,7 @@ function showIdle() {
   state = "idle";
   multiplierEl.textContent = "x1.00";
   statusEl.textContent = "准备就绪";
-  roundStatusEl.textContent = "最低投入为本金50%，按住开始";
+  roundStatusEl.textContent = "最低投入为金币50%，按住开始";
   resultEl.textContent = "";
   holdEl.textContent = "按住开始";
   refreshButtons();
@@ -387,7 +406,7 @@ function showIdle() {
 
 function showInsufficient() {
   statusEl.textContent = "本金不足";
-  roundStatusEl.textContent = "投入不能低于本金50%";
+  roundStatusEl.textContent = "投入不能低于金币50%";
   resultEl.textContent = "";
   visual.warn();
   sfx.error();
