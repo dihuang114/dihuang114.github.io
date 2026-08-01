@@ -68,6 +68,7 @@ canvas {
   color: #c8e8ff;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
   pointer-events: none;
+  display: none;
 }
 button {
   pointer-events: auto;
@@ -181,6 +182,9 @@ button:disabled {
   #status {
     font-size: 15px;
   }
+  #stakeLabel {
+    font-size: 16px;
+  }
   #multiplier {
     font-size: 52px;
   }
@@ -225,14 +229,14 @@ button:disabled {
   </div>
   <div id="stage">
     <div id="multiplier">x1.00</div>
-    <div id="roundStatus">最低投入为金币25%，按住开始</div>
+    <div id="roundStatus">最低投入为25%，按住开始</div>
     <div id="result"></div>
   </div>
   <div id="bottom">
     <div class="stakeRow">
-      <span class="dim">投入本金</span>
+      <span class="dim">投入金币</span>
       <input id="slider" type="range" min="250" max="1000" step="10" value="250">
-      <span id="stakeLabel">500</span>
+      <span id="stakeLabel">250</span>
     </div>
     <div class="quickRow">
       <span class="dim">快速选择</span>
@@ -351,7 +355,7 @@ function refreshLimits() {
 
 function syncStakeUI() {
   stake = parseInt(sliderEl.value, 10);
-  stakeLabelEl.textContent = String(stake);
+  stakeLabelEl.textContent = fmtCompact(stake);
   visual.stake = stake;
   visual.stakeMax = Math.max(stake, parseInt(sliderEl.max, 10));
   if (balance > 0) {
@@ -372,17 +376,17 @@ function refreshButtons() {
 }
 
 function updateBalanceUI() {
-  balanceEl.textContent = formatCoin(balance);
+  balanceEl.textContent = String(balance);
   balanceEl.style.color = "#b2ffe1";
   setTimeout(() => {
     balanceEl.style.color = "#6bffd1";
   }, 320);
 }
 
-function formatCoin(n) {
+function fmtCompact(n) {
   if (n >= 1000000) {
     const exp = Math.floor(Math.log10(n));
-    const mantissa = (n / Math.pow(10, exp)).toFixed(2);
+    const mantissa = (n / Math.pow(10, exp)).toFixed(1);
     return mantissa + "e" + exp;
   }
   return String(n);
