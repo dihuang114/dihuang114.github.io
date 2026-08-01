@@ -141,7 +141,7 @@ button:disabled {
   min-height: 42px;
 }
 .quickRow {
-  grid-template-columns: 112px repeat(3, 1fr);
+  grid-template-columns: 112px repeat(4, 1fr);
 }
 #slider {
   width: 100%;
@@ -173,28 +173,10 @@ button:disabled {
   color: #737b85;
   border-color: rgba(255, 255, 255, 0.1);
 }
-#balance {
-  max-width: 150px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 @media (max-width: 760px) {
   #top {
     padding: 12px 16px;
     gap: 8px;
-  }
-  .cluster {
-    min-width: 0;
-    flex-shrink: 1;
-    gap: 6px;
-  }
-  #balance {
-    font-size: 22px;
-    max-width: 90px;
-  }
-  .dim {
-    font-size: 14px;
   }
   #status {
     font-size: 15px;
@@ -217,7 +199,7 @@ button:disabled {
     grid-template-columns: 88px 1fr 88px;
   }
   .quickRow {
-    grid-template-columns: 88px repeat(3, 1fr);
+    grid-template-columns: 88px repeat(4, 1fr);
   }
   button {
     padding: 9px 8px;
@@ -243,18 +225,19 @@ button:disabled {
   </div>
   <div id="stage">
     <div id="multiplier">x1.00</div>
-    <div id="roundStatus">最低投入为金币50%，按住开始</div>
+    <div id="roundStatus">最低投入为金币25%，按住开始</div>
     <div id="result"></div>
   </div>
   <div id="bottom">
     <div class="stakeRow">
       <span class="dim">投入本金</span>
-      <input id="slider" type="range" min="500" max="1000" step="10" value="500">
+      <input id="slider" type="range" min="250" max="1000" step="10" value="250">
       <span id="stakeLabel">500</span>
     </div>
     <div class="quickRow">
       <span class="dim">快速选择</span>
       <button class="quick" id="quickMin">MIN</button>
+      <button class="quick" id="quick50">50%</button>
       <button class="quick" id="quick75">75%</button>
       <button class="quick" id="quickMax">MAX</button>
     </div>
@@ -287,11 +270,12 @@ const sliderEl = document.getElementById("slider");
 const holdEl = document.getElementById("hold");
 const resetEl = document.getElementById("reset");
 const quickMinEl = document.getElementById("quickMin");
+const quick50El = document.getElementById("quick50");
 const quick75El = document.getElementById("quick75");
 const quickMaxEl = document.getElementById("quickMax");
 
 let balance = BASE_BALANCE;
-let stake = 500;
+let stake = 250;
 let state = "idle";
 let runTime = 0;
 let stopAt = 5;
@@ -299,7 +283,7 @@ let lastMultiplier = 1;
 let lastTickTarget = 2;
 let lastIntegerMultiplier = 1;
 let tenXTriggered = false;
-let lastStakeRatio = 0.5;
+let lastStakeRatio = 0.25;
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -348,7 +332,7 @@ function minimumStake() {
   if (balance <= MIN_STAKE) {
     return Math.max(0, balance);
   }
-  return Math.max(MIN_STAKE, Math.ceil(Math.ceil(balance * 0.5) / MIN_STAKE) * MIN_STAKE);
+  return Math.max(MIN_STAKE, Math.ceil(Math.ceil(balance * 0.25) / MIN_STAKE) * MIN_STAKE);
 }
 
 function refreshLimits() {
@@ -371,7 +355,7 @@ function syncStakeUI() {
   visual.stake = stake;
   visual.stakeMax = Math.max(stake, parseInt(sliderEl.max, 10));
   if (balance > 0) {
-    lastStakeRatio = clamp(stake / balance, 0.5, 1);
+    lastStakeRatio = clamp(stake / balance, 0.25, 1);
   }
   refreshButtons();
 }
@@ -380,6 +364,7 @@ function refreshButtons() {
   const canPlay = balance >= MIN_STAKE && stake >= minimumStake() && stake <= balance;
   holdEl.disabled = state !== "running" && !canPlay;
   quickMinEl.disabled = state === "running" || !canPlay;
+  quick50El.disabled = state === "running" || !canPlay;
   quick75El.disabled = state === "running" || !canPlay;
   quickMaxEl.disabled = state === "running" || !canPlay;
   resetEl.disabled = state === "running";
@@ -387,18 +372,27 @@ function refreshButtons() {
 }
 
 function updateBalanceUI() {
-  balanceEl.textContent = String(balance);
+  balanceEl.textContent = formatCoin(balance);
   balanceEl.style.color = "#b2ffe1";
   setTimeout(() => {
     balanceEl.style.color = "#6bffd1";
   }, 320);
 }
 
+function formatCoin(n) {
+  if (n >= 1000000) {
+    const exp = Math.floor(Math.log10(n));
+    const mantissa = (n / Math.pow(10, exp)).toFixed(2);
+    return mantissa + "e" + exp;
+  }
+  return String(n);
+}
+
 function showIdle() {
   state = "idle";
   multiplierEl.textContent = "x1.00";
   statusEl.textContent = "准备就绪";
-  roundStatusEl.textContent = "最低投入为金币50%，按住开始";
+  roundStatusEl.textContent = "最低投入为金币25%，按住开始";
   resultEl.textContent = "";
   holdEl.textContent = "按住开始";
   refreshButtons();
@@ -406,7 +400,7 @@ function showIdle() {
 
 function showInsufficient() {
   statusEl.textContent = "本金不足";
-  roundStatusEl.textContent = "投入不能低于金币50%";
+  roundStatusEl.textContent = "投入不能低于金币25%";
   resultEl.textContent = "";
   visual.warn();
   sfx.error();
@@ -1184,6 +1178,14 @@ sliderEl.addEventListener("input", () => {
 quickMinEl.addEventListener("click", () => {
   if (state !== "running") {
     sliderEl.value = sliderEl.min;
+    syncStakeUI();
+  }
+});
+
+quick50El.addEventListener("click", () => {
+  if (state !== "running") {
+    const target = Math.floor(balance * 0.5 / MIN_STAKE) * MIN_STAKE;
+    sliderEl.value = String(clamp(target, parseInt(sliderEl.min, 10), parseInt(sliderEl.max, 10)));
     syncStakeUI();
   }
 });
