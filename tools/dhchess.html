@@ -6,9 +6,15 @@
 <title>地荒象棋</title>
 <style>
 /* ============================================================
- * 地荒象棋 · 童年特殊规则版
+ * 地荒象棋
  * ============================================================ */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
 :root {
   --bg: #241d15;
@@ -196,8 +202,9 @@ button:active { transform: translateY(1px); }
 
 /* ---------------- 响应式 ---------------- */
 @media (max-width: 940px) {
-  .layout { flex-direction: column; align-items: center; }
-  #board { width: min(92vmin, 560px); }
+  .layout { flex-direction: column; align-items: center; padding: 10px 6px 20px; gap: 12px; }
+  #board { width: min(98vmin, 640px); }
+  .hint { font-size: 12px; }
 }
 </style>
 </head>
@@ -267,7 +274,7 @@ button:active { transform: translateY(1px); }
           <li><b>兵（卒）过河后可以后退一格</b>，但仍不可退回本方河界以内；过河后前进、横走、后退均可。兵未过河时也可横走。</li>
           <li><b>盾（中兵）</b>——双方各有一枚，不可被吃，不可吃子；可横走、前进；不能过河。</li>
         </ol>
-        <p>传统规则保留：将帅不出九宫、不能照面；士斜走九宫；马走"日"蹩马腿；车走直线；炮隔子吃子。</p>
+        <p>传统规则保留</p>
       </div>
     </details>
   </aside>
