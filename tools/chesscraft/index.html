@@ -358,9 +358,7 @@
         <button id="btnDelPreset" style="display:none" title="删除选中的「我的预设」（内置预设不可删除）">删除预设</button>
         <button id="btnExport">保存并导出预设</button>
         <button id="btnStandalone">导出独立版</button>
-        <button id="btnImport">导入预设</button>
         <button id="btnSelftest">运行自检</button>
-        <input type="file" id="fileImport" accept=".json,application/json" style="display:none">
       </div>
       <p class="note" id="presetNote">预设列表查看 preset 文件夹</p>
     </details>
@@ -4761,15 +4759,6 @@ $('btnDelPreset').addEventListener('click', function () {
   toast('已删除本地预设：' + name);
 });
 $('btnStandalone').addEventListener('click', exportStandalone);
-$('btnImport').addEventListener('click', function() { $('fileImport').click(); });
-$('fileImport').addEventListener('change', function() {
-  var f = this.files && this.files[0];
-  if (!f) return;
-  var reader = new FileReader();
-  reader.onload = function() { importJSON(String(reader.result)); };
-  reader.readAsText(f);
-  this.value = '';
-});
 $('rulesName').addEventListener('change', function() { RULES.name = this.value.trim() || '我的变体'; saveRules(); });
 document.querySelectorAll('[data-rule]').forEach(function(inp) {
   inp.addEventListener('change', function() {
