@@ -1,0 +1,848 @@
+{
+  "name": "空白棋盘",
+  "pieces": {
+    "k": {
+      "name": "帅/将",
+      "value": 10000,
+      "inherit": "将帅：四向一步，默认限九宫",
+      "moveB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "moveA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "canCrossRiver": true,
+      "canEnterPalace": true,
+      "canLeavePalace": false,
+      "cooldown": 0,
+      "lock": 0,
+      "capturableB": true,
+      "capturableA": true,
+      "canCaptureB": true,
+      "canCaptureA": true,
+      "stayCrossed": false,
+      "chainCapture": false,
+      "diffPhase": false,
+      "diffCap": false,
+      "diffFirst": false,
+      "moveF": [],
+      "capF": [],
+      "transform": {
+        "enabled": false,
+        "when": {
+          "cross": false,
+          "moves": 0,
+          "captures": 0,
+          "reachBack": false,
+          "afterPlies": 0
+        },
+        "to": "",
+        "revert": false
+      }
+    },
+    "a": {
+      "name": "仕/士",
+      "value": 220,
+      "inherit": "士：斜向一步，默认限九宫",
+      "moveB": [
+        {
+          "style": "line",
+          "dirs": [
+            "ul",
+            "ur",
+            "dl",
+            "dr"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capB": [
+        {
+          "style": "line",
+          "dirs": [
+            "ul",
+            "ur",
+            "dl",
+            "dr"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "moveA": [
+        {
+          "style": "line",
+          "dirs": [
+            "ul",
+            "ur",
+            "dl",
+            "dr"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capA": [
+        {
+          "style": "line",
+          "dirs": [
+            "ul",
+            "ur",
+            "dl",
+            "dr"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "canCrossRiver": true,
+      "canEnterPalace": true,
+      "canLeavePalace": false,
+      "cooldown": 0,
+      "lock": 0,
+      "capturableB": true,
+      "capturableA": true,
+      "canCaptureB": true,
+      "canCaptureA": true,
+      "stayCrossed": false,
+      "chainCapture": false,
+      "diffPhase": false,
+      "diffCap": false,
+      "diffFirst": false,
+      "moveF": [],
+      "capF": [],
+      "transform": {
+        "enabled": false,
+        "when": {
+          "cross": false,
+          "moves": 0,
+          "captures": 0,
+          "reachBack": false,
+          "afterPlies": 0
+        },
+        "to": "",
+        "revert": false
+      }
+    },
+    "e": {
+      "name": "相/象",
+      "value": 220,
+      "inherit": "象：田字跳，塞象眼，默认限本方半场、不入对方九宫",
+      "moveB": [
+        {
+          "style": "tian",
+          "dirs": null,
+          "dist": 2,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capB": [
+        {
+          "style": "tian",
+          "dirs": null,
+          "dist": 2,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "moveA": [
+        {
+          "style": "tian",
+          "dirs": null,
+          "dist": 2,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capA": [
+        {
+          "style": "tian",
+          "dirs": null,
+          "dist": 2,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "canCrossRiver": false,
+      "canEnterPalace": false,
+      "canLeavePalace": true,
+      "cooldown": 0,
+      "lock": 0,
+      "capturableB": true,
+      "capturableA": true,
+      "canCaptureB": true,
+      "canCaptureA": true,
+      "stayCrossed": false,
+      "chainCapture": false,
+      "diffPhase": false,
+      "diffCap": false,
+      "diffFirst": false,
+      "moveF": [],
+      "capF": [],
+      "transform": {
+        "enabled": false,
+        "when": {
+          "cross": false,
+          "moves": 0,
+          "captures": 0,
+          "reachBack": false,
+          "afterPlies": 0
+        },
+        "to": "",
+        "revert": false
+      }
+    },
+    "h": {
+      "name": "马",
+      "value": 450,
+      "inherit": "马：日字跳，默认蹩马腿",
+      "moveB": [
+        {
+          "style": "knight",
+          "dirs": null,
+          "dist": 1,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capB": [
+        {
+          "style": "knight",
+          "dirs": null,
+          "dist": 1,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "moveA": [
+        {
+          "style": "knight",
+          "dirs": null,
+          "dist": 1,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capA": [
+        {
+          "style": "knight",
+          "dirs": null,
+          "dist": 1,
+          "block": true,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "canCrossRiver": true,
+      "canEnterPalace": true,
+      "canLeavePalace": true,
+      "cooldown": 0,
+      "lock": 0,
+      "capturableB": true,
+      "capturableA": true,
+      "canCaptureB": true,
+      "canCaptureA": true,
+      "stayCrossed": false,
+      "chainCapture": false,
+      "diffPhase": false,
+      "diffCap": false,
+      "diffFirst": false,
+      "moveF": [],
+      "capF": [],
+      "transform": {
+        "enabled": false,
+        "when": {
+          "cross": false,
+          "moves": 0,
+          "captures": 0,
+          "reachBack": false,
+          "afterPlies": 0
+        },
+        "to": "",
+        "revert": false
+      }
+    },
+    "r": {
+      "name": "车",
+      "value": 950,
+      "inherit": "车：横竖直线滑行",
+      "moveB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "moveA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "canCrossRiver": true,
+      "canEnterPalace": true,
+      "canLeavePalace": true,
+      "cooldown": 0,
+      "lock": 0,
+      "capturableB": true,
+      "capturableA": true,
+      "canCaptureB": true,
+      "canCaptureA": true,
+      "stayCrossed": false,
+      "chainCapture": false,
+      "diffPhase": false,
+      "diffCap": false,
+      "diffFirst": false,
+      "moveF": [],
+      "capF": [],
+      "transform": {
+        "enabled": false,
+        "when": {
+          "cross": false,
+          "moves": 0,
+          "captures": 0,
+          "reachBack": false,
+          "afterPlies": 0
+        },
+        "to": "",
+        "revert": false
+      }
+    },
+    "c": {
+      "name": "炮",
+      "value": 500,
+      "inherit": "炮：直线滑行，吃子须隔一子",
+      "moveB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": true,
+          "jump": 1,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "moveA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "d",
+            "l",
+            "r"
+          ],
+          "dist": "slide",
+          "block": false,
+          "screen": true,
+          "jump": 1,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "canCrossRiver": true,
+      "canEnterPalace": true,
+      "canLeavePalace": true,
+      "cooldown": 0,
+      "lock": 0,
+      "capturableB": true,
+      "capturableA": true,
+      "canCaptureB": true,
+      "canCaptureA": true,
+      "stayCrossed": false,
+      "chainCapture": false,
+      "diffPhase": false,
+      "diffCap": true,
+      "diffFirst": false,
+      "moveF": [],
+      "capF": [],
+      "transform": {
+        "enabled": false,
+        "when": {
+          "cross": false,
+          "moves": 0,
+          "captures": 0,
+          "reachBack": false,
+          "afterPlies": 0
+        },
+        "to": "",
+        "revert": false
+      }
+    },
+    "p": {
+      "name": "兵/卒",
+      "value": 110,
+      "inherit": "兵：过河前仅前进；过河后前进+横走",
+      "moveB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capB": [
+        {
+          "style": "line",
+          "dirs": [
+            "u"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "moveA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "l",
+            "r"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "capA": [
+        {
+          "style": "line",
+          "dirs": [
+            "u",
+            "l",
+            "r"
+          ],
+          "dist": 1,
+          "block": false,
+          "screen": false,
+          "jump": 0,
+          "blockOffsets": [],
+          "stayCapture": false,
+          "fill": false,
+          "firstN": 0,
+          "land": 0,
+          "hop": false,
+          "afterN": 0
+        }
+      ],
+      "canCrossRiver": true,
+      "canEnterPalace": true,
+      "canLeavePalace": true,
+      "cooldown": 0,
+      "lock": 0,
+      "capturableB": true,
+      "capturableA": true,
+      "canCaptureB": true,
+      "canCaptureA": true,
+      "stayCrossed": true,
+      "chainCapture": false,
+      "diffPhase": true,
+      "diffCap": false,
+      "diffFirst": false,
+      "moveF": [],
+      "capF": [],
+      "transform": {
+        "enabled": false,
+        "when": {
+          "cross": false,
+          "moves": 0,
+          "captures": 0,
+          "reachBack": false,
+          "afterPlies": 0
+        },
+        "to": "",
+        "revert": false
+      }
+    }
+  },
+  "custom": [],
+  "disabled": [],
+  "diffSides": false,
+  "piecesBlack": {},
+  "global": {
+    "stalemateIsLoss": true,
+    "repetitionIsDraw": true,
+    "perpetualCheckIsLoss": true,
+    "chaseIsLoss": true,
+    "noCaptureDraw": true,
+    "noCaptureLimit": 120,
+    "basicDraw": true,
+    "maxMoves": 400,
+    "flyingGeneral": true,
+    "mustCapture": false,
+    "captureWin": false,
+    "timeMinutes": 0
+  },
+  "board": {
+    "rows": 10,
+    "cols": 9,
+    "riverRow": 4,
+    "palaceRows": 3,
+    "palaceCols": 3
+  },
+  "setup": {
+    "custom": true,
+    "red": {
+      "k": [
+        [
+          9,
+          4
+        ]
+      ]
+    },
+    "black": {
+      "k": [
+        [
+          0,
+          4
+        ]
+      ]
+    }
+  }
+}
