@@ -3765,7 +3765,6 @@ function applyMergedRules(data, autoNew) {
   }
   if (nb.rows !== oldBoard.rows || nb.cols !== oldBoard.cols || nb.riverRow !== oldBoard.riverRow
       || nb.palaceRows !== oldBoard.palaceRows || nb.palaceCols !== oldBoard.palaceCols) {
-    RULES.setup = standardSetup();
     applyBoardGeometry();
     newGame();
     toast('已应用：' + RULES.name + '');
@@ -3877,7 +3876,20 @@ function downloadBlob(content, fileName, type) {
 function importJSON(text) {
   var data;
   try { data = JSON.parse(text); } catch (e) { toast('导入失败：JSON 格式错误'); return; }
-  applyMergedRules(data);
+  applyMergedRules(data, true);   // autoNew=true：按导入预设立即开新局（修复：此前 false 只合规则不重置棋盘）
+  // 同时保存到 preset/ 或本地预设，无需重启即可在预设下拉列表看到
+  if (SERVER) {
+    fetch('/api/preset/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rules: currentRulesJSON() }) })
+      .then(function(r) { return r.json(); })
+      .then(function(res) { if (res.ok) loadPresetList(); })
+      .catch(function() {});
+  } else if (location.protocol !== 'file:') {
+    var mine = readMyPresets();
+    mine[RULES.name] = currentRulesJSON();
+    writeMyPresets(mine);
+    loadPresetList();
+    downloadBlob(JSON.stringify(currentRulesJSON(), null, 2), '棋匠-' + (RULES.name.replace(/[\\/:*?"<>|]/g, '').trim() || '变体') + '.json', 'application/json');
+  }
 }
 
 function currentRulesJSON() {
