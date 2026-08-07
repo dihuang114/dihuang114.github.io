@@ -218,6 +218,7 @@ button:active { transform: translateY(1px); }
         <option value="ai" selected>人机对战</option>
         <option value="pvp">本地双人</option>
         <option value="watch">电脑对电脑</option>
+        <option value="net">联机对战</option>
       </select>
     </label>
     <label id="diffWrap">电脑难度
@@ -253,6 +254,22 @@ button:active { transform: translateY(1px); }
   </section>
 
   <aside id="side">
+    <div class="panel" id="netPanel" style="display:none">
+      <div class="capture" style="margin-bottom:6px"><span class="lbl">联机对战（创建 / 加入房间）</span></div>
+      <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">
+        <button id="netCreate">创建房间</button>
+        <input id="netRoomInput" placeholder="房间号" style="width:74px;padding:2px 6px">
+        <button id="netJoin">加入</button>
+      </div>
+      <div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">
+        <span id="netRoomId" style="font-weight:700;color:var(--accent, #c8a04a)"></span>
+        <button id="netCopy" style="display:none">复制</button>
+        <button id="netRestart" style="display:none">重开</button>
+        <button id="netLeave" style="display:none">离开</button>
+      </div>
+      <p id="netStatus" style="font-size:12px;color:#888;margin:6px 0 0"></p>
+      <p style="font-size:11px;color:#888;margin:4px 0 0">联机服务为本地 room-server（127.0.0.1:8766）；联机禁悔棋/暂停。</p>
+    </div>
     <div id="status" class="status">红方走棋</div>
 
     <div class="panel">
@@ -999,6 +1016,7 @@ button:active { transform: translateY(1px); }
   }
 
   function undo() {
+    if (mode === 'net') return;   // 联机禁悔棋
     clearTimeout(aiTimer);
     aiThinking = false;
     if (!state.history.length) { renderStatus(); return; }
@@ -1203,6 +1221,13 @@ button:active { transform: translateY(1px); }
   function select(r, c) {
     selected = { r: r, c: c };
     state.legal = E.legalMoves(state.board, r, c);
+    // 无合法走法时给出说明（如将帅照面牵制等真实规则限制，非引擎故障）
+    if (!state.status.over && state.legal.length === 0) {
+      renderStatus();
+      statusEl.textContent = (state.turn === E.RED ? '红方' : '黑方') + '·该子当前无合法走法';
+      statusEl.className = 'status';
+      statusEl.className += ' check';
+    }
     renderMarks();
     renderPieces();
   }
@@ -1212,6 +1237,7 @@ button:active { transform: translateY(1px); }
     if (state.paused) return;
     if (mode === 'ai' && state.turn === E.BLACK) return;
     if (mode === 'watch') return;
+    if (mode === 'net' && !netMyTurn()) return;   // 联机：仅己方回合可操作
     var rect = boardEl.getBoundingClientRect();
     var fx = (ev.clientX - rect.left) / rect.width;
     var fy = (ev.clientY - rect.top) / rect.height;
@@ -1223,7 +1249,11 @@ button:active { transform: translateY(1px); }
     if (selected) {
       if (p && p.s === state.turn) { select(r, c); return; }
       var mv = state.legal.find(function (m) { return m.to.r === r && m.to.c === c; });
-      if (mv) { makeMove(mv); return; }
+      if (mv) {
+        makeMove(mv);
+        if (mode === 'net' && netState) netSendMove(mv);   // 联机：本地走子后上报
+        return;
+      }
       selected = null;
       state.legal = [];
       renderMarks();
@@ -1233,16 +1263,239 @@ button:active { transform: translateY(1px); }
     if (p && p.s === state.turn) select(r, c);
   }
 
+  /* ============================================================
+   * net.js — 联机对战（地荒象棋；协议 /api/room/* 与 room-server.js 共用）
+   * 服务器只做转发与回合校验，棋法合法性由接收方引擎复核。
+   * ============================================================ */
+  var netState = null;   // { server, roomId, side, since, epoch, turn, status, peerGone, restart, localSeq, pendingMv, pendingBasedOn, pollTimer, inFlight, leaving }
+  var LS_SESSION = 'dhnet-session';
+
+  function netGetServer() {
+    // 联机服务固定为本机 8766（room-server.js）；不保留公网配置
+    return 'http://localhost:8766/';
+  }
+  function netPost(path, body) {
+    return fetch(netGetServer() + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body || {})
+    }).then(function (r) { return r.json(); }).catch(function () { return { ok: false, error: 'NET_ERR' }; });
+  }
+  function netPollNow() { if (netState) { if (netState.pollTimer) clearTimeout(netState.pollTimer); netPoll(); } }
+  function netMyTurn() {
+    return !!(netState && netState.status === 'playing' && !state.status.over
+              && netState.turn === state.turn && !netState.peerGone);
+  }
+  function netWire(mv) { return { from: mv.from, to: mv.to, piece: { t: mv.piece.t, s: mv.piece.s } }; }
+  function netSendMove(mv) {
+    var n = netState;
+    n.pendingMv = netWire(mv);
+    n.pendingBasedOn = n.since;
+    netPost('/api/room/move', { roomId: n.roomId, side: n.side, basedOn: n.pendingBasedOn, mv: n.pendingMv })
+      .then(function (r) {
+        if (r.ok) { n.localSeq = r.seq; n.pendingMv = null; }
+        else if (r.error === 'STALE' || r.error === 'NOT_YOUR_TURN') netResync();
+      })
+      .then(netPollNow);
+  }
+  function netApplyRemote(w) {
+    var n = netState;
+    if (w.seq <= n.localSeq) return;
+    if (n.pendingMv && w.seq === n.pendingBasedOn
+        && w.mv.from.r === n.pendingMv.from.r && w.mv.from.c === n.pendingMv.from.c
+        && w.mv.to.r === n.pendingMv.to.r && w.mv.to.c === n.pendingMv.to.c) {
+      n.localSeq = w.seq; n.pendingMv = null;
+      return;
+    }
+    var mv = { from: w.mv.from, to: w.mv.to, piece: { t: w.mv.piece.t, s: w.mv.piece.s } };
+    var piece = state.board[mv.from.r] && state.board[mv.from.r][mv.from.c];
+    if (!piece || piece.s !== w.mv.piece.s) return netTerminate('对方出现非法着法');
+    mv.piece = piece;   // 重链到棋盘对象（同 uciToMove 逻辑）
+    var ok = E.legalMoves(state.board, mv.from.r, mv.from.c)
+      .some(function (m) { return m.to.r === mv.to.r && m.to.c === mv.to.c; });
+    if (!ok) return netTerminate('对方出现非法着法');
+    makeMove(mv);
+    n.localSeq = w.seq;
+    if (state.status.over) netPost('/api/room/over', { roomId: n.roomId, side: n.side, result: { winner: state.status.winner, reason: state.status.reason } });
+  }
+  function netRebuild(wires) {
+    var n = netState;
+    if (n) { n.localSeq = -1; n.pendingMv = null; }
+    newGame();
+    wires.forEach(function (w) { netApplyRemote(w); });
+  }
+  function netPoll() {
+    var n = netState;
+    if (!n || n.leaving) return;
+    if (n.inFlight) { n.pollTimer = setTimeout(netPoll, 500); return; }
+    n.inFlight = true;
+    netPost('/api/room/poll', { roomId: n.roomId, side: n.side, since: n.since })
+      .then(function (r) {
+        n.inFlight = false;
+        if (!r.ok) {
+          if (r.error === 'ROOM_NOT_FOUND') { netTerminate('房间已过期'); return; }
+          n.failCount++;
+          netRender('连接中断，重试中…');
+          n.pollTimer = setTimeout(netPoll, Math.min(8000, 2000 * Math.pow(2, Math.min(3, n.failCount - 1))));
+          return;
+        }
+        n.failCount = 0;
+        if (r.epoch !== n.epoch) {
+          n.epoch = r.epoch;
+          netRebuild(r.moves);
+          n.since = r.since; n.turn = r.turn; n.status = r.status; n.over = r.over;
+          n.peerGone = r.peerGone; n.restart = r.restart;
+          netRender();
+          n.pollTimer = setTimeout(netPoll, 1200);
+          return;
+        }
+        r.moves.forEach(function (w) { netApplyRemote(w); });
+        n.since = r.since; n.turn = r.turn; n.status = r.status; n.over = r.over;
+        n.peerGone = r.peerGone; n.restart = r.restart;
+        if (n.pendingMv) {
+          if (r.since === n.pendingBasedOn) {
+            netPost('/api/room/move', { roomId: n.roomId, side: n.side, basedOn: n.pendingBasedOn, mv: n.pendingMv })
+              .then(function (r2) {
+                if (r2.ok) { n.localSeq = r2.seq; n.pendingMv = null; }
+                else if (r2.error === 'STALE' || r2.error === 'NOT_YOUR_TURN') { n.pendingMv = null; netResync(); }
+              });
+          } else if (r.since > n.pendingBasedOn) { n.pendingMv = null; netResync(); }
+        }
+        netRender();
+        n.pollTimer = setTimeout(netPoll, n.status === 'playing' ? 1500 : 3000);
+      });
+  }
+  function netResync() {
+    var n = netState;
+    if (!n) return;
+    netPost('/api/room/poll', { roomId: n.roomId, side: n.side, since: 0 })
+      .then(function (r) {
+        if (!r.ok) { if (r.error === 'ROOM_NOT_FOUND') netTerminate('房间已过期'); return; }
+        n.epoch = r.epoch;
+        netRebuild(r.moves);
+        n.since = r.since; n.turn = r.turn; n.status = r.status; n.over = r.over;
+        n.peerGone = r.peerGone; n.restart = r.restart;
+        n.localSeq = r.since - 1; n.pendingMv = null;
+        netRender();
+      });
+  }
+  function netEnterMode(r, sessionSide) {
+    mode = 'net';
+    $('mode').value = 'net';
+    netState = { server: netGetServer(), roomId: r.roomId, side: sessionSide !== undefined ? sessionSide : r.side,
+                 since: 0, epoch: r.epoch, turn: r.turn, status: r.status,
+                 peerGone: r.peerGone || false, restart: r.restart || { 0: false, 1: false },
+                 localSeq: -1, pendingMv: null, pendingBasedOn: 0, inFlight: false, failCount: 0, leaving: false,
+                 pollTimer: null };
+    $('diffWrap').style.visibility = 'hidden';
+    $('delayWrap').style.visibility = 'hidden';
+    localStorage.setItem(LS_SESSION, JSON.stringify({ roomId: r.roomId, side: netState.side }));
+  }
+  function netCreate() {
+    if (netState) netCleanup();
+    netPost('/api/room/create', { rules: null, name: '地荒象棋' })
+      .then(function (r) {
+        if (!r.ok) { netRender('创建失败：' + (r.msg || r.error)); return; }
+        netEnterMode(r, 0);
+        newGame();
+        netRender();
+        netPollNow();
+      });
+  }
+  function netJoin() {
+    var roomId = $('netRoomInput').value.trim().toUpperCase();
+    if (!roomId) { netRender('请输入房间号'); return; }
+    if (netState) netCleanup();
+    netPost('/api/room/join', { roomId: roomId })
+      .then(function (r) {
+        if (!r.ok) { netRender('加入失败：' + (r.msg || r.error)); return; }
+        netEnterMode(r);
+        netRebuild(r.moves);
+        netRender();
+        netPollNow();
+      });
+  }
+  function netRestartPropose() {
+    var n = netState;
+    if (!n) return;
+    netPost('/api/room/restart', { roomId: n.roomId, side: n.side })
+      .then(function (r) {
+        netRender(r.ok ? (r.needPeer ? '已请求重开，等待对方同意…' : '重开成功') : ('重开失败：' + (r.msg || r.error)));
+        netPollNow();
+      });
+  }
+  function netCleanup() {
+    var n = netState;
+    if (!n) return;
+    n.leaving = true;
+    if (n.pollTimer) clearTimeout(n.pollTimer);
+    netPost('/api/room/leave', { roomId: n.roomId, side: n.side });
+    localStorage.removeItem(LS_SESSION);
+    netState = null;
+    netRender();
+  }
+  function netTerminate(msg) {
+    var n = netState;
+    if (n && n.pollTimer) clearTimeout(n.pollTimer);
+    netState = null;
+    localStorage.removeItem(LS_SESSION);
+    netRender(msg);
+    if (msg) alert(msg);
+  }
+  function netRender(msg) {
+    var stEl = $('netStatus');
+    if (msg) stEl.textContent = msg;
+    else if (!netState) stEl.textContent = '';
+    else {
+      var txt = '房间 ' + netState.roomId + '：';
+      if (netState.status === 'waiting') txt += '等待对手加入…';
+      else if (netState.over) txt += '对局结束，可发起重开';
+      else if (netState.peerGone) txt += '对方已离开，对局暂停';
+      else txt += (netState.turn === netState.side ? '轮到你走棋' : '等待对方走棋');
+      stEl.textContent = txt;
+    }
+    $('netRoomId').textContent = netState ? netState.roomId : '';
+    $('netCopy').style.display = netState ? '' : 'none';
+    $('netRestart').style.display = netState ? '' : 'none';
+    $('netLeave').style.display = netState ? '' : 'none';
+  }
+  function netSessionRestore() {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem(LS_SESSION) || 'null'); } catch (e) {}
+    if (!saved || !saved.roomId) return;
+    fetch(netGetServer() + '/api/room/status?roomId=' + saved.roomId)
+      .then(function (r) { return r.json(); })
+      .catch(function () { return { ok: false }; })
+      .then(function (r) {
+        if (!r.ok) { localStorage.removeItem(LS_SESSION); return; }
+        netPost('/api/room/poll', { roomId: saved.roomId, side: saved.side, since: 0 })
+          .then(function (p) {
+            if (!p.ok) { localStorage.removeItem(LS_SESSION); netRender('房间已过期'); return; }
+            netEnterMode(p, saved.side);
+            netRebuild(p.moves);
+            netRender();
+            netPollNow();
+          });
+      });
+  }
+
   function init() {
     buildBoardSvg();
     newGame();
     boardEl.addEventListener('click', clickBoard);
-    $('btnNew').addEventListener('click', newGame);
+    $('btnNew').addEventListener('click', function () {
+      if (mode === 'net' && netState) { netRestartPropose(); return; }   // 联机"新对局"= 提议重开
+      newGame();
+    });
     $('btnUndo').addEventListener('click', undo);
     $('btnPause').addEventListener('click', togglePause);
     $('mode').addEventListener('change', function (e) {
       mode = e.target.value;
-      var aiPlay = mode !== 'pvp';
+      if (mode !== 'net' && netState) netCleanup();     // 切出联机：清理房间会话
+      // 联机面板仅在联机对战模式下显示
+      $('netPanel').style.display = mode === 'net' ? '' : 'none';
+      if (mode === 'net' && !netState) netRender('请先创建或加入房间');
+      var aiPlay = mode !== 'pvp' && mode !== 'net';
       $('diffWrap').style.visibility = aiPlay ? 'visible' : 'hidden';
       $('delayWrap').style.visibility = aiPlay ? 'visible' : 'hidden';
       if (state.status.over) return;
@@ -1251,6 +1504,25 @@ button:active { transform: translateY(1px); }
     });
     $('flip').addEventListener('change', function (e) {
       boardEl.classList.toggle('flipped', e.target.checked);
+    });
+    $('netCreate').addEventListener('click', netCreate);
+    $('netJoin').addEventListener('click', netJoin);
+    $('netLeave').addEventListener('click', function () { netCleanup(); newGame(); });
+    $('netRestart').addEventListener('click', netRestartPropose);
+    $('netCopy').addEventListener('click', function () {
+      var n = netState;
+      if (!n) return;
+      var t = document.createElement('textarea');
+      t.value = n.roomId;
+      document.body.appendChild(t);
+      t.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(t);
+      netRender('房间号 ' + n.roomId + ' 已复制');
+    });
+    netSessionRestore();
+    window.addEventListener('beforeunload', function () {
+      if (netState) { netState.leaving = true; netPost('/api/room/leave', { roomId: netState.roomId, side: netState.side }); }
     });
   }
 
