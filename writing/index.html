@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地荒的小世界</title>
+<style>
+  /* 字体为系统本地字体，无需等待 */
+  html.fonts-ready body {
+    visibility: visible;
+  }
+  :root {
+    --bg: #ffffff;
+    --text: #1a1a1a;          /* 主文字（加重） */
+    --text-strong: #000000;   /* 标题（最重） */
+    --text-muted: #555555;    /* 摘要（加重） */
+    --text-faint: #888888;    /* 元信息 */
+    --border: #e0e0e0;
+    --border-light: #eeeeee;
+    --hover: #444444;
+  }
+
+  [data-theme="dark"] {
+    --bg: #1a1a1a;
+    --text: #d4d4d4;
+    --text-strong: #f0f0f0;
+    --text-muted: #b0b0b0;
+    --text-faint: #8a8a8a;
+    --border: #3a3a3a;
+    --border-light: #2e2e2e;
+    --hover: #aaaaaa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Serif SC", "Source Han Serif SC", "思源宋体", "Songti SC", SimSun, serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 1.5rem 3rem;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* --- Theme Toggle --- */
+  .theme-toggle {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.5rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--text);
+  }
+
+  .theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+  }
+
+  /* --- 顶部工具栏（主题切换 + 字号调节） --- */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.6rem 1rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: 2.5rem;
+    transition: background 0.3s, border-color 0.3s;
+  }
+
+  .toolbar button {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-family: inherit;
+  }
+
+  .toolbar button:hover {
+    border-color: var(--text);
+  }
+
+  .toolbar svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    stroke: currentColor;
+  }
+
+  /* 字号调节弹出面板 */
+  .font-size-pop {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    padding: 0.3rem 0.6rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    white-space: nowrap;
+    z-index: 101;
+  }
+
+  .font-size-pop.show {
+    display: flex;
+  }
+
+  .font-size-pop button {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  /* 列表字号由 CSS 变量控制 */
+  .article-title,
+  .article-meta,
+  .article-excerpt {
+    font-size: var(--index-font-size, inherit);
+  }
+
+  /* --- Header --- */
+  .site-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .site-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.6rem;
+    color: var(--text-strong);
+  }
+
+  .site-header .subtitle {
+    font-size: 0.95rem;
+    color: var(--text-faint);
+    font-style: italic;
+    letter-spacing: 0.08em;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: var(--border);
+    margin: 2rem auto;
+  }
+
+  /* --- Collection Filter --- */
+  .collection-bar {
+    max-width: 640px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.2rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+  }
+
+  .collection-bar button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text-faint);
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    padding: 0.2rem 0;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .collection-bar button:hover {
+    color: var(--text);
+  }
+
+  .collection-bar button.active {
+    color: var(--text-strong);
+    border-bottom-color: var(--text-strong);
+  }
+
+  /* --- Search Box --- */
+  .search-box {
+    max-width: 640px;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.3s;
+    letter-spacing: 0.04em;
+  }
+
+  .search-box input::placeholder {
+    color: var(--text-faint);
+    font-style: italic;
+  }
+
+  .search-box input:focus {
+    border-color: var(--text);
+  }
+
+  /* --- Article List --- */
+  .article-list {
+    max-width: 640px;
+    width: 100%;
+    list-style: none;
+  }
+
+  .article-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .article-item:first-child {
+    padding-top: 0;
+  }
+
+  .article-item a {
+    text-decoration: none;
+    color: var(--text);
+    transition: color 0.3s;
+    display: block;
+  }
+
+  .article-item a:hover .article-title {
+    color: var(--hover);
+  }
+
+  .article-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.4rem;
+    line-height: 1.5;
+    color: var(--text-strong);
+    transition: color 0.3s;
+  }
+
+  .article-meta {
+    font-size: 0.82rem;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .article-collection {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0.1em 0.8em;
+    border-radius: 1em;
+    letter-spacing: 0.08em;
+    margin-left: 0.6rem;
+    vertical-align: middle;
+  }
+
+  .article-excerpt {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    text-align: justify;
+  }
+
+  /* --- Pagination --- */
+  .pagination {
+    max-width: 640px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    font-size: 0.9rem;
+    color: var(--text-faint);
+  }
+
+  .pagination button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.4rem 1.2rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.3s;
+  }
+
+  .pagination button:hover:not(:disabled) {
+    border-color: var(--text);
+  }
+
+  .pagination button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* --- Empty State --- */
+  .empty-state {
+    display: none;
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 0.95rem;
+    padding: 3rem 0;
+    font-style: italic;
+  }
+
+  /* --- Footer --- */
+  .site-footer {
+    margin-top: 4rem;
+    text-align: center;
+  }
+
+  .back-link {
+    font-size: 0.85rem;
+    color: var(--text-faint);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+
+  .back-link:hover {
+    color: var(--text);
+  }
+
+  .copyright {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    letter-spacing: 0.03em;
+    opacity: 0.7;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 600px) {
+    body { padding: 2.5rem 1.2rem 2rem; }
+    .site-header h1 { font-size: 1.6rem; }
+    .article-title { font-size: 1.15rem; }
+    .article-excerpt { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button id="themeToggle" title="切换黑夜模式" aria-label="切换黑夜模式">
+    <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+  <div style="position:relative;">
+    <button id="fontSizeBtn" title="调节文字大小" aria-label="调节文字大小">A</button>
+    <div class="font-size-pop" id="fontSizePop">
+      <button id="fontDec" title="减小字号" aria-label="减小字号">−</button>
+      <button id="fontInc" title="增大字号" aria-label="增大字号">+</button>
+    </div>
+  </div>
+</div>
+
+<header class="site-header">
+  <h1>地荒的小世界</h1>
+  <p class="subtitle">小说 · 随笔 · 创作</p>
+</header>
+
+<div class="divider"></div>
+
+<div class="collection-bar" id="collectionBar"></div>
+
+<div class="search-box">
+  <input type="text" id="searchInput" placeholder="搜索文章标题、作者或内容…" autocomplete="off">
+</div>
+
+<ul class="article-list" id="articleList"></ul>
+
+<div class="empty-state" id="emptyState">未找到相关文章</div>
+
+<div class="pagination" id="pagination" style="display:none;">
+  <button id="prevPage">上一页</button>
+  <span id="pageInfo"></span>
+  <button id="nextPage">下一页</button>
+</div>
+
+<footer class="site-footer">
+  <a class="back-link" href="/">&larr; 返回首页</a>
+  <p class="copyright">© 地荒 · 本站内容均为原创</p>
+</footer>
+
+<script src="posts.js"></script>
+<script>
+(function() {
+  var list = document.getElementById('articleList');
+  var input = document.getElementById('searchInput');
+  var emptyState = document.getElementById('emptyState');
+  var collectionBar = document.getElementById('collectionBar');
+  var pagination = document.getElementById('pagination');
+  var prevBtn = document.getElementById('prevPage');
+  var nextBtn = document.getElementById('nextPage');
+  var pageInfo = document.getElementById('pageInfo');
+
+  var posts = window.POSTS || [];
+  var currentCollection = '全部';
+  var PER_PAGE = 10;
+  var currentPage = 1;
+  var filtered = [];
+
+  /* --- 字体为系统本地字体（Noto Serif SC），无需等待，直接显示 --- */
+  (function() {
+    document.documentElement.classList.add('fonts-ready');
+  })();
+
+  /* --- 黑夜模式 --- */
+  (function() {
+    var toggle = document.getElementById('themeToggle');
+    var html = document.documentElement;
+    var saved = localStorage.getItem('dh-blog-theme');
+    if (saved) {
+      html.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      html.setAttribute('data-theme', 'dark');
+    }
+    updateIcon();
+    toggle.addEventListener('click', function() {
+      var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dh-blog-theme', next);
+      updateIcon();
+    });
+  })();
+
+  function updateIcon() {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.getElementById('iconMoon').style.display = dark ? 'none' : '';
+    document.getElementById('iconSun').style.display = dark ? '' : 'none';
+  }
+
+  /* --- 字号调节（弹出 + / -，与文章页共用 dh-font-size） --- */
+  (function() {
+    var btn = document.getElementById('fontSizeBtn');
+    var pop = document.getElementById('fontSizePop');
+    var inc = document.getElementById('fontInc');
+    var dec = document.getElementById('fontDec');
+    var root = document.documentElement;
+
+    // 列表字号基准 14px ~ 22px，默认 16px（作用于 .article-title 等）
+    var MIN = 14, MAX = 22, DEFAULT = 16;
+    var current = parseInt(localStorage.getItem('dh-index-font-size'), 10) || DEFAULT;
+    if (current < MIN) current = MIN;
+    if (current > MAX) current = MAX;
+    applyFontSize(current);
+
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      pop.classList.toggle('show');
+    });
+
+    inc.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (current < MAX) { current++; applyFontSize(current); }
+    });
+
+    dec.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (current > MIN) { current--; applyFontSize(current); }
+    });
+
+    document.addEventListener('click', function() {
+      pop.classList.remove('show');
+    });
+
+    function applyFontSize(size) {
+      current = size;
+      localStorage.setItem('dh-index-font-size', String(size));
+      root.style.setProperty('--index-font-size', size + 'px');
+    }
+  })();
+
+  /* --- 合集筛选栏 --- */
+  function buildCollectionBar() {
+    var collections = [];
+    posts.forEach(function(p) {
+      if (p.collection && collections.indexOf(p.collection) === -1) {
+        collections.push(p.collection);
+      }
+    });
+    // 固定合集顺序：秽土童话在前，其余按出现顺序
+    var preferred = ['秽土童话', '高中回忆录'];
+    collections.sort(function(a, b) {
+      var ia = preferred.indexOf(a), ib = preferred.indexOf(b);
+      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+    });
+    var html = '<button data-c="全部" class="active">全部</button>';
+    collections.forEach(function(c) {
+      html += '<button data-c="' + c + '">《' + c + '》</button>';
+    });
+    collectionBar.innerHTML = html;
+
+    collectionBar.addEventListener('click', function(e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      currentCollection = btn.getAttribute('data-c');
+      var btns = collectionBar.querySelectorAll('button');
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentPage = 1;
+      render();
+    });
+  }
+
+  /* --- 筛选 + 分页 --- */
+  function applyFilter() {
+    var keyword = (input.value || '').trim().toLowerCase();
+    filtered = posts.filter(function(post) {
+      if (currentCollection !== '全部' && post.collection !== currentCollection) return false;
+      var haystack = (post.title + ' ' + post.author + ' ' + post.excerpt + ' ' + post.collection).toLowerCase();
+      return keyword === '' || haystack.indexOf(keyword) !== -1;
+    });
+  }
+
+  function render() {
+    applyFilter();
+
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    var start = (currentPage - 1) * PER_PAGE;
+    var pagePosts = filtered.slice(start, start + PER_PAGE);
+
+    var html = '';
+    pagePosts.forEach(function(post) {
+      html +=
+        '<li class="article-item">' +
+          '<a href="reader.html?file=' + encodeURIComponent(post.file) + '">' +
+            '<div class="article-title">' + escapeHtml(post.title) +
+              (post.collection ? '<span class="article-collection">' + escapeHtml(post.collection) + '</span>' : '') +
+            '</div>' +
+            '<div class="article-meta">' + escapeHtml(metaText(post)) + '</div>' +
+            (post.excerpt ? '<div class="article-excerpt">' + escapeHtml(post.excerpt) + '</div>' : '') +
+          '</a>' +
+        '</li>';
+    });
+
+    list.innerHTML = html;
+    emptyState.style.display = (filtered.length === 0) ? 'block' : 'none';
+
+    // 分页
+    if (totalPages > 1) {
+      pagination.style.display = 'flex';
+      pageInfo.textContent = currentPage + ' / ' + totalPages;
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+    } else {
+      pagination.style.display = 'none';
+    }
+  }
+
+  /* 元信息：作者 + 字数（不显示日期） */
+  function metaText(post) {
+    var parts = [];
+    if (post.author) parts.push(post.author);
+    if (post.wordCount) parts.push(post.wordCount + ' 字');
+    return parts.join(' · ');
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  input.addEventListener('input', function() {
+    currentPage = 1;
+    render();
+  });
+
+  prevBtn.addEventListener('click', function() {
+    if (currentPage > 1) { currentPage--; render(); }
+  });
+
+  nextBtn.addEventListener('click', function() {
+    if (currentPage < Math.ceil(filtered.length / PER_PAGE)) { currentPage++; render(); }
+  });
+
+  buildCollectionBar();
+  render();
+})();
+</script>
+
+</body>
+</html>
