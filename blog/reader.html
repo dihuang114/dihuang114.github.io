@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地荒博客</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: #fff;
+    color: #2c2c2c;
+    font-family: 'Noto Serif SC', 'Source Han Serif SC', '思源宋体', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 1.5rem 3rem;
+  }
+
+  /* --- Article Container --- */
+  .article {
+    max-width: 640px;
+    width: 100%;
+  }
+
+  /* --- Title --- */
+  .article-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .article-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .article-meta {
+    font-size: 0.85rem;
+    color: #aaa;
+    letter-spacing: 0.05em;
+  }
+
+  .article-collection {
+    display: inline-block;
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+    color: #888;
+    border: 1px solid #ccc;
+    padding: 0.15em 1em;
+    border-radius: 1em;
+    letter-spacing: 0.1em;
+  }
+
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: #ddd;
+    margin: 2rem auto;
+  }
+
+  /* --- Content Typography --- */
+  .article-body {
+    font-size: 18px;
+    line-height: 2;
+    color: #333;
+    text-align: justify;
+  }
+
+  .article-body p {
+    margin-bottom: 1.5em;
+    text-indent: 2em;
+  }
+
+  .article-body h1,
+  .article-body h2,
+  .article-body h3,
+  .article-body h4 {
+    font-weight: 700;
+    text-align: center;
+    margin: 2.5em 0 1.2em;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+  }
+
+  .article-body h1 { font-size: 1.5rem; }
+  .article-body h2 { font-size: 1.3rem; }
+  .article-body h3 { font-size: 1.1rem; }
+
+  /* 引用/题记 */
+  .article-body blockquote {
+    text-align: center;
+    font-style: italic;
+    color: #888;
+    margin: 1.5em 0 2.5em;
+    font-size: 0.95rem;
+    border: none;
+  }
+
+  .article-body blockquote p {
+    text-indent: 0;
+    margin-bottom: 0.5em;
+  }
+
+  /* 分隔线 */
+  .article-body hr {
+    border: none;
+    text-align: center;
+    margin: 3em 0;
+  }
+
+  .article-body hr::after {
+    content: '* * *';
+    letter-spacing: 1em;
+    color: #ccc;
+    font-size: 0.9rem;
+  }
+
+  /* 列表 */
+  .article-body ul,
+  .article-body ol {
+    margin: 1.5em 0;
+    padding-left: 2.5em;
+  }
+
+  .article-body li {
+    margin-bottom: 0.6em;
+  }
+
+  /* 链接 */
+  .article-body a {
+    color: #2c2c2c;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .article-body a:hover {
+    color: #666;
+  }
+
+  /* 代码 */
+  .article-body code {
+    font-family: "Consolas", "Menlo", monospace;
+    font-size: 0.9em;
+    background: #f5f5f5;
+    padding: 0.15em 0.4em;
+  }
+
+  .article-body pre {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 1em 1.2em;
+    margin: 1.5em 0;
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.6;
+  }
+
+  .article-body pre code {
+    background: none;
+    padding: 0;
+  }
+
+  /* --- Loading / Error --- */
+  .status {
+    text-align: center;
+    color: #bbb;
+    font-size: 0.95rem;
+    padding: 3rem 0;
+    font-style: italic;
+  }
+
+  /* --- Navigation --- */
+  .article-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #eee;
+  }
+
+  .article-nav a {
+    font-size: 0.85rem;
+    color: #aaa;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.3s;
+  }
+
+  .article-nav a:hover {
+    color: #666;
+  }
+
+  /* --- Footer --- */
+  .site-footer {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .copyright {
+    font-size: 0.75rem;
+    color: #ccc;
+    letter-spacing: 0.03em;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 600px) {
+    body { padding: 2.5rem 1.2rem 2rem; }
+    .article-header h1 { font-size: 1.5rem; }
+    .article-body { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<article class="article">
+
+  <header class="article-header" id="articleHeader" style="display:none;">
+    <h1 id="articleTitle"></h1>
+    <p class="article-meta" id="articleMeta"></p>
+    <p class="article-collection" id="articleCollection" style="display:none;"></p>
+  </header>
+
+  <div class="divider" id="articleDivider" style="display:none;"></div>
+
+  <div class="article-body" id="articleBody">
+    <p class="status">加载中…</p>
+  </div>
+
+  <nav class="article-nav">
+    <a href="/blog/">&larr; 返回目录</a>
+    <a href="/">&larr; 返回首页</a>
+  </nav>
+
+</article>
+
+<footer class="site-footer">
+  <p class="copyright">© 地荒 · 本站内容均为原创</p>
+</footer>
+
+<script src="/blog/marked.min.js"></script>
+<script>
+(function() {
+  // 解析 URL 参数 ?file=xxx.md
+  var params = new URLSearchParams(window.location.search);
+  var file = params.get('file');
+
+  var body = document.getElementById('articleBody');
+  var header = document.getElementById('articleHeader');
+  var divider = document.getElementById('articleDivider');
+
+  if (!file || !/\.md$/i.test(file)) {
+    body.innerHTML = '<p class="status">文章不存在</p>';
+    return;
+  }
+
+  fetch(file, { cache: 'no-store' })
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    })
+    .then(function(text) {
+      // 解析 YAML front-matter（可选）
+      var title = '', meta = '', collection = '', content = text;
+      var fm = /^---\s*\n([\s\S]*?)\n---\s*\n?/.exec(text);
+      if (fm) {
+        var lines = fm[1].split('\n');
+        lines.forEach(function(line) {
+          var m = /^([^:]+):\s*(.*)$/.exec(line.trim());
+          if (!m) return;
+          var key = m[1].trim().toLowerCase();
+          var val = m[2].trim().replace(/^["']|["']$/g, '');
+          if (key === 'title') title = val;
+          if (key === 'author') meta = meta ? meta + ' · ' + val : val;
+          if (key === 'date') meta = meta ? meta + ' | ' + val : val;
+          if (key === 'collection') collection = val;
+        });
+        content = text.slice(fm[0].length);
+      }
+
+      // 渲染 markdown
+      var html = marked.parse(content);
+      body.innerHTML = html;
+
+      // 未指定 title 时，从正文第一个 h1 提取
+      if (!title) {
+        var h1 = body.querySelector('h1');
+        if (h1) title = h1.textContent.trim();
+      }
+
+      if (title) {
+        document.title = title + ' - 地荒博客';
+        document.getElementById('articleTitle').textContent = title;
+        document.getElementById('articleMeta').textContent = meta;
+        if (collection) {
+          var cEl = document.getElementById('articleCollection');
+          cEl.textContent = '《' + collection + '》';
+          cEl.style.display = '';
+        }
+        header.style.display = '';
+        divider.style.display = '';
+      }
+
+      // 删除正文中重复的标题 h1（若 front-matter 已提供 title）
+      var h1s = body.querySelectorAll('h1');
+      h1s.forEach(function(h) {
+        if (title && h.textContent.trim() === title) h.remove();
+      });
+    })
+    .catch(function(err) {
+      body.innerHTML = '<p class="status">文章加载失败</p>';
+    });
+})();
+</script>
+
+</body>
+</html>

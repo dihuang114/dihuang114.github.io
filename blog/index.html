@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博客 - 地荒资源站</title>
+<title>地荒博客</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
 
@@ -23,7 +23,7 @@
   /* --- Header --- */
   .site-header {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 2.5rem;
   }
 
   .site-header h1 {
@@ -47,6 +47,69 @@
     margin: 2rem auto;
   }
 
+  /* --- Collection Filter --- */
+  .collection-bar {
+    max-width: 640px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.2rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+  }
+
+  .collection-bar button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: #999;
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    padding: 0.2rem 0;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .collection-bar button:hover {
+    color: #666;
+  }
+
+  .collection-bar button.active {
+    color: #2c2c2c;
+    border-bottom-color: #2c2c2c;
+  }
+
+  /* --- Search Box --- */
+  .search-box {
+    max-width: 640px;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #2c2c2c;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.3s;
+    letter-spacing: 0.04em;
+  }
+
+  .search-box input::placeholder {
+    color: #bbb;
+    font-style: italic;
+  }
+
+  .search-box input:focus {
+    border-color: #2c2c2c;
+  }
+
   /* --- Article List --- */
   .article-list {
     max-width: 640px;
@@ -67,9 +130,10 @@
     text-decoration: none;
     color: #2c2c2c;
     transition: color 0.3s;
+    display: block;
   }
 
-  .article-item a:hover {
+  .article-item a:hover .article-title {
     color: #666;
   }
 
@@ -79,6 +143,7 @@
     letter-spacing: 0.06em;
     margin-bottom: 0.5rem;
     line-height: 1.5;
+    transition: color 0.3s;
   }
 
   .article-meta {
@@ -86,6 +151,18 @@
     color: #aaa;
     letter-spacing: 0.04em;
     margin-bottom: 0.6rem;
+  }
+
+  .article-collection {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #888;
+    border: 1px solid #ccc;
+    padding: 0.1em 0.8em;
+    border-radius: 1em;
+    letter-spacing: 0.08em;
+    margin-left: 0.6rem;
+    vertical-align: middle;
   }
 
   .article-excerpt {
@@ -97,6 +174,7 @@
 
   /* --- Empty State --- */
   .empty-state {
+    display: none;
     text-align: center;
     color: #bbb;
     font-size: 0.95rem;
@@ -141,28 +219,129 @@
 <body>
 
 <header class="site-header">
-  <h1>地荒文集</h1>
+  <h1>地荒博客</h1>
   <p class="subtitle">小说 · 随笔 · 创作</p>
 </header>
 
 <div class="divider"></div>
 
-<ul class="article-list">
+<div class="collection-bar" id="collectionBar"></div>
 
-  <li class="article-item">
-    <a href="/blog/jingyesi.html">
-      <div class="article-title">静夜思</div>
-      <div class="article-meta">李白 · 唐代 &nbsp;|&nbsp; 2025-06-25</div>
-      <div class="article-excerpt">床前明月光，疑是地上霜。举头望明月，低头思故乡。</div>
-    </a>
-  </li>
+<div class="search-box">
+  <input type="text" id="searchInput" placeholder="搜索文章标题、作者或内容…" autocomplete="off">
+</div>
 
-</ul>
+<ul class="article-list" id="articleList"></ul>
+
+<div class="empty-state" id="emptyState">未找到相关文章</div>
 
 <footer class="site-footer">
   <a class="back-link" href="/">&larr; 返回首页</a>
   <p class="copyright">© 地荒 · 本站内容均为原创</p>
 </footer>
+
+<script>
+(function() {
+  var list = document.getElementById('articleList');
+  var input = document.getElementById('searchInput');
+  var emptyState = document.getElementById('emptyState');
+  var collectionBar = document.getElementById('collectionBar');
+
+  var posts = [];
+  var currentCollection = '全部'; // 当前合集筛选
+
+  /* --- 加载文章清单（构建脚本自动生成） --- */
+  fetch('posts.json', { cache: 'no-store' })
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function(data) {
+      posts = data || [];
+      buildCollectionBar();
+      render();
+    })
+    .catch(function() {
+      emptyState.style.display = 'block';
+      emptyState.textContent = '文章加载失败';
+    });
+
+  /* --- 合集筛选栏（自动从数据生成） --- */
+  function buildCollectionBar() {
+    var collections = [];
+    posts.forEach(function(p) {
+      if (p.collection && collections.indexOf(p.collection) === -1) {
+        collections.push(p.collection);
+      }
+    });
+    var html = '<button data-c="全部" class="active">全部</button>';
+    collections.forEach(function(c) {
+      html += '<button data-c="' + c + '">《' + c + '》</button>';
+    });
+    collectionBar.innerHTML = html;
+
+    collectionBar.addEventListener('click', function(e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      currentCollection = btn.getAttribute('data-c');
+      var btns = collectionBar.querySelectorAll('button');
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      render();
+    });
+  }
+
+  /* --- 渲染列表 --- */
+  function render() {
+    var keyword = (input.value || '').trim().toLowerCase();
+    var html = '';
+    var visibleCount = 0;
+
+    posts.forEach(function(post) {
+      // 合集筛选
+      if (currentCollection !== '全部' && post.collection !== currentCollection) return;
+
+      // 关键词搜索（标题/作者/摘要/合集）
+      var haystack = (post.title + ' ' + post.author + ' ' + post.excerpt + ' ' + post.collection).toLowerCase();
+      var match = keyword === '' || haystack.indexOf(keyword) !== -1;
+      if (!match) return;
+
+      visibleCount++;
+      html +=
+        '<li class="article-item">' +
+          '<a href="reader.html?file=' + encodeURIComponent(post.file) + '">' +
+            '<div class="article-title">' + escapeHtml(post.title) +
+              (post.collection ? '<span class="article-collection">' + escapeHtml(post.collection) + '</span>' : '') +
+            '</div>' +
+            '<div class="article-meta">' + escapeHtml(metaText(post)) + '</div>' +
+            (post.excerpt ? '<div class="article-excerpt">' + escapeHtml(post.excerpt) + '</div>' : '') +
+          '</a>' +
+        '</li>';
+    });
+
+    list.innerHTML = html;
+    emptyState.style.display = (visibleCount === 0) ? 'block' : 'none';
+  }
+
+  /* --- 辅助函数 --- */
+  function metaText(post) {
+    var parts = [];
+    if (post.author) parts.push(post.author);
+    if (post.date) parts.push(post.date);
+    return parts.join(' · ');
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  input.addEventListener('input', render);
+})();
+</script>
 
 </body>
 </html>
