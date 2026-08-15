@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>地荒的小世界</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
 <style>
   /* 字体为系统本地字体，无需等待 */
   html.fonts-ready body {
@@ -78,14 +81,19 @@
   }
 
   .article-collection {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 0.8rem;
     font-size: 0.8rem;
     color: var(--text-muted);
     border: 1px solid var(--border);
     padding: 0.15em 1em;
-    border-radius: 1em;
+    border-radius: 1.5em;
     letter-spacing: 0.1em;
+    user-select: none;
+    -webkit-user-select: none;
+    line-height: 1.2;
   }
 
   .divider {
@@ -144,6 +152,8 @@
     letter-spacing: 0.03em;
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s, color 0.3s;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .toc a:hover {
@@ -334,6 +344,8 @@
     justify-content: center;
     transition: all 0.3s;
     font-family: inherit;
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   .toolbar button:hover {
