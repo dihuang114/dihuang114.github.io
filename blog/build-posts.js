@@ -3,7 +3,11 @@
  * 地荒博客 - 文章清单自动生成脚本
  *
  * 扫描 posts/ 目录下所有 .md 文件，解析 front-matter，
- * 生成 posts.json 供前端目录页自动渲染（无需手动登记文章）。
+ * 生成 posts.js（window.POSTS = [...]）供前端目录页自动渲染。
+ *
+ * 使用 <script src="posts.js"> 加载而非 fetch：
+ *  - 无 CORS 问题，本地 file:// 直接打开也能正常显示
+ *  - 不受 GitHub Pages Jekyll 对 .md 的处理影响
  *
  * 用法：node _static/blog/build-posts.js
  * 已接入 updateweb.bat 部署流程，部署时自动执行。
@@ -12,7 +16,7 @@ const fs = require('fs');
 const path = require('path');
 
 const postsDir = path.join(__dirname, 'posts');
-const outFile = path.join(__dirname, 'posts.json');
+const outFile = path.join(__dirname, 'posts.js');
 
 if (!fs.existsSync(postsDir)) {
   console.error('posts/ 目录不存在: ' + postsDir);
@@ -59,6 +63,9 @@ const posts = files
   })
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)); // 按日期倒序
 
-fs.writeFileSync(outFile, JSON.stringify(posts, null, 2), 'utf8');
-console.log('已生成 posts.json，共 ' + posts.length + ' 篇文章');
+const js = '/* 本文件由 build-posts.js 自动生成，请勿手动修改 */\nwindow.POSTS = ' +
+  JSON.stringify(posts, null, 2) + ';\n';
+
+fs.writeFileSync(outFile, js, 'utf8');
+console.log('已生成 posts.js，共 ' + posts.length + ' 篇文章');
 posts.forEach((p) => console.log('  - ' + p.title + (p.collection ? ' [' + p.collection + ']' : '')));

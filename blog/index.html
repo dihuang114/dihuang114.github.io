@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,17 +7,62 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
 
+  :root {
+    --bg: #ffffff;
+    --text: #1a1a1a;          /* 主文字（加重） */
+    --text-strong: #000000;   /* 标题（最重） */
+    --text-muted: #555555;    /* 摘要（加重） */
+    --text-faint: #888888;    /* 元信息 */
+    --border: #e0e0e0;
+    --border-light: #eeeeee;
+    --hover: #444444;
+  }
+
+  [data-theme="dark"] {
+    --bg: #1a1a1a;
+    --text: #d4d4d4;
+    --text-strong: #f0f0f0;
+    --text-muted: #b0b0b0;
+    --text-faint: #8a8a8a;
+    --border: #3a3a3a;
+    --border-light: #2e2e2e;
+    --hover: #aaaaaa;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     min-height: 100vh;
-    background: #fff;
-    color: #2c2c2c;
+    background: var(--bg);
+    color: var(--text);
     font-family: 'Noto Serif SC', 'Source Han Serif SC', '思源宋体', serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 4rem 1.5rem 3rem;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* --- Theme Toggle --- */
+  .theme-toggle {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.5rem;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 1.2rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.3s;
+    font-family: inherit;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--text);
   }
 
   /* --- Header --- */
@@ -31,11 +76,12 @@
     font-weight: 700;
     letter-spacing: 0.15em;
     margin-bottom: 0.6rem;
+    color: var(--text-strong);
   }
 
   .site-header .subtitle {
     font-size: 0.95rem;
-    color: #888;
+    color: var(--text-faint);
     font-style: italic;
     letter-spacing: 0.08em;
   }
@@ -43,7 +89,7 @@
   .divider {
     width: 60px;
     height: 1px;
-    background: #ccc;
+    background: var(--border);
     margin: 2rem auto;
   }
 
@@ -61,7 +107,7 @@
   .collection-bar button {
     font-family: inherit;
     font-size: 0.9rem;
-    color: #999;
+    color: var(--text-faint);
     background: none;
     border: none;
     border-bottom: 1px solid transparent;
@@ -72,12 +118,12 @@
   }
 
   .collection-bar button:hover {
-    color: #666;
+    color: var(--text);
   }
 
   .collection-bar button.active {
-    color: #2c2c2c;
-    border-bottom-color: #2c2c2c;
+    color: var(--text-strong);
+    border-bottom-color: var(--text-strong);
   }
 
   /* --- Search Box --- */
@@ -92,9 +138,9 @@
     padding: 0.8rem 1.2rem;
     font-family: inherit;
     font-size: 1rem;
-    color: #2c2c2c;
-    background: #fff;
-    border: 1px solid #ddd;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 2px;
     outline: none;
     transition: border-color 0.3s;
@@ -102,12 +148,12 @@
   }
 
   .search-box input::placeholder {
-    color: #bbb;
+    color: var(--text-faint);
     font-style: italic;
   }
 
   .search-box input:focus {
-    border-color: #2c2c2c;
+    border-color: var(--text);
   }
 
   /* --- Article List --- */
@@ -119,7 +165,7 @@
 
   .article-item {
     padding: 1.8rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-light);
   }
 
   .article-item:first-child {
@@ -128,13 +174,13 @@
 
   .article-item a {
     text-decoration: none;
-    color: #2c2c2c;
+    color: var(--text);
     transition: color 0.3s;
     display: block;
   }
 
   .article-item a:hover .article-title {
-    color: #666;
+    color: var(--hover);
   }
 
   .article-title {
@@ -143,12 +189,13 @@
     letter-spacing: 0.06em;
     margin-bottom: 0.5rem;
     line-height: 1.5;
+    color: var(--text-strong);
     transition: color 0.3s;
   }
 
   .article-meta {
     font-size: 0.82rem;
-    color: #aaa;
+    color: var(--text-faint);
     letter-spacing: 0.04em;
     margin-bottom: 0.6rem;
   }
@@ -156,8 +203,8 @@
   .article-collection {
     display: inline-block;
     font-size: 0.75rem;
-    color: #888;
-    border: 1px solid #ccc;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
     padding: 0.1em 0.8em;
     border-radius: 1em;
     letter-spacing: 0.08em;
@@ -167,7 +214,7 @@
 
   .article-excerpt {
     font-size: 0.95rem;
-    color: #666;
+    color: var(--text-muted);
     line-height: 1.8;
     text-align: justify;
   }
@@ -176,7 +223,7 @@
   .empty-state {
     display: none;
     text-align: center;
-    color: #bbb;
+    color: var(--text-faint);
     font-size: 0.95rem;
     padding: 3rem 0;
     font-style: italic;
@@ -190,21 +237,22 @@
 
   .back-link {
     font-size: 0.85rem;
-    color: #aaa;
+    color: var(--text-faint);
     text-decoration: none;
     letter-spacing: 0.05em;
     transition: color 0.3s;
   }
 
   .back-link:hover {
-    color: #666;
+    color: var(--text);
   }
 
   .copyright {
     margin-top: 1rem;
     font-size: 0.75rem;
-    color: #ccc;
+    color: var(--text-faint);
     letter-spacing: 0.03em;
+    opacity: 0.7;
   }
 
   /* --- Responsive --- */
@@ -217,6 +265,8 @@
 </style>
 </head>
 <body>
+
+<button class="theme-toggle" id="themeToggle" title="切换黑夜模式">🌙</button>
 
 <header class="site-header">
   <h1>地荒博客</h1>
@@ -240,6 +290,7 @@
   <p class="copyright">© 地荒 · 本站内容均为原创</p>
 </footer>
 
+<script src="posts.js"></script>
 <script>
 (function() {
   var list = document.getElementById('articleList');
@@ -247,24 +298,30 @@
   var emptyState = document.getElementById('emptyState');
   var collectionBar = document.getElementById('collectionBar');
 
-  var posts = [];
-  var currentCollection = '全部'; // 当前合集筛选
+  var posts = window.POSTS || [];
+  var currentCollection = '全部';
 
-  /* --- 加载文章清单（构建脚本自动生成） --- */
-  fetch('posts.json', { cache: 'no-store' })
-    .then(function(res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
-    .then(function(data) {
-      posts = data || [];
-      buildCollectionBar();
-      render();
-    })
-    .catch(function() {
-      emptyState.style.display = 'block';
-      emptyState.textContent = '文章加载失败';
+  /* --- 黑夜模式 --- */
+  (function() {
+    var toggle = document.getElementById('themeToggle');
+    var html = document.documentElement;
+    var saved = localStorage.getItem('dh-blog-theme');
+    if (saved) {
+      html.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      html.setAttribute('data-theme', 'dark');
+    }
+    function updateIcon() {
+      toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+    }
+    updateIcon();
+    toggle.addEventListener('click', function() {
+      var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('dh-blog-theme', next);
+      updateIcon();
     });
+  })();
 
   /* --- 合集筛选栏（自动从数据生成） --- */
   function buildCollectionBar() {
@@ -298,10 +355,8 @@
     var visibleCount = 0;
 
     posts.forEach(function(post) {
-      // 合集筛选
       if (currentCollection !== '全部' && post.collection !== currentCollection) return;
 
-      // 关键词搜索（标题/作者/摘要/合集）
       var haystack = (post.title + ' ' + post.author + ' ' + post.excerpt + ' ' + post.collection).toLowerCase();
       var match = keyword === '' || haystack.indexOf(keyword) !== -1;
       if (!match) return;
@@ -323,7 +378,6 @@
     emptyState.style.display = (visibleCount === 0) ? 'block' : 'none';
   }
 
-  /* --- 辅助函数 --- */
   function metaText(post) {
     var parts = [];
     if (post.author) parts.push(post.author);
@@ -340,6 +394,9 @@
   }
 
   input.addEventListener('input', render);
+
+  buildCollectionBar();
+  render();
 })();
 </script>
 

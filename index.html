@@ -27,6 +27,16 @@
             padding: 2rem;
         }
 
+        /* 头像 */
+        .avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #e5e5e5;
+            margin-bottom: 1.5rem;
+        }
+
         h1 {
             font-size: 2rem;
             font-weight: 600;
@@ -65,6 +75,38 @@
             width: 100%;
         }
 
+        /* 社交按钮 */
+        .social {
+            margin-top: 3rem;
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+        }
+
+        .social a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 1.1rem;
+            border: 1px solid #d9d9d9;
+            border-radius: 2rem;
+            color: #444444;
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            transition: all 0.3s ease;
+        }
+
+        .social a:hover {
+            border-color: #333333;
+            color: #000000;
+        }
+
+        .social .icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
         @media (max-width: 480px) {
             h1 {
                 font-size: 1.5rem;
@@ -77,17 +119,39 @@
             nav a {
                 font-size: 1rem;
             }
+
+            .social {
+                gap: 0.8rem;
+                flex-wrap: wrap;
+            }
+
+            .social a {
+                padding: 0.4rem 0.9rem;
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <img class="avatar" src="/img/avatar.jpg" alt="地荒">
         <h1>地荒导航页</h1>
         <nav>
             <a href="/res/">资源</a>
             <a href="/tool/">游乐场</a>
             <a href="/blog/">地荒博客</a>
         </nav>
+        <div class="social">
+            <a href="https://github.com/dihuang114" target="_blank" rel="noopener">
+                <span class="icon">&#128187;</span> GitHub
+            </a>
+            <a href="https://space.bilibili.com/488304519" target="_blank" rel="noopener">
+                <span class="icon">&#127909;</span> BiliBili
+            </a>
+            <a href="https://ifdian.net/a/dihuang114" target="_blank" rel="noopener">
+                <span class="icon">&#127873;</span> 爱发电
+            </a>
+        </div>
     </div>
 </body>
 </html>
