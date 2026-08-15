@@ -307,6 +307,7 @@
 </footer>
 
 <script src="/blog/marked.min.js"></script>
+<script src="/blog/posts.js"></script>
 <script>
 (function() {
   /* --- 黑夜模式 --- */
@@ -344,71 +345,59 @@
     return;
   }
 
-  /* 使用绝对路径加载，避免相对路径解析错误 */
-  var absFile = '/blog/posts/' + file.replace(/^.*[\\\/]/, '');
+  /* 从 window.POSTS 中查找文章（内容已由 build-posts.js 嵌入，无需 fetch） */
+  var fileName = file.replace(/^.*[\\\/]/, '');
+  var post = null;
+  (window.POSTS || []).forEach(function(p) {
+    if (p.file === fileName) post = p;
+  });
 
-  fetch(absFile, { cache: 'no-store' })
-    .then(function(res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.text();
-    })
-    .then(function(text) {
-      // 解析 YAML front-matter（可选）
-      var title = '', meta = '', collection = '', content = text;
-      var fm = /^---\s*\n([\s\S]*?)\n---\s*\n?/.exec(text);
-      if (fm) {
-        var lines = fm[1].split('\n');
-        lines.forEach(function(line) {
-          var m = /^([^:]+):\s*(.*)$/.exec(line.trim());
-          if (!m) return;
-          var key = m[1].trim().toLowerCase();
-          var val = m[2].trim().replace(/^["']|["']$/g, '');
-          if (key === 'title') title = val;
-          if (key === 'author') meta = meta ? meta + ' · ' + val : val;
-          if (key === 'date') meta = meta ? meta + ' | ' + val : val;
-          if (key === 'collection') collection = val;
-        });
-        content = text.slice(fm[0].length);
-      }
+  if (!post || !post.content) {
+    body.innerHTML = '<p class="status">文章加载失败（未找到文章数据，请重新部署）</p>';
+    return;
+  }
 
-      // 渲染 markdown
-      var html = marked.parse(content);
-      body.innerHTML = html;
+  var title = post.title || '';
+  var meta = '';
+  if (post.author) meta = post.author;
+  if (post.date) meta = meta ? meta + ' | ' + post.date : post.date;
+  var collection = post.collection || '';
+  var content = post.content;
 
-      // 未指定 title 时，从正文第一个 h1 提取
-      if (!title) {
-        var h1 = body.querySelector('h1');
-        if (h1) title = h1.textContent.trim();
-      }
+  // 渲染 markdown
+  var html = marked.parse(content);
+  body.innerHTML = html;
 
-      if (title) {
-        document.title = title + ' - 地荒博客';
-        document.getElementById('articleTitle').textContent = title;
-        document.getElementById('articleMeta').textContent = meta;
+  // 未指定 title 时，从正文第一个 h1 提取
+  if (!title) {
+    var h1 = body.querySelector('h1');
+    if (h1) title = h1.textContent.trim();
+  }
 
-        // 字数统计（中文字符数）
-        var textContent = body.textContent.replace(/\s+/g, '');
-        var count = textContent.length;
-        document.getElementById('articleWordcount').textContent = '全文约 ' + count + ' 字';
+  if (title) {
+    document.title = title + ' - 地荒博客';
+    document.getElementById('articleTitle').textContent = title;
+    document.getElementById('articleMeta').textContent = meta;
 
-        if (collection) {
-          var cEl = document.getElementById('articleCollection');
-          cEl.textContent = '《' + collection + '》';
-          cEl.style.display = '';
-        }
-        header.style.display = '';
-        divider.style.display = '';
-      }
+    // 字数统计（中文字符数）
+    var textContent = body.textContent.replace(/\s+/g, '');
+    var count = textContent.length;
+    document.getElementById('articleWordcount').textContent = '全文约 ' + count + ' 字';
 
-      // 删除正文中重复的标题 h1（若 front-matter 已提供 title）
-      var h1s = body.querySelectorAll('h1');
-      h1s.forEach(function(h) {
-        if (title && h.textContent.trim() === title) h.remove();
-      });
-    })
-    .catch(function(err) {
-      body.innerHTML = '<p class="status">文章加载失败（' + err.message + '）</p>';
-    });
+    if (collection) {
+      var cEl = document.getElementById('articleCollection');
+      cEl.textContent = '《' + collection + '》';
+      cEl.style.display = '';
+    }
+    header.style.display = '';
+    divider.style.display = '';
+  }
+
+  // 删除正文中重复的标题 h1（若 front-matter 已提供 title）
+  var h1s = body.querySelectorAll('h1');
+  h1s.forEach(function(h) {
+    if (title && h.textContent.trim() === title) h.remove();
+  });
 })();
 </script>
 

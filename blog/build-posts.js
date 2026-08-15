@@ -3,11 +3,11 @@
  * 地荒博客 - 文章清单自动生成脚本
  *
  * 扫描 posts/ 目录下所有 .md 文件，解析 front-matter，
- * 生成 posts.js（window.POSTS = [...]）供前端目录页自动渲染。
+ * 并把文章全文（markdown 原文）一并嵌入生成的 posts.js。
  *
- * 使用 <script src="posts.js"> 加载而非 fetch：
+ * 阅读页直接从 window.POSTS 取内容渲染，完全不请求 .md 文件：
+ *  - 彻底规避 GitHub Pages Jekyll 对 .md 的处理（HTTP 404）
  *  - 无 CORS 问题，本地 file:// 直接打开也能正常显示
- *  - 不受 GitHub Pages Jekyll 对 .md 的处理影响
  *
  * 用法：node _static/blog/build-posts.js
  * 已接入 updateweb.bat 部署流程，部署时自动执行。
@@ -58,7 +58,8 @@ const posts = files
       date: meta.date || '',
       excerpt: meta.excerpt || '', // 留空则列表不显示摘要
       collection: meta.collection || '', // 可选：《秽土童话》/《高中回忆录》等
-      file
+      file,
+      content // 文章全文（markdown 原文），嵌入 JS 中
     };
   })
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)); // 按日期倒序
@@ -68,4 +69,4 @@ const js = '/* 本文件由 build-posts.js 自动生成，请勿手动修改 */\
 
 fs.writeFileSync(outFile, js, 'utf8');
 console.log('已生成 posts.js，共 ' + posts.length + ' 篇文章');
-posts.forEach((p) => console.log('  - ' + p.title + (p.collection ? ' [' + p.collection + ']' : '')));
+posts.forEach((p) => console.log('  - ' + p.title + (p.collection ? ' [' + p.collection + ']' : '') + ' (' + p.content.length + ' 字符)'));
