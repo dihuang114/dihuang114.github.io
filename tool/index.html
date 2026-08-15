@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游乐场 - 地荒资源站</title>
+<style>
+  :root {
+    --bg: #f7f9fe;
+    --card-bg: #ffffff;
+    --text: #363636;
+    --text-secondary: #99a9bf;
+    --accent: #425AEF;
+    --accent-hover: #3648c9;
+    --border: #e3e8ee;
+    --shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.05);
+    --shadow-hover: 0 3px 8px 6px rgba(7, 17, 27, 0.1);
+    --icon-bg: rgba(66, 90, 239, 0.1);
+    --nav-text: #4c4948;
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  [data-theme="dark"] {
+    --bg: #18171d;
+    --card-bg: #1d1b22;
+    --text: #cccccc;
+    --text-secondary: #7a7a7a;
+    --accent: #f2b94b;
+    --accent-hover: #d9a23a;
+    --border: #2d2b33;
+    --shadow: 0 3px 8px 6px rgba(0, 0, 0, 0.2);
+    --shadow-hover: 0 3px 8px 6px rgba(0, 0, 0, 0.35);
+    --icon-bg: rgba(242, 185, 75, 0.12);
+    --nav-text: #b0b0b0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    font-family: var(--font-family);
+    color: var(--text);
+    transition: background 0.3s, color 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1.5rem;
+  }
+
+  /* --- Header --- */
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* --- Card Grid --- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent);
+  }
+
+  .card-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border-radius: 12px;
+    background: var(--icon-bg);
+    flex-shrink: 0;
+  }
+
+  .card-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.03em;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .card-arrow {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    transition: transform 0.3s, color 0.3s;
+    flex-shrink: 0;
+  }
+
+  .card:hover .card-arrow {
+    transform: translateX(4px);
+    color: var(--accent);
+  }
+
+  /* --- Back Link --- */
+  .back-link {
+    margin-top: 3rem;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+
+  .back-link:hover {
+    color: var(--accent);
+  }
+
+  /* --- Theme Toggle --- */
+  .theme-toggle {
+    position: fixed;
+    top: 1.2rem;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+    z-index: 100;
+  }
+
+  .theme-toggle:hover {
+    box-shadow: var(--shadow-hover);
+    transform: rotate(30deg);
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 600px) {
+    body { padding: 2rem 1rem; }
+    .header h1 { font-size: 1.5rem; }
+    .card-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .card { padding: 1.2rem; gap: 1rem; }
+    .card-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+    .card-title { font-size: 0.95rem; }
+    .card-desc { font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+
+<div class="header">
+  <h1>游乐场</h1>
+  <p>小工具与趣味项目</p>
+</div>
+
+<div class="card-grid">
+
+  <a class="card" href="/tool/sts.html">
+    <div class="card-icon">🃏</div>
+    <div class="card-body">
+      <div class="card-title">杀戮尖塔 · 随机卡牌</div>
+      <div class="card-desc">抽取 3 张随机卡牌，支持数字查牌</div>
+    </div>
+    <span class="card-arrow">&rarr;</span>
+  </a>
+
+  <a class="card" href="/tool/dhchess.html">
+    <div class="card-icon">♚</div>
+    <div class="card-body">
+      <div class="card-title">地荒象棋</div>
+      <div class="card-desc">变体规则象棋 · 人机对战</div>
+    </div>
+    <span class="card-arrow">&rarr;</span>
+  </a>
+
+  <a class="card" href="/tool/chesscraft/">
+    <div class="card-icon">♞</div>
+    <div class="card-body">
+      <div class="card-title">棋匠</div>
+      <div class="card-desc">自定义棋规 · AI 对弈 · 自对弈验证</div>
+    </div>
+    <span class="card-arrow">&rarr;</span>
+  </a>
+
+  <a class="card" href="/tool/risk.html">
+    <div class="card-icon">🎲</div>
+    <div class="card-body">
+      <div class="card-title">风险游戏</div>
+      <div class="card-desc">站长自制网页小游戏</div>
+    </div>
+    <span class="card-arrow">&rarr;</span>
+  </a>
+
+</div>
+
+<a class="back-link" href="/">&larr; 返回首页</a>
+
+<script>
+(function() {
+  const toggle = document.getElementById('themeToggle');
+  const html = document.documentElement;
+  const saved = localStorage.getItem('dh-theme');
+  if (saved) {
+    html.setAttribute('data-theme', saved);
+  } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    html.setAttribute('data-theme', 'dark');
+  }
+  function updateIcon() {
+    toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+  }
+  updateIcon();
+  toggle.addEventListener('click', function() {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('dh-theme', next);
+    updateIcon();
+  });
+})();
+</script>
+
+</body>
+</html>

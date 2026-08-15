@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>风险游戏</title>
+<style>
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #05060a;
+  color: #f4fbff;
+  font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#ui {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+#top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 32px;
+  min-height: 50px;
+}
+.cluster {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 180px;
+}
+.dim {
+  color: #9aa7b8;
+  font-size: 16px;
+}
+#balance {
+  color: #6bffd1;
+  font-size: 30px;
+  font-weight: 700;
+  text-shadow: 0 0 14px rgba(60, 255, 180, 0.35);
+}
+#status {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  font-size: 20px;
+  color: #c8e8ff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  display: none;
+}
+button {
+  pointer-events: auto;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #eaf4ff;
+  font-family: inherit;
+  font-size: 17px;
+  padding: 10px 18px;
+  cursor: pointer;
+}
+button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.14);
+}
+button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+#reset {
+  min-width: 96px;
+}
+#stage {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 880px);
+  text-align: center;
+  pointer-events: none;
+}
+#multiplier {
+  font-size: 76px;
+  font-weight: 800;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.8);
+}
+#roundStatus {
+  margin-top: 8px;
+  font-size: 25px;
+  color: #9fe0ff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+#result {
+  margin-top: 8px;
+  min-height: 36px;
+  font-size: 28px;
+  color: #ffdb78;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+#bottom {
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: min(1000px, calc(100% - 64px));
+  margin: 0 auto 28px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  background: rgba(8, 10, 14, 0.72);
+  backdrop-filter: blur(10px);
+}
+.stakeRow, .quickRow {
+  display: grid;
+  grid-template-columns: 112px 1fr 112px;
+  align-items: center;
+  gap: 14px;
+  min-height: 42px;
+}
+.quickRow {
+  grid-template-columns: 112px repeat(4, 1fr);
+}
+#slider {
+  width: 100%;
+  accent-color: #35e6d0;
+  height: 28px;
+  pointer-events: auto;
+}
+#stakeLabel {
+  text-align: right;
+  font-size: 22px;
+  font-weight: 700;
+}
+#hold {
+  min-height: 72px;
+  border-radius: 22px;
+  border-color: #7df8e8;
+  background: #35e6d0;
+  color: #061018;
+  font-size: 26px;
+  font-weight: 800;
+  box-shadow: 0 0 24px rgba(53, 230, 208, 0.4);
+}
+#hold:active:not(:disabled) {
+  background: #5cffa2;
+  border-color: #9cffd2;
+}
+#hold:disabled {
+  background: rgba(255, 255, 255, 0.06);
+  color: #737b85;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+@media (max-width: 760px) {
+  #top {
+    padding: 12px 16px;
+    gap: 8px;
+  }
+  #status {
+    font-size: 15px;
+  }
+  #stakeLabel {
+    font-size: 16px;
+  }
+  #multiplier {
+    font-size: 52px;
+  }
+  #roundStatus {
+    font-size: 18px;
+  }
+  #result {
+    font-size: 22px;
+  }
+  #bottom {
+    width: calc(100% - 24px);
+    margin-bottom: 12px;
+    padding: 12px;
+  }
+  .stakeRow, .quickRow {
+    grid-template-columns: 88px 1fr 88px;
+  }
+  .quickRow {
+    grid-template-columns: 88px repeat(4, 1fr);
+  }
+  button {
+    padding: 9px 8px;
+    font-size: 15px;
+  }
+  #hold {
+    min-height: 60px;
+    font-size: 21px;
+  }
+}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div id="ui">
+  <div id="top">
+    <div class="cluster">
+      <span class="dim">金币</span>
+      <span id="balance">1000</span>
+    </div>
+    <div id="status">准备就绪</div>
+    <button id="reset">重置</button>
+  </div>
+  <div id="stage">
+    <div id="multiplier">x1.00</div>
+    <div id="roundStatus">最低投入为25%，按住开始</div>
+    <div id="result"></div>
+  </div>
+  <div id="bottom">
+    <div class="stakeRow">
+      <span class="dim">投入金币</span>
+      <input id="slider" type="range" min="250" max="1000" step="10" value="250">
+      <span id="stakeLabel">250</span>
+    </div>
+    <div class="quickRow">
+      <span class="dim">快速选择</span>
+      <button class="quick" id="quickMin">MIN</button>
+      <button class="quick" id="quick50">50%</button>
+      <button class="quick" id="quick75">75%</button>
+      <button class="quick" id="quickMax">MAX</button>
+    </div>
+    <button id="hold">按住开始</button>
+  </div>
+</div>
+<script>
+const BASE_BALANCE = 1000;
+const MIN_STAKE = 10;
+const MAX_BALANCE = 999999999999;
+const MIN_HOLD_TIME = 0.8;
+const SAVE_KEY = "riskgame_balance";
+const GOLD = "#ffc729";
+const CYAN = "#35e6d0";
+const MAGENTA = "#ff3d7f";
+const AMBER = "#ffb648";
+const GREEN = "#5cffa2";
+const RED = "#ff3b4d";
+const WHITE = "#f4fbff";
+
+const canvas = document.getElementById("fx");
+const ctx = canvas.getContext("2d");
+const balanceEl = document.getElementById("balance");
+const statusEl = document.getElementById("status");
+const multiplierEl = document.getElementById("multiplier");
+const roundStatusEl = document.getElementById("roundStatus");
+const resultEl = document.getElementById("result");
+const stakeLabelEl = document.getElementById("stakeLabel");
+const sliderEl = document.getElementById("slider");
+const holdEl = document.getElementById("hold");
+const resetEl = document.getElementById("reset");
+const quickMinEl = document.getElementById("quickMin");
+const quick50El = document.getElementById("quick50");
+const quick75El = document.getElementById("quick75");
+const quickMaxEl = document.getElementById("quickMax");
+
+let balance = BASE_BALANCE;
+let stake = 250;
+let state = "idle";
+let runTime = 0;
+let stopAt = 5;
+let lastMultiplier = 1;
+let lastTickTarget = 2;
+let lastIntegerMultiplier = 1;
+let tenXTriggered = false;
+let lastStakeRatio = 0.25;
+
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const rand = (a, b) => a + Math.random() * (b - a);
+
+function currentMultiplier() {
+  return 1 + Math.pow(runTime, 1.75) * 0.9;
+}
+
+function normalRandom() {
+  const u1 = Math.max(Math.random(), 0.0001);
+  const u2 = Math.random();
+  return Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+}
+
+function rollStopMultiplier() {
+  const roll = Math.random();
+  if (roll < 0.8) {
+    return clamp(3.8 + normalRandom() * 1.3, 1.1, 30);
+  }
+  if (roll < 0.92) {
+    return rand(5, 10);
+  }
+  return rand(10, 30);
+}
+
+function loadBalance() {
+  try {
+    const saved = parseInt(localStorage.getItem(SAVE_KEY), 10);
+    if (Number.isFinite(saved)) {
+      balance = clamp(saved, 0, MAX_BALANCE);
+    }
+  } catch (err) {
+    balance = BASE_BALANCE;
+  }
+}
+
+function saveBalance() {
+  try {
+    localStorage.setItem(SAVE_KEY, String(balance));
+  } catch (err) {
+    statusEl.textContent = "存档失败";
+  }
+}
+
+function minimumStake() {
+  if (balance <= MIN_STAKE) {
+    return Math.max(0, balance);
+  }
+  return Math.max(MIN_STAKE, Math.ceil(Math.ceil(balance * 0.25) / MIN_STAKE) * MIN_STAKE);
+}
+
+function refreshLimits() {
+  const min = minimumStake();
+  let max = balance;
+  if (balance >= MIN_STAKE) {
+    max = Math.floor(balance / MIN_STAKE) * MIN_STAKE;
+  }
+  const ratioStake = Math.floor(balance * lastStakeRatio / MIN_STAKE) * MIN_STAKE;
+  sliderEl.min = String(min);
+  sliderEl.max = String(max);
+  sliderEl.step = String(MIN_STAKE);
+  sliderEl.value = String(clamp(ratioStake, min, max));
+  syncStakeUI();
+}
+
+function syncStakeUI() {
+  stake = parseInt(sliderEl.value, 10);
+  stakeLabelEl.textContent = fmtCompact(stake);
+  visual.stake = stake;
+  visual.stakeMax = Math.max(stake, parseInt(sliderEl.max, 10));
+  if (balance > 0) {
+    lastStakeRatio = clamp(stake / balance, 0.25, 1);
+  }
+  refreshButtons();
+}
+
+function refreshButtons() {
+  const canPlay = balance >= MIN_STAKE && stake >= minimumStake() && stake <= balance;
+  holdEl.disabled = state !== "running" && !canPlay;
+  quickMinEl.disabled = state === "running" || !canPlay;
+  quick50El.disabled = state === "running" || !canPlay;
+  quick75El.disabled = state === "running" || !canPlay;
+  quickMaxEl.disabled = state === "running" || !canPlay;
+  resetEl.disabled = state === "running";
+  sliderEl.disabled = state === "running";
+}
+
+function updateBalanceUI() {
+  balanceEl.textContent = String(balance);
+  balanceEl.style.color = "#b2ffe1";
+  setTimeout(() => {
+    balanceEl.style.color = "#6bffd1";
+  }, 320);
+}
+
+function fmtCompact(n) {
+  if (n >= 1000000) {
+    const exp = Math.floor(Math.log10(n));
+    const mantissa = (n / Math.pow(10, exp)).toFixed(1);
+    return mantissa + "e" + exp;
+  }
+  return String(n);
+}
+
+function showIdle() {
+  state = "idle";
+  multiplierEl.textContent = "x1.00";
+  statusEl.textContent = "准备就绪";
+  roundStatusEl.textContent = "最低投入为金币25%，按住开始";
+  resultEl.textContent = "";
+  holdEl.textContent = "按住开始";
+  refreshButtons();
+}
+
+function showInsufficient() {
+  statusEl.textContent = "本金不足";
+  roundStatusEl.textContent = "投入不能低于金币25%";
+  resultEl.textContent = "";
+  visual.warn();
+  sfx.error();
+}
+
+function startRound() {
+  if (state === "running") {
+    return;
+  }
+  sfx.ensure();
+  if (balance < MIN_STAKE || stake < minimumStake() || stake > balance) {
+    showInsufficient();
+    return;
+  }
+  state = "running";
+  runTime = 0;
+  const target = rollStopMultiplier();
+  stopAt = Math.pow((target - 1) / 0.9, 1 / 1.75);
+  lastMultiplier = 1;
+  lastTickTarget = 2;
+  lastIntegerMultiplier = 1;
+  tenXTriggered = false;
+  statusEl.textContent = "增长中";
+  roundStatusEl.textContent = "松手结算";
+  resultEl.textContent = "";
+  holdEl.textContent = "松手结算";
+  refreshButtons();
+  visual.startRun(stopAt);
+  sfx.start();
+}
+
+function cashOutRound() {
+  if (state !== "running") {
+    return;
+  }
+  const mult = currentMultiplier();
+  const reward = Math.floor(stake * mult);
+  const added = Math.min(reward, MAX_BALANCE - balance);
+  balance = Math.min(MAX_BALANCE, balance + added);
+  lastMultiplier = mult;
+  state = "won";
+  multiplierEl.textContent = "x" + mult.toFixed(2);
+  statusEl.textContent = "结算成功";
+  roundStatusEl.textContent = "已锁定";
+  resultEl.textContent = "赢得 " + added;
+  visual.cashOut(mult);
+  sfx.win();
+  updateBalanceUI();
+  saveBalance();
+  finishRoundUI();
+}
+
+function loseRound() {
+  if (state !== "running") {
+    return;
+  }
+  const mult = currentMultiplier();
+  balance -= stake;
+  lastMultiplier = mult;
+  state = "lost";
+  multiplierEl.textContent = "x" + mult.toFixed(2);
+  statusEl.textContent = "倍率停止";
+  roundStatusEl.textContent = "本局全输";
+  resultEl.textContent = "损失 " + stake;
+  visual.lose(mult);
+  sfx.lose();
+  updateBalanceUI();
+  saveBalance();
+  finishRoundUI();
+}
+
+function finishRoundUI() {
+  holdEl.textContent = "再来一局";
+  refreshLimits();
+  refreshButtons();
+}
+
+function releaseRound() {
+  if (state !== "running") {
+    return;
+  }
+  if (runTime < MIN_HOLD_TIME) {
+    cancelRound();
+  } else {
+    cashOutRound();
+  }
+}
+
+function cancelRound() {
+  state = "idle";
+  runTime = 0;
+  stopAt = 0;
+  lastMultiplier = 1;
+  lastTickTarget = 2;
+  lastIntegerMultiplier = 1;
+  tenXTriggered = false;
+  multiplierEl.textContent = "x1.00";
+  statusEl.textContent = "松手太早";
+  roundStatusEl.textContent = "本局未开始";
+  resultEl.textContent = "";
+  holdEl.textContent = "按住开始";
+  visual.reset();
+  sfx.reset();
+  refreshButtons();
+}
+
+function resetGame() {
+  balance = BASE_BALANCE;
+  saveBalance();
+  state = "idle";
+  runTime = 0;
+  stopAt = 0;
+  lastMultiplier = 1;
+  lastTickTarget = 2;
+  lastIntegerMultiplier = 1;
+  tenXTriggered = false;
+  refreshLimits();
+  updateBalanceUI();
+  showIdle();
+  visual.reset();
+  sfx.reset();
+}
+
+const sfx = {
+  audio: null,
+  ensure() {
+    if (!this.audio) {
+      const Ctor = window.AudioContext || window.webkitAudioContext;
+      if (Ctor) {
+        this.audio = new Ctor();
+      }
+    }
+    if (this.audio && this.audio.state === "suspended") {
+      this.audio.resume();
+    }
+  },
+  tone(freq, dur, type, vol, delay = 0) {
+    if (!this.audio) {
+      return;
+    }
+    const t0 = this.audio.currentTime + delay;
+    const osc = this.audio.createOscillator();
+    const gain = this.audio.createGain();
+    osc.type = type || "sine";
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain);
+    gain.connect(this.audio.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.04);
+  },
+  tick(value) {
+    const vol = clamp(0.13 + value * 0.006, 0.13, 0.24);
+    if (value >= 10) {
+      this.tone(2240, 0.025, "sine", vol);
+      this.tone(3320, 0.025, "sine", vol * 0.7, 0.055);
+    } else if (value >= 5) {
+      this.tone(1640, 0.03, "sine", vol);
+      this.tone(2380, 0.03, "sine", vol * 0.6, 0.045);
+    } else if (value >= 3) {
+      this.tone(1240, 0.04, "sine", vol);
+    } else {
+      this.tone(920, 0.045, "sine", vol);
+    }
+  },
+  drum() {
+    if (!this.audio) {
+      return;
+    }
+    const t0 = this.audio.currentTime;
+    const osc = this.audio.createOscillator();
+    const gain = this.audio.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(180, t0);
+    osc.frequency.exponentialRampToValueAtTime(54, t0 + 0.18);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(0.34, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.2);
+    osc.connect(gain);
+    gain.connect(this.audio.destination);
+    osc.start(t0);
+    osc.stop(t0 + 0.24);
+    this.tone(940, 0.03, "sine", 0.035);
+  },
+  slot() {
+    if (!this.audio) {
+      return;
+    }
+    const freqs = [659.25, 783.99, 880, 1046.5, 1174.66, 1318.51, 1567.98, 2093];
+    freqs.forEach((freq, i) => {
+      this.tone(freq, 0.11, "sine", 0.2, i * 0.12);
+    });
+    this.tone(2093, 0.34, "sine", 0.26, 0.8);
+    this.tone(2637, 0.34, "sine", 0.16, 0.8);
+  },
+  start() {
+    this.tone(180, 0.34, "sine", 0.24);
+    this.tone(760, 0.28, "sine", 0.16, 0.16);
+    this.tone(1200, 0.2, "sine", 0.12, 0.24);
+  },
+  win() {
+    const freqs = [523.25, 659.25, 783.99, 1046.5];
+    freqs.forEach((freq, i) => this.tone(freq, 0.16, "sine", 0.24, i * 0.1));
+    this.tone(1046.5, 0.4, "sine", 0.2, 0.4);
+  },
+  lose() {
+    const freqs = [196, 146.83, 110, 82.41];
+    freqs.forEach((freq, i) => this.tone(freq, 0.22, "sine", 0.24, i * 0.14));
+  },
+  reset() {
+    this.tone(392, 0.12, "sine", 0.18);
+  },
+  error() {
+    this.tone(130, 0.24, "sine", 0.22);
+    this.tone(98, 0.2, "sine", 0.12, 0.08);
+  }
+};
+
+const visual = {
+  time: 0,
+  phase: "idle",
+  multiplier: 1,
+  progress: 0,
+  hazard: 0,
+  shake: 0,
+  flash: 0,
+  flashColor: WHITE,
+  stake: 500,
+  stakeMax: 1000,
+  particles: [],
+  rings: [],
+  trails: [],
+  coins: [],
+  coinRainUntil: 0,
+  bannerUntil: 0,
+  resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  },
+  center() {
+    return [canvas.width * 0.5, canvas.height * 0.46];
+  },
+  radius() {
+    return Math.min(canvas.width, canvas.height) * 0.27;
+  },
+  startRun(duration) {
+    this.phase = "running";
+    this.multiplier = 1;
+    this.progress = 0;
+    this.hazard = 0;
+    this.trails = [];
+    this.addRing(this.center(), this.radius() - 26, this.radius() + 12, CYAN, 3);
+    this.addRing(this.center(), this.radius(), this.radius() + 78, WHITE, 2);
+  },
+  updateMultiplier(value) {
+    this.multiplier = value;
+    this.progress = clamp((value - 1) / 30, 0, 1);
+    const angle = -Math.PI * 0.5 + this.progress * Math.PI * 2;
+    const [cx, cy] = this.center();
+    this.trails.push({
+      x: cx + Math.cos(angle) * this.radius(),
+      y: cy + Math.sin(angle) * this.radius(),
+      life: 0.9,
+      size: 5,
+      color: CYAN
+    });
+  },
+  cashOut(value) {
+    this.phase = "won";
+    this.multiplier = value;
+    this.progress = clamp((value - 1) / 30, 0, 1);
+    this.hazard = 0;
+    this.flash = 1.1;
+    this.flashColor = GREEN;
+    this.shake = 10;
+    this.burst(90, GREEN);
+    this.burst(38, WHITE);
+    this.addRing(this.center(), this.radius() * 0.4, this.radius() + 140, GREEN, 8);
+    this.addRing(this.center(), this.radius() + 20, this.radius() + 210, WHITE, 4);
+  },
+  lose(value) {
+    this.phase = "lost";
+    this.multiplier = value;
+    this.progress = clamp((value - 1) / 30, 0, 1);
+    this.hazard = 1;
+    this.coinRainUntil = 0;
+    this.bannerUntil = 0;
+    this.coins = [];
+    this.flash = 1.4;
+    this.flashColor = RED;
+    this.shake = 26;
+    this.burst(120, RED);
+    this.burst(45, AMBER);
+    this.addRing(this.center(), this.radius() * 0.5, this.radius() + 190, RED, 12);
+    this.addRing(this.center(), this.radius() - 10, this.radius() + 60, AMBER, 5);
+  },
+  warn() {
+    this.phase = "idle";
+    this.flash = 0.8;
+    this.flashColor = RED;
+    this.shake = 5;
+  },
+  reset() {
+    this.phase = "idle";
+    this.multiplier = 1;
+    this.progress = 0;
+    this.hazard = 0;
+    this.shake = 0;
+    this.flash = 0;
+    this.particles = [];
+    this.rings = [];
+    this.trails = [];
+    this.coins = [];
+    this.coinRainUntil = 0;
+    this.bannerUntil = 0;
+  },
+  triggerTenX() {
+    if (this.phase === "lost") {
+      return;
+    }
+    this.bannerUntil = this.time + 2.6;
+    this.coinRainUntil = this.time + 2.6;
+    this.addRing(this.center(), this.radius() * 0.2, this.radius() + 300, GOLD, 18);
+    this.addRing(this.center(), this.radius() + 60, this.radius() + 620, WHITE, 5);
+    this.burst(60, GOLD);
+    this.spawnCoins(90);
+  },
+  addRing(center, startRadius, maxRadius, color, width) {
+    this.rings.push({
+      x: center[0],
+      y: center[1],
+      startRadius,
+      maxRadius,
+      radius: startRadius,
+      life: 1,
+      duration: 0.85,
+      width,
+      color
+    });
+    if (this.rings.length > 24) {
+      this.rings.shift();
+    }
+  },
+  burst(count, color) {
+    const [cx, cy] = this.center();
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = rand(0, this.radius() * 0.8);
+      const speed = rand(120, 560);
+      this.particles.push({
+        x: cx + Math.cos(angle) * radius,
+        y: cy + Math.sin(angle) * radius,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 50,
+        life: 1,
+        duration: rand(0.5, 1.2),
+        size: rand(2, 8),
+        color
+      });
+    }
+  },
+  spawnCoins(count) {
+    if (this.coins.length > 240) {
+      return;
+    }
+    for (let i = 0; i < count; i++) {
+      this.coins.push({
+        x: rand(-40, canvas.width + 40),
+        y: rand(-60, canvas.height * 0.2),
+        vx: rand(-30, 30),
+        vy: rand(320, 720),
+        rotation: Math.random() * Math.PI * 2,
+        spin: rand(-6, 6),
+        size: rand(4, 9),
+        life: 1,
+        duration: rand(1.4, 2.4)
+      });
+    }
+  },
+  update(delta) {
+    this.time += delta;
+    if (this.phase === "running") {
+      const base = clamp((this.multiplier - 1) / 29, 0, 1);
+      const flicker = 0.12 * Math.sin(this.time * 15) + rand(-0.07, 0.07);
+      this.hazard = clamp(base + flicker, 0, 1);
+      this.spawnRunParticles();
+    }
+    if (this.coinRainUntil > this.time) {
+      this.spawnCoins(3);
+    }
+    this.updateParticles(delta);
+    this.updateRings(delta);
+    this.updateTrails(delta);
+    this.updateCoins(delta);
+    this.shake = Math.max(0, this.shake - delta * 34);
+    this.flash = Math.max(0, this.flash - delta * 2.4);
+  },
+  spawnRunParticles() {
+    const [cx, cy] = this.center();
+    for (let i = 0; i < 2; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const out = [Math.cos(angle), Math.sin(angle)];
+      const speed = rand(30, 120 + this.hazard * 280);
+      const color = Math.random() < 0.5 ? CYAN : MAGENTA;
+      this.particles.push({
+        x: cx + out[0] * (this.radius() + rand(0, 26)),
+        y: cy + out[1] * (this.radius() + rand(0, 26)),
+        vx: out[0] * speed,
+        vy: out[1] * speed - 24,
+        life: 1,
+        duration: rand(0.4, 1.1),
+        size: rand(1.5, 4.5),
+        color
+      });
+    }
+  },
+  updateParticles(delta) {
+    for (const p of this.particles) {
+      p.life -= delta / p.duration;
+      p.x += p.vx * delta;
+      p.y += p.vy * delta;
+      p.vx *= Math.max(0, 1 - 2.8 * delta);
+      p.vy = p.vy * Math.max(0, 1 - 2.8 * delta) + 34 * delta;
+    }
+    this.particles = this.particles.filter(p => p.life > 0);
+  },
+  updateRings(delta) {
+    for (const r of this.rings) {
+      r.life -= delta / r.duration;
+      const t = 1 - clamp(r.life, 0, 1);
+      r.radius = r.startRadius + (r.maxRadius - r.startRadius) * (1 - Math.pow(1 - t, 3));
+    }
+    this.rings = this.rings.filter(r => r.life > 0);
+  },
+  updateTrails(delta) {
+    for (const t of this.trails) {
+      t.life -= delta / 1.1;
+    }
+    this.trails = this.trails.filter(t => t.life > 0);
+    if (this.trails.length > 48) {
+      this.trails.shift();
+    }
+  },
+  updateCoins(delta) {
+    for (const c of this.coins) {
+      c.life -= delta / c.duration;
+      c.x += c.vx * delta;
+      c.y += c.vy * delta;
+      c.rotation += c.spin * delta;
+    }
+    this.coins = this.coins.filter(c => c.life > 0 && c.y < canvas.height + 60);
+  },
+  draw() {
+    const w = canvas.width;
+    const h = canvas.height;
+    const shakeX = (Math.random() * 2 - 1) * this.shake;
+    const shakeY = (Math.random() * 2 - 1) * this.shake;
+    ctx.save();
+    ctx.translate(shakeX, shakeY);
+    this.drawBackground(w, h);
+    this.drawGlow();
+    this.drawHazard();
+    this.drawTrails();
+    this.drawGauge();
+    this.drawParticles();
+    this.drawRings();
+    this.drawStakeBar();
+    this.drawFlash(w, h);
+    this.drawCoins();
+    this.drawBanner(w, h);
+    ctx.restore();
+  },
+  drawBackground(w, h) {
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, "#090a0d");
+    grad.addColorStop(1, "#191015");
+    ctx.fillStyle = grad;
+    ctx.fillRect(-60, -60, w + 120, h + 120);
+    ctx.strokeStyle = "rgba(53, 230, 208, 0.05)";
+    ctx.lineWidth = 1;
+    const offset = (this.time * 70) % 170;
+    for (let i = -6; i < 9; i++) {
+      const x = i * 170 + offset;
+      ctx.beginPath();
+      ctx.moveTo(x, -60);
+      ctx.lineTo(x - h, h + 60);
+      ctx.stroke();
+    }
+    const scan = ((this.time * 70) % (h + 180)) - 90;
+    ctx.strokeStyle = "rgba(255, 182, 72, 0.06)";
+    ctx.beginPath();
+    ctx.moveTo(-60, scan);
+    ctx.lineTo(w + 60, scan);
+    ctx.stroke();
+  },
+  drawGlow() {
+    const [cx, cy] = this.center();
+    let color = CYAN;
+    if (this.phase === "won") color = GREEN;
+    if (this.phase === "lost") color = RED;
+    if (this.phase === "running") {
+      const mix = 0.5 + 0.5 * Math.sin(this.time * 4);
+      color = mixColor(CYAN, MAGENTA, mix);
+    }
+    for (let i = 14; i > 0; i--) {
+      const t = i / 14;
+      ctx.fillStyle = hexA(color, 0.012 * t);
+      ctx.beginPath();
+      ctx.arc(cx, cy, this.radius() * (0.55 + t * 1.15), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  },
+  drawHazard() {
+    if (this.phase !== "running" && this.hazard <= 0) {
+      return;
+    }
+    const [cx, cy] = this.center();
+    const radius = this.radius() + 38;
+    const color = mixColor(RED, AMBER, this.hazard);
+    const alpha = 0.22 + this.hazard * 0.7;
+    const pulse = 0.5 + 0.5 * Math.sin(this.time * (4 + this.hazard * 10));
+    ctx.strokeStyle = hexA(color, alpha * 0.2);
+    ctx.lineWidth = 3 + pulse * 5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = hexA(color, alpha);
+    ctx.lineWidth = 6 + pulse * 6;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, -Math.PI * 0.5, -Math.PI * 0.5 + this.hazard * Math.PI * 2);
+    ctx.stroke();
+  },
+  drawGauge() {
+    const [cx, cy] = this.center();
+    const radius = this.radius();
+    ctx.fillStyle = "rgba(4, 6, 9, 0.94)";
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius + 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.1)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius + 18, 0, Math.PI * 2);
+    ctx.stroke();
+    const threshold = this.progress * 72;
+    let activeColor = CYAN;
+    if (this.phase === "won") activeColor = GREEN;
+    if (this.phase === "lost") activeColor = RED;
+    if (this.phase === "running") activeColor = mixColor(CYAN, MAGENTA, this.hazard * 0.7);
+    for (let i = 0; i < 72; i++) {
+      const a = -Math.PI * 0.5 + i / 72 * Math.PI * 2;
+      ctx.strokeStyle = i <= threshold ? activeColor : "rgba(255,255,255,0.1)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * (radius - 12), cy + Math.sin(a) * (radius - 12));
+      ctx.lineTo(cx + Math.cos(a) * (radius + 12), cy + Math.sin(a) * (radius + 12));
+      ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(4,5,7,0.92)";
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * 0.72, 0, Math.PI * 2);
+    ctx.fill();
+    const gaugeRadius = radius - 22;
+    const start = -Math.PI * 0.5;
+    const end = start + this.progress * Math.PI * 2;
+    let color = CYAN;
+    if (this.phase === "won") color = GREEN;
+    if (this.phase === "lost") color = RED;
+    if (this.phase === "running") color = mixColor(CYAN, MAGENTA, 0.5 + 0.5 * Math.sin(this.time * 3.5));
+    if (end > start + 0.02) {
+      ctx.strokeStyle = hexA(color, 0.22);
+      ctx.lineWidth = 20;
+      ctx.beginPath();
+      ctx.arc(cx, cy, gaugeRadius, start, end);
+      ctx.stroke();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.arc(cx, cy, gaugeRadius, start, end);
+      ctx.stroke();
+    }
+    const pulse = 0.5 + 0.5 * Math.sin(this.time * 4);
+    ctx.fillStyle = hexA(color, 0.06 + pulse * 0.06);
+    ctx.beginPath();
+    ctx.arc(cx, cy, gaugeRadius * 0.58 + pulse * 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "rgba(5,6,8,0.95)";
+    ctx.beginPath();
+    ctx.arc(cx, cy, gaugeRadius * 0.38, 0, Math.PI * 2);
+    ctx.fill();
+  },
+  drawTrails() {
+    for (const t of this.trails) {
+      ctx.fillStyle = hexA(t.color, t.life * 0.7);
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, 2 + t.size * t.life, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  },
+  drawParticles() {
+    for (const p of this.particles) {
+      const a = clamp(p.life, 0, 1);
+      ctx.fillStyle = hexA(p.color, a * 0.85);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * (0.3 + a), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  },
+  drawRings() {
+    for (const r of this.rings) {
+      ctx.strokeStyle = hexA(r.color, r.life * 0.85);
+      ctx.lineWidth = r.width * r.life + 1;
+      ctx.beginPath();
+      ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  },
+  drawStakeBar() {
+    const w = canvas.width;
+    const barW = Math.min(340, w * 0.34);
+    const x = w * 0.5 - barW / 2;
+    const y = canvas.height * 0.56;
+    ctx.fillStyle = "rgba(255,255,255,0.08)";
+    ctx.fillRect(x, y, barW, 6);
+    const frac = clamp(this.stake / Math.max(this.stakeMax, 1), 0, 1);
+    ctx.fillStyle = "rgba(53,230,208,0.9)";
+    ctx.fillRect(x, y, barW * frac, 6);
+  },
+  drawFlash(w, h) {
+    if (this.flash <= 0) {
+      return;
+    }
+    ctx.fillStyle = hexA(this.flashColor, clamp(this.flash * 0.32, 0, 0.55));
+    ctx.fillRect(-60, -60, w + 120, h + 120);
+  },
+  drawCoins() {
+    for (const c of this.coins) {
+      const a = clamp(c.life, 0, 1);
+      ctx.save();
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.rotation);
+      ctx.fillStyle = hexA(GOLD, a);
+      ctx.beginPath();
+      ctx.arc(0, 0, c.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = hexA("#ffe98a", a);
+      ctx.beginPath();
+      ctx.arc(0, 0, c.size * 0.55, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = hexA("#fff2b8", a * 0.8);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-c.size * 0.6, 0);
+      ctx.lineTo(c.size * 0.6, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+  },
+  drawBanner(w, h) {
+    if (this.time >= this.bannerUntil) {
+      return;
+    }
+    const remaining = this.bannerUntil - this.time;
+    const alpha = clamp(remaining / 0.35, 0, 1);
+    const width = w * 0.72;
+    const x = w * 0.5 - width * 0.5;
+    const y = h * 0.16;
+    ctx.fillStyle = hexA(GOLD, alpha * 0.92);
+    ctx.fillRect(x, y, width, 84);
+    ctx.fillStyle = hexA(WHITE, alpha);
+    ctx.fillRect(x, y, width, 5);
+    ctx.fillStyle = hexA("#140e04", alpha);
+    ctx.font = "800 44px 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("x10 倍率突破", w * 0.5, y + 42);
+  }
+};
+
+function mixColor(a, b, t) {
+  const ca = hexToRgb(a);
+  const cb = hexToRgb(b);
+  const r = Math.round(ca[0] + (cb[0] - ca[0]) * t);
+  const g = Math.round(ca[1] + (cb[1] - ca[1]) * t);
+  const b2 = Math.round(ca[2] + (cb[2] - ca[2]) * t);
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b2).toString(16).slice(1);
+}
+
+function hexToRgb(hex) {
+  const value = parseInt(hex.slice(1), 16);
+  return [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+}
+
+function hexA(hex, a) {
+  const c = hexToRgb(hex);
+  return "rgba(" + c[0] + "," + c[1] + "," + c[2] + "," + clamp(a, 0, 1) + ")";
+}
+
+function tick() {
+  let step = 0.5;
+  if (lastMultiplier >= 10) step = 0.1;
+  else if (lastMultiplier >= 5) step = 0.2;
+  else if (lastMultiplier >= 3) step = 0.25;
+  const tickIndex = Math.floor(lastMultiplier / step);
+  if (tickIndex > lastTickTarget) {
+    lastTickTarget = tickIndex;
+    sfx.tick(lastMultiplier);
+  }
+  const intMultiplier = Math.floor(lastMultiplier);
+  if (intMultiplier > lastIntegerMultiplier && intMultiplier >= 2) {
+    lastIntegerMultiplier = intMultiplier;
+    sfx.drum();
+  }
+  if (!tenXTriggered && lastMultiplier >= 10) {
+    tenXTriggered = true;
+    visual.triggerTenX();
+    sfx.slot();
+  }
+}
+
+let lastFrame = performance.now();
+
+function frame(now) {
+  const delta = Math.min((now - lastFrame) / 1000, 0.05);
+  lastFrame = now;
+  if (state === "running") {
+    runTime += delta;
+    lastMultiplier = currentMultiplier();
+    multiplierEl.textContent = "x" + lastMultiplier.toFixed(2);
+    visual.updateMultiplier(lastMultiplier);
+    tick();
+    if (runTime >= stopAt) {
+      loseRound();
+    }
+  }
+  visual.update(delta);
+  visual.draw();
+  requestAnimationFrame(frame);
+}
+
+window.addEventListener("resize", () => {
+  visual.resize();
+});
+
+holdEl.addEventListener("pointerdown", (event) => {
+  event.preventDefault();
+  startRound();
+});
+
+window.addEventListener("pointerup", () => {
+  releaseRound();
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.code === "Space") {
+    event.preventDefault();
+    if (state !== "running") {
+      startRound();
+    }
+  }
+});
+
+window.addEventListener("keyup", (event) => {
+  if (event.code === "Space") {
+    releaseRound();
+  }
+});
+
+sliderEl.addEventListener("input", () => {
+  syncStakeUI();
+});
+
+quickMinEl.addEventListener("click", () => {
+  if (state !== "running") {
+    sliderEl.value = sliderEl.min;
+    syncStakeUI();
+  }
+});
+
+quick50El.addEventListener("click", () => {
+  if (state !== "running") {
+    const target = Math.floor(balance * 0.5 / MIN_STAKE) * MIN_STAKE;
+    sliderEl.value = String(clamp(target, parseInt(sliderEl.min, 10), parseInt(sliderEl.max, 10)));
+    syncStakeUI();
+  }
+});
+
+quick75El.addEventListener("click", () => {
+  if (state !== "running") {
+    const target = Math.floor(balance * 0.75 / MIN_STAKE) * MIN_STAKE;
+    sliderEl.value = String(clamp(target, parseInt(sliderEl.min, 10), parseInt(sliderEl.max, 10)));
+    syncStakeUI();
+  }
+});
+
+quickMaxEl.addEventListener("click", () => {
+  if (state !== "running") {
+    sliderEl.value = sliderEl.max;
+    syncStakeUI();
+  }
+});
+
+resetEl.addEventListener("click", () => {
+  resetGame();
+});
+
+loadBalance();
+visual.resize();
+refreshLimits();
+updateBalanceUI();
+showIdle();
+visual.reset();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
