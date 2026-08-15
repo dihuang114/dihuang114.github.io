@@ -118,43 +118,6 @@
     stroke: currentColor;
   }
 
-  /* 字号调节弹出面板 */
-  .font-size-pop {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    display: none;
-    align-items: center;
-    gap: 0.4rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 2rem;
-    padding: 0.3rem 0.6rem;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    white-space: nowrap;
-    z-index: 101;
-  }
-
-  .font-size-pop.show {
-    display: flex;
-  }
-
-  .font-size-pop button {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  /* 列表字号由 CSS 变量控制 */
-  .article-title,
-  .article-meta,
-  .article-excerpt {
-    font-size: var(--index-font-size, inherit);
-  }
-
   /* --- Header --- */
   .site-header {
     text-align: center;
@@ -436,13 +399,6 @@
     <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
   </button>
-  <div style="position:relative;">
-    <button id="fontSizeBtn" title="调节文字大小" aria-label="调节文字大小">A</button>
-    <div class="font-size-pop" id="fontSizePop">
-      <button id="fontDec" title="减小字号" aria-label="减小字号">−</button>
-      <button id="fontInc" title="增大字号" aria-label="增大字号">+</button>
-    </div>
-  </div>
 </div>
 
 <header class="site-header">
@@ -457,8 +413,7 @@
 <div class="sort-bar" id="sortBar">
   <span class="sort-label">排序</span>
   <button data-sort="latest" class="active">最新</button>
-  <button data-sort="alpha">首字母</button>
-  <button data-sort="date">时间</button>
+  <button data-sort="oldest">最旧</button>
 </div>
 
 <div class="search-box">
@@ -494,7 +449,7 @@
 
   var posts = window.POSTS || [];
   var currentCollection = '全部';
-  var currentSort = 'latest'; // latest=最新 / alpha=首字母 / date=时间(旧→新)
+  var currentSort = 'latest'; // latest=最新 / oldest=最旧
   var PER_PAGE = 10;
   var currentPage = 1;
   var filtered = [];
@@ -528,50 +483,6 @@
     document.getElementById('iconMoon').style.display = dark ? 'none' : '';
     document.getElementById('iconSun').style.display = dark ? '' : 'none';
   }
-
-  /* --- 字号调节（弹出 + / -，与文章页共用 dh-font-size 同步） --- */
-  (function() {
-    var btn = document.getElementById('fontSizeBtn');
-    var pop = document.getElementById('fontSizePop');
-    var inc = document.getElementById('fontInc');
-    var dec = document.getElementById('fontDec');
-    var root = document.documentElement;
-
-    // 与文章页共用同一字号档位（14~26px，默认 20）
-    // 主页把它映射到列表显示（列表基准 16px 基础上偏移）
-    var MIN = 14, MAX = 26, DEFAULT = 20;
-    var current = parseInt(localStorage.getItem('dh-font-size'), 10) || DEFAULT;
-    if (current < MIN) current = MIN;
-    if (current > MAX) current = MAX;
-    applyFontSize(current);
-
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      pop.classList.toggle('show');
-    });
-
-    inc.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (current < MAX) { current++; applyFontSize(current); }
-    });
-
-    dec.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (current > MIN) { current--; applyFontSize(current); }
-    });
-
-    document.addEventListener('click', function() {
-      pop.classList.remove('show');
-    });
-
-    function applyFontSize(size) {
-      current = size;
-      localStorage.setItem('dh-font-size', String(size));
-      // 列表显示字号 = 基准 16px + (size - 20) 的偏移
-      var listSize = 16 + (size - 20);
-      root.style.setProperty('--index-font-size', listSize + 'px');
-    }
-  })();
 
   /* --- 合集筛选栏 --- */
   function buildCollectionBar() {
@@ -614,18 +525,12 @@
       return keyword === '' || haystack.indexOf(keyword) !== -1;
     });
 
-    // 排序
+    // 排序：在当前筛选结果（含合集）内按日期排
     filtered.sort(function(a, b) {
-      if (currentSort === 'alpha') {
-        // 首字母排序（按标题拼音）
-        return a.title.localeCompare(b.title, 'zh-CN');
+      if (currentSort === 'oldest') {
+        return (a.date || '').localeCompare(b.date || ''); // 旧→新
       }
-      if (currentSort === 'date') {
-        // 时间排序（旧→新）
-        return (a.date || '').localeCompare(b.date || '');
-      }
-      // 默认最新（新→旧）
-      return (b.date || '').localeCompare(a.date || '');
+      return (b.date || '').localeCompare(a.date || '');   // 新→旧（默认最新）
     });
   }
 

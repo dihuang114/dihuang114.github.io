@@ -69,12 +69,14 @@ const posts = files
     };
   })
   .sort((a, b) => {
-    // 先按合集分组（秽土童话在前），组内按文件名（中文按 Unicode 排序）
+    // 先按合集分组（秽土童话在前），组内按文件数字序号（=日期旧→新）
     if (a.collection !== b.collection) {
       const order = { '秽土童话': 0, '高中回忆录': 1 };
       return (order[a.collection] ?? 9) - (order[b.collection] ?? 9);
     }
-    return a.file < b.file ? -1 : a.file > b.file ? 1 : 0;
+    const numA = parseInt(a.file, 10) || 0;
+    const numB = parseInt(b.file, 10) || 0;
+    return numA - numB;
   });
 
 const js = '/* 本文件由 build-posts.js 自动生成，请勿手动修改 */\nwindow.POSTS = ' +
