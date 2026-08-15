@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>地荒导航页</title>
+    <link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css">
     <style>
         * {
             margin: 0;
@@ -75,9 +76,9 @@
             width: 100%;
         }
 
-        /* 社交按钮 */
+        /* 社交按钮（头像下方） */
         .social {
-            margin-top: 3rem;
+            margin-top: 2.5rem;
             display: flex;
             gap: 1.5rem;
             justify-content: center;
@@ -100,6 +101,11 @@
         .social a:hover {
             border-color: #333333;
             color: #000000;
+        }
+
+        .social .anzhiyufont {
+            font-size: 1.15rem;
+            vertical-align: -1px;
         }
 
         @media (max-width: 480px) {
@@ -134,17 +140,17 @@
         <nav>
             <a href="/res/">资源站</a>
             <a href="/tool/">游乐场</a>
-            <a href="/blog/">地荒博客</a>
+            <a href="/blog/">地荒的小世界</a>
         </nav>
         <div class="social">
             <a href="https://github.com/dihuang114" target="_blank" rel="noopener">
-                GitHub
+                <i class="anzhiyufont anzhiyu-icon-github"></i> GitHub
             </a>
             <a href="https://space.bilibili.com/488304519" target="_blank" rel="noopener">
-                BiliBili
+                <i class="anzhiyufont anzhiyu-icon-bilibili"></i> BiliBili
             </a>
             <a href="https://ifdian.net/a/dihuang114" target="_blank" rel="noopener">
-                爱发电
+                <i class="anzhiyufont anzhiyu-icon-heartbeat"></i> 爱发电
             </a>
         </div>
     </div>

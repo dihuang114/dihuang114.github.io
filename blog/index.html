@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>地荒博客</title>
+<title>地荒的小世界</title>
+<link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
 
@@ -63,6 +64,10 @@
 
   .theme-toggle:hover {
     border-color: var(--text);
+  }
+
+  .theme-toggle .anzhiyufont {
+    font-size: 1.25rem;
   }
 
   /* --- Header --- */
@@ -266,10 +271,10 @@
 </head>
 <body>
 
-<button class="theme-toggle" id="themeToggle" title="切换黑夜模式">🌙</button>
+<button class="theme-toggle" id="themeToggle" title="切换黑夜模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button>
 
 <header class="site-header">
-  <h1>地荒博客</h1>
+  <h1>地荒的小世界</h1>
   <p class="subtitle">小说 · 随笔 · 创作</p>
 </header>
 
@@ -312,7 +317,7 @@
       html.setAttribute('data-theme', 'dark');
     }
     function updateIcon() {
-      toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+      // anzhiyu 图标本身即半日半月的日夜切换样式，无需替换
     }
     updateIcon();
     toggle.addEventListener('click', function() {

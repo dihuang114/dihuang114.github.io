@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 地荒博客 - 文章清单自动生成脚本
+ * 地荒的小世界 - 文章清单自动生成脚本
  *
  * 扫描 posts/ 目录下所有 .md 文件，解析 front-matter，
  * 并把文章全文（markdown 原文）一并嵌入生成的 posts.js。
