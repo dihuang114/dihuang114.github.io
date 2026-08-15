@@ -25,6 +25,11 @@ if (!fs.existsSync(postsDir)) {
 
 const files = fs.readdirSync(postsDir).filter((f) => f.toLowerCase().endsWith('.md'));
 
+// 统计正文字数（中文字符，排除空白和 markdown 符号）
+function countChars(text) {
+  return text.replace(/[#>*`~\-_\[\]()!|]/g, '').replace(/\s+/g, '').length;
+}
+
 const posts = files
   .map((file) => {
     const raw = fs.readFileSync(path.join(postsDir, file), 'utf8');
@@ -58,11 +63,12 @@ const posts = files
       date: meta.date || '',
       excerpt: meta.excerpt || '', // 留空则列表不显示摘要
       collection: meta.collection || '', // 可选：《秽土童话》/《高中回忆录》等
+      wordCount: countChars(content), // 正文字数（不含 front-matter）
       file,
       content // 文章全文（markdown 原文），嵌入 JS 中
     };
   })
-  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)); // 按日期倒序
+  .sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0)); // 按文件名排序（保持合集内章节顺序）
 
 const js = '/* 本文件由 build-posts.js 自动生成，请勿手动修改 */\nwindow.POSTS = ' +
   JSON.stringify(posts, null, 2) + ';\n';

@@ -4,9 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>地荒的小世界</title>
-<link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=block" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+  /* 字体加载完成前隐藏正文，避免 FOUT 闪烁（思源宋体就绪后一次性显示） */
+  html.fonts-loading body {
+    visibility: hidden;
+  }
+  html.fonts-ready body {
+    visibility: visible;
+  }
 
   :root {
     --bg: #ffffff;
@@ -48,32 +56,6 @@
     transition: background 0.3s, color 0.3s;
   }
 
-  /* --- Theme Toggle --- */
-  .theme-toggle {
-    position: fixed;
-    top: 1.2rem;
-    right: 1.5rem;
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 1.2rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 100;
-    transition: all 0.3s;
-    font-family: inherit;
-  }
-
-  .theme-toggle:hover {
-    border-color: var(--text);
-  }
-
-  .theme-toggle .anzhiyufont {
-    font-size: 1.25rem;
-  }
-
   /* --- Article Container --- */
   .article {
     max-width: 640px;
@@ -99,14 +81,6 @@
     font-size: 0.85rem;
     color: var(--text-faint);
     letter-spacing: 0.05em;
-  }
-
-  /* 字数统计（标题之下） */
-  .article-wordcount {
-    margin-top: 0.6rem;
-    font-size: 0.8rem;
-    color: var(--text-faint);
-    letter-spacing: 0.08em;
   }
 
   .article-collection {
@@ -283,14 +257,11 @@
 </head>
 <body>
 
-<button class="theme-toggle" id="themeToggle" title="切换黑夜模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button>
-
 <article class="article">
 
   <header class="article-header" id="articleHeader" style="display:none;">
     <h1 id="articleTitle"></h1>
     <p class="article-meta" id="articleMeta"></p>
-    <p class="article-wordcount" id="articleWordcount"></p>
     <p class="article-collection" id="articleCollection" style="display:none;"></p>
   </header>
 
@@ -315,9 +286,27 @@
 <script src="/blog/posts.js"></script>
 <script>
 (function() {
-  /* --- 黑夜模式 --- */
+  /* --- 字体加载完成后再显示页面，避免 FOUT 闪烁 --- */
   (function() {
-    var toggle = document.getElementById('themeToggle');
+    var html = document.documentElement;
+    html.classList.add('fonts-loading');
+    function ready() {
+      html.classList.remove('fonts-loading');
+      html.classList.add('fonts-ready');
+    }
+    if (document.fonts && document.fonts.ready) {
+      var timer = setTimeout(ready, 2500);
+      document.fonts.ready.then(function() {
+        clearTimeout(timer);
+        ready();
+      }).catch(ready);
+    } else {
+      ready();
+    }
+  })();
+
+  /* --- 应用主页保存的黑夜模式设置（阅读页不显示切换按钮） --- */
+  (function() {
     var html = document.documentElement;
     var saved = localStorage.getItem('dh-blog-theme');
     if (saved) {
@@ -325,16 +314,6 @@
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       html.setAttribute('data-theme', 'dark');
     }
-    function updateIcon() {
-      // anzhiyu 图标本身即半日半月的日夜切换样式，无需替换
-    }
-    updateIcon();
-    toggle.addEventListener('click', function() {
-      var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('dh-blog-theme', next);
-      updateIcon();
-    });
   })();
 
   /* --- 解析 URL 参数 ?file=xxx.md --- */
@@ -365,7 +344,6 @@
   var title = post.title || '';
   var meta = '';
   if (post.author) meta = post.author;
-  if (post.date) meta = meta ? meta + ' | ' + post.date : post.date;
   var collection = post.collection || '';
   var content = post.content;
 
@@ -383,11 +361,6 @@
     document.title = title + ' - 地荒的小世界';
     document.getElementById('articleTitle').textContent = title;
     document.getElementById('articleMeta').textContent = meta;
-
-    // 字数统计（中文字符数）
-    var textContent = body.textContent.replace(/\s+/g, '');
-    var count = textContent.length;
-    document.getElementById('articleWordcount').textContent = '全文约 ' + count + ' 字';
 
     if (collection) {
       var cEl = document.getElementById('articleCollection');

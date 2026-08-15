@@ -4,10 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>地荒的小世界</title>
-<link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=block" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
-
+  /* 字体加载完成前隐藏正文，避免 FOUT 闪烁（思源宋体就绪后一次性显示） */
+  html.fonts-loading body {
+    visibility: hidden;
+  }
+  html.fonts-ready body {
+    visibility: visible;
+  }
   :root {
     --bg: #ffffff;
     --text: #1a1a1a;          /* 主文字（加重） */
@@ -52,7 +59,6 @@
     background: none;
     border: 1px solid var(--border);
     color: var(--text);
-    font-size: 1.2rem;
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -60,14 +66,19 @@
     z-index: 100;
     transition: all 0.3s;
     font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .theme-toggle:hover {
     border-color: var(--text);
   }
 
-  .theme-toggle .anzhiyufont {
-    font-size: 1.25rem;
+  .theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
   }
 
   /* --- Header --- */
@@ -169,7 +180,7 @@
   }
 
   .article-item {
-    padding: 1.8rem 0;
+    padding: 1.5rem 0;
     border-bottom: 1px solid var(--border-light);
   }
 
@@ -192,7 +203,7 @@
     font-size: 1.3rem;
     font-weight: 700;
     letter-spacing: 0.06em;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
     line-height: 1.5;
     color: var(--text-strong);
     transition: color 0.3s;
@@ -202,7 +213,7 @@
     font-size: 0.82rem;
     color: var(--text-faint);
     letter-spacing: 0.04em;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
   }
 
   .article-collection {
@@ -222,6 +233,41 @@
     color: var(--text-muted);
     line-height: 1.8;
     text-align: justify;
+  }
+
+  /* --- Pagination --- */
+  .pagination {
+    max-width: 640px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    font-size: 0.9rem;
+    color: var(--text-faint);
+  }
+
+  .pagination button {
+    font-family: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 0.4rem 1.2rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.3s;
+  }
+
+  .pagination button:hover:not(:disabled) {
+    border-color: var(--text);
+  }
+
+  .pagination button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
   }
 
   /* --- Empty State --- */
@@ -271,7 +317,10 @@
 </head>
 <body>
 
-<button class="theme-toggle" id="themeToggle" title="切换黑夜模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button>
+<button class="theme-toggle" id="themeToggle" title="切换黑夜模式">
+  <svg id="iconMoon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg id="iconSun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
 
 <header class="site-header">
   <h1>地荒的小世界</h1>
@@ -290,6 +339,12 @@
 
 <div class="empty-state" id="emptyState">未找到相关文章</div>
 
+<div class="pagination" id="pagination" style="display:none;">
+  <button id="prevPage">上一页</button>
+  <span id="pageInfo"></span>
+  <button id="nextPage">下一页</button>
+</div>
+
 <footer class="site-footer">
   <a class="back-link" href="/">&larr; 返回首页</a>
   <p class="copyright">© 地荒 · 本站内容均为原创</p>
@@ -302,9 +357,36 @@
   var input = document.getElementById('searchInput');
   var emptyState = document.getElementById('emptyState');
   var collectionBar = document.getElementById('collectionBar');
+  var pagination = document.getElementById('pagination');
+  var prevBtn = document.getElementById('prevPage');
+  var nextBtn = document.getElementById('nextPage');
+  var pageInfo = document.getElementById('pageInfo');
 
   var posts = window.POSTS || [];
   var currentCollection = '全部';
+  var PER_PAGE = 10;
+  var currentPage = 1;
+  var filtered = [];
+
+  /* --- 字体加载完成后再显示页面，避免 FOUT 闪烁 --- */
+  (function() {
+    var html = document.documentElement;
+    html.classList.add('fonts-loading');
+    function ready() {
+      html.classList.remove('fonts-loading');
+      html.classList.add('fonts-ready');
+    }
+    if (document.fonts && document.fonts.ready) {
+      // 最多等 2.5 秒，超时则立即显示（避免长时间白屏）
+      var timer = setTimeout(ready, 2500);
+      document.fonts.ready.then(function() {
+        clearTimeout(timer);
+        ready();
+      }).catch(ready);
+    } else {
+      ready();
+    }
+  })();
 
   /* --- 黑夜模式 --- */
   (function() {
@@ -316,9 +398,6 @@
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       html.setAttribute('data-theme', 'dark');
     }
-    function updateIcon() {
-      // anzhiyu 图标本身即半日半月的日夜切换样式，无需替换
-    }
     updateIcon();
     toggle.addEventListener('click', function() {
       var next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -328,7 +407,13 @@
     });
   })();
 
-  /* --- 合集筛选栏（自动从数据生成） --- */
+  function updateIcon() {
+    var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.getElementById('iconMoon').style.display = dark ? 'none' : '';
+    document.getElementById('iconSun').style.display = dark ? '' : 'none';
+  }
+
+  /* --- 合集筛选栏 --- */
   function buildCollectionBar() {
     var collections = [];
     posts.forEach(function(p) {
@@ -349,24 +434,32 @@
       var btns = collectionBar.querySelectorAll('button');
       btns.forEach(function(b) { b.classList.remove('active'); });
       btn.classList.add('active');
+      currentPage = 1;
       render();
     });
   }
 
-  /* --- 渲染列表 --- */
-  function render() {
+  /* --- 筛选 + 分页 --- */
+  function applyFilter() {
     var keyword = (input.value || '').trim().toLowerCase();
-    var html = '';
-    var visibleCount = 0;
-
-    posts.forEach(function(post) {
-      if (currentCollection !== '全部' && post.collection !== currentCollection) return;
-
+    filtered = posts.filter(function(post) {
+      if (currentCollection !== '全部' && post.collection !== currentCollection) return false;
       var haystack = (post.title + ' ' + post.author + ' ' + post.excerpt + ' ' + post.collection).toLowerCase();
-      var match = keyword === '' || haystack.indexOf(keyword) !== -1;
-      if (!match) return;
+      return keyword === '' || haystack.indexOf(keyword) !== -1;
+    });
+  }
 
-      visibleCount++;
+  function render() {
+    applyFilter();
+
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    var start = (currentPage - 1) * PER_PAGE;
+    var pagePosts = filtered.slice(start, start + PER_PAGE);
+
+    var html = '';
+    pagePosts.forEach(function(post) {
       html +=
         '<li class="article-item">' +
           '<a href="reader.html?file=' + encodeURIComponent(post.file) + '">' +
@@ -380,13 +473,24 @@
     });
 
     list.innerHTML = html;
-    emptyState.style.display = (visibleCount === 0) ? 'block' : 'none';
+    emptyState.style.display = (filtered.length === 0) ? 'block' : 'none';
+
+    // 分页
+    if (totalPages > 1) {
+      pagination.style.display = 'flex';
+      pageInfo.textContent = currentPage + ' / ' + totalPages;
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+    } else {
+      pagination.style.display = 'none';
+    }
   }
 
+  /* 元信息：作者 + 字数（不显示日期） */
   function metaText(post) {
     var parts = [];
     if (post.author) parts.push(post.author);
-    if (post.date) parts.push(post.date);
+    if (post.wordCount) parts.push('约 ' + post.wordCount + ' 字');
     return parts.join(' · ');
   }
 
@@ -398,7 +502,18 @@
       .replace(/"/g, '&quot;');
   }
 
-  input.addEventListener('input', render);
+  input.addEventListener('input', function() {
+    currentPage = 1;
+    render();
+  });
+
+  prevBtn.addEventListener('click', function() {
+    if (currentPage > 1) { currentPage--; render(); }
+  });
+
+  nextBtn.addEventListener('click', function() {
+    if (currentPage < Math.ceil(filtered.length / PER_PAGE)) { currentPage++; render(); }
+  });
 
   buildCollectionBar();
   render();
