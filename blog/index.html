@@ -490,7 +490,7 @@
   function metaText(post) {
     var parts = [];
     if (post.author) parts.push(post.author);
-    if (post.wordCount) parts.push('约 ' + post.wordCount + ' 字');
+    if (post.wordCount) parts.push(post.wordCount + ' 字');
     return parts.join(' · ');
   }
 
