@@ -190,8 +190,48 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.2rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.8rem;
     justify-content: center;
+  }
+
+  /* --- 排序栏 --- */
+  .sort-bar {
+    max-width: 640px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem 1.2rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.85rem;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .sort-bar .sort-label {
+    margin-right: 0.2rem;
+  }
+
+  .sort-bar button {
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: var(--text-faint);
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    padding: 0.15rem 0;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: color 0.3s, border-color 0.3s;
+  }
+
+  .sort-bar button:hover {
+    color: var(--text);
+  }
+
+  .sort-bar button.active {
+    color: var(--text-strong);
+    border-bottom-color: var(--text-strong);
   }
 
   .collection-bar button {
@@ -414,6 +454,13 @@
 
 <div class="collection-bar" id="collectionBar"></div>
 
+<div class="sort-bar" id="sortBar">
+  <span class="sort-label">排序</span>
+  <button data-sort="latest" class="active">最新</button>
+  <button data-sort="alpha">首字母</button>
+  <button data-sort="date">时间</button>
+</div>
+
 <div class="search-box">
   <input type="text" id="searchInput" placeholder="搜索文章标题、作者或内容…" autocomplete="off">
 </div>
@@ -447,6 +494,7 @@
 
   var posts = window.POSTS || [];
   var currentCollection = '全部';
+  var currentSort = 'latest'; // latest=最新 / alpha=首字母 / date=时间(旧→新)
   var PER_PAGE = 10;
   var currentPage = 1;
   var filtered = [];
@@ -481,7 +529,7 @@
     document.getElementById('iconSun').style.display = dark ? '' : 'none';
   }
 
-  /* --- 字号调节（弹出 + / -，与文章页共用 dh-font-size） --- */
+  /* --- 字号调节（弹出 + / -，与文章页共用 dh-font-size 同步） --- */
   (function() {
     var btn = document.getElementById('fontSizeBtn');
     var pop = document.getElementById('fontSizePop');
@@ -489,9 +537,10 @@
     var dec = document.getElementById('fontDec');
     var root = document.documentElement;
 
-    // 列表字号基准 14px ~ 22px，默认 16px（作用于 .article-title 等）
-    var MIN = 14, MAX = 22, DEFAULT = 16;
-    var current = parseInt(localStorage.getItem('dh-index-font-size'), 10) || DEFAULT;
+    // 与文章页共用同一字号档位（14~26px，默认 20）
+    // 主页把它映射到列表显示（列表基准 16px 基础上偏移）
+    var MIN = 14, MAX = 26, DEFAULT = 20;
+    var current = parseInt(localStorage.getItem('dh-font-size'), 10) || DEFAULT;
     if (current < MIN) current = MIN;
     if (current > MAX) current = MAX;
     applyFontSize(current);
@@ -517,8 +566,10 @@
 
     function applyFontSize(size) {
       current = size;
-      localStorage.setItem('dh-index-font-size', String(size));
-      root.style.setProperty('--index-font-size', size + 'px');
+      localStorage.setItem('dh-font-size', String(size));
+      // 列表显示字号 = 基准 16px + (size - 20) 的偏移
+      var listSize = 16 + (size - 20);
+      root.style.setProperty('--index-font-size', listSize + 'px');
     }
   })();
 
@@ -554,13 +605,42 @@
     });
   }
 
-  /* --- 筛选 + 分页 --- */
+  /* --- 筛选 + 排序 + 分页 --- */
   function applyFilter() {
     var keyword = (input.value || '').trim().toLowerCase();
     filtered = posts.filter(function(post) {
       if (currentCollection !== '全部' && post.collection !== currentCollection) return false;
       var haystack = (post.title + ' ' + post.author + ' ' + post.excerpt + ' ' + post.collection).toLowerCase();
       return keyword === '' || haystack.indexOf(keyword) !== -1;
+    });
+
+    // 排序
+    filtered.sort(function(a, b) {
+      if (currentSort === 'alpha') {
+        // 首字母排序（按标题拼音）
+        return a.title.localeCompare(b.title, 'zh-CN');
+      }
+      if (currentSort === 'date') {
+        // 时间排序（旧→新）
+        return (a.date || '').localeCompare(b.date || '');
+      }
+      // 默认最新（新→旧）
+      return (b.date || '').localeCompare(a.date || '');
+    });
+  }
+
+  /* --- 排序栏 --- */
+  function buildSortBar() {
+    var sortBar = document.getElementById('sortBar');
+    sortBar.addEventListener('click', function(e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      currentSort = btn.getAttribute('data-sort');
+      var btns = sortBar.querySelectorAll('button');
+      btns.forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentPage = 1;
+      render();
     });
   }
 
@@ -631,6 +711,7 @@
   });
 
   buildCollectionBar();
+  buildSortBar();
   render();
 })();
 </script>

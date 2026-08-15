@@ -153,7 +153,7 @@
 
   /* --- Content Typography --- */
   .article-body {
-    font-size: var(--reader-font-size, 18px);
+    font-size: var(--reader-font-size, 20px);
     line-height: 2;
     color: var(--text);
     text-align: justify;
@@ -301,7 +301,7 @@
   @media (max-width: 600px) {
     body { padding: 2.5rem 1.2rem 2rem; }
     .article-header h1 { font-size: 1.5rem; }
-    .article-body { font-size: var(--reader-font-size, 16px); }
+    .article-body { font-size: var(--reader-font-size, 20px); }
   }
 
   /* --- 顶部工具栏（焊死在文章顶部） --- */
@@ -464,7 +464,7 @@
     var articleBody = document.getElementById('articleBody');
 
     // 字号范围 14px ~ 26px，默认 18px
-    var MIN = 14, MAX = 26, DEFAULT = 18;
+    var MIN = 14, MAX = 26, DEFAULT = 20;
     var current = parseInt(localStorage.getItem('dh-font-size'), 10) || DEFAULT;
     if (current < MIN) current = MIN;
     if (current > MAX) current = MAX;
