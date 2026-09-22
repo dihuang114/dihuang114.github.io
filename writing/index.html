@@ -418,7 +418,7 @@
 
 <header class="site-header">
   <h1>地荒的小世界</h1>
-  <p class="subtitle">小说 · 随笔 · 创作</p>
+  <p class="subtitle">小说 · 随笔</p>
 </header>
 
 <div class="divider"></div>
@@ -431,7 +431,7 @@
 </div>
 
 <div class="search-box">
-  <input type="text" id="searchInput" placeholder="搜索文章标题、作者或内容…" autocomplete="off">
+  <input type="text" id="searchInput" placeholder="搜索文章标题或作者…" autocomplete="off">
 </div>
 
 <ul class="article-list" id="articleList"></ul>
@@ -514,7 +514,7 @@
     });
     var html = '<button data-c="全部" class="active">全部</button>';
     collections.forEach(function(c) {
-      html += '<button data-c="' + c + '">《' + c + '》</button>';
+      html += '<button data-c="' + c + '">' + c + '</button>';
     });
     collectionBar.innerHTML = html;
 
