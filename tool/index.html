@@ -6,32 +6,20 @@
 <title>游乐场 - 地荒资源站</title>
 <style>
   :root {
-    --bg: #f7f9fe;
-    --card-bg: #ffffff;
-    --text: #363636;
-    --text-secondary: #99a9bf;
-    --accent: #425AEF;
-    --accent-hover: #3648c9;
-    --border: #e3e8ee;
-    --shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.05);
-    --shadow-hover: 0 3px 8px 6px rgba(7, 17, 27, 0.1);
-    --icon-bg: rgba(66, 90, 239, 0.1);
-    --nav-text: #4c4948;
+    color-scheme: light;
+    --bg: #fff;
+    --text: #000;
+    --text-secondary: #555;
+    --border: #d0d0d0;
     --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
   [data-theme="dark"] {
-    --bg: #18171d;
-    --card-bg: #1d1b22;
-    --text: #cccccc;
-    --text-secondary: #7a7a7a;
-    --accent: #f2b94b;
-    --accent-hover: #d9a23a;
-    --border: #2d2b33;
-    --shadow: 0 3px 8px 6px rgba(0, 0, 0, 0.2);
-    --shadow-hover: 0 3px 8px 6px rgba(0, 0, 0, 0.35);
-    --icon-bg: rgba(242, 185, 75, 0.12);
-    --nav-text: #b0b0b0;
+    color-scheme: dark;
+    --bg: #000;
+    --text: #fff;
+    --text-secondary: #aaa;
+    --border: #505050;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -58,13 +46,6 @@
     font-size: 2rem;
     font-weight: 700;
     letter-spacing: 0.08em;
-    margin-bottom: 0.5rem;
-  }
-
-  .header p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    letter-spacing: 0.04em;
   }
 
   /* --- Card Grid --- */
@@ -81,19 +62,18 @@
     align-items: center;
     gap: 1.2rem;
     padding: 1.5rem;
-    background: var(--card-bg);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
+    background: var(--bg);
+    border-radius: 8px;
     text-decoration: none;
     color: var(--text);
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+    border: 1px solid var(--border);
   }
 
   .card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-hover);
-    border-color: var(--accent);
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
   }
 
   .card-icon {
@@ -102,11 +82,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.6rem;
-    border-radius: 12px;
-    background: var(--icon-bg);
     flex-shrink: 0;
   }
+
+  .card-icon svg { width: 26px; height: 26px; }
 
   .card-body {
     flex: 1;
@@ -116,14 +95,7 @@
   .card-title {
     font-size: 1.05rem;
     font-weight: 600;
-    margin-bottom: 0.3rem;
     letter-spacing: 0.03em;
-  }
-
-  .card-desc {
-    font-size: 0.82rem;
-    color: var(--text-secondary);
-    line-height: 1.5;
   }
 
   .card-arrow {
@@ -135,7 +107,7 @@
 
   .card:hover .card-arrow {
     transform: translateX(4px);
-    color: var(--accent);
+    color: inherit;
   }
 
   /* --- Back Link --- */
@@ -149,7 +121,7 @@
   }
 
   .back-link:hover {
-    color: var(--accent);
+    color: var(--text);
   }
 
   /* --- Theme Toggle --- */
@@ -157,24 +129,30 @@
     position: fixed;
     top: 1.2rem;
     right: 1.5rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: var(--card-bg);
-    box-shadow: var(--shadow);
+    min-width: 58px;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
-    transition: all 0.3s;
+    font: inherit;
+    font-size: 0.85rem;
     z-index: 100;
   }
 
   .theme-toggle:hover {
-    box-shadow: var(--shadow-hover);
-    transform: rotate(30deg);
+    border-color: var(--text);
+  }
+
+  :focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
   }
 
   /* --- Responsive --- */
@@ -185,53 +163,47 @@
     .card { padding: 1.2rem; gap: 1rem; }
     .card-icon { width: 44px; height: 44px; font-size: 1.3rem; }
     .card-title { font-size: 0.95rem; }
-    .card-desc { font-size: 0.78rem; }
   }
 </style>
 </head>
 <body>
 
-<button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+<button class="theme-toggle" id="themeToggle" type="button" title="切换主题">深色</button>
 
 <div class="header">
   <h1>游乐场</h1>
-  <p>小工具与趣味项目</p>
 </div>
 
 <div class="card-grid">
 
   <a class="card" href="/tool/sts.html">
-    <div class="card-icon">🃏</div>
+    <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="3" width="12" height="17" rx="2"/><path d="M5 6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9m-4-11 3-3 3 3-3 3z"/></svg></div>
     <div class="card-body">
-      <div class="card-title">杀戮尖塔 · 随机卡牌</div>
-      <div class="card-desc">抽取 3 张随机卡牌，支持数字查牌</div>
+      <div class="card-title">杀戮尖塔随机卡牌</div>
     </div>
     <span class="card-arrow">&rarr;</span>
   </a>
 
   <a class="card" href="/tool/dhchess.html">
-    <div class="card-icon">♚</div>
+    <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 9h8v6H8zm4-3v12"/></svg></div>
     <div class="card-body">
       <div class="card-title">地荒象棋</div>
-      <div class="card-desc">变体规则象棋 · 人机对战</div>
     </div>
     <span class="card-arrow">&rarr;</span>
   </a>
 
   <a class="card" href="/tool/chesscraft/">
-    <div class="card-icon">♞</div>
+    <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></div>
     <div class="card-body">
       <div class="card-title">棋匠</div>
-      <div class="card-desc">自定义棋规 · AI 对弈 · 自对弈验证</div>
     </div>
     <span class="card-arrow">&rarr;</span>
   </a>
 
   <a class="card" href="/tool/risk.html">
-    <div class="card-icon">🎲</div>
+    <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="8" cy="8" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg></div>
     <div class="card-body">
       <div class="card-title">风险游戏</div>
-      <div class="card-desc">站长自制网页小游戏</div>
     </div>
     <span class="card-arrow">&rarr;</span>
   </a>
@@ -250,15 +222,15 @@
   } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
     html.setAttribute('data-theme', 'dark');
   }
-  function updateIcon() {
-    toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+  function updateToggle() {
+    toggle.textContent = html.getAttribute('data-theme') === 'dark' ? '浅色' : '深色';
   }
-  updateIcon();
+  updateToggle();
   toggle.addEventListener('click', function() {
     const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
     localStorage.setItem('dh-theme', next);
-    updateIcon();
+    updateToggle();
   });
 })();
 </script>

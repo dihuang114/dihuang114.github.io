@@ -7,20 +7,20 @@
 <style>
 
   :root {
-    --bg: #241d15;
-    --panel: #362a1c;
-    --panel-line: #5d4a2f;
-    --text: #efe3c8;
-    --dim: #b9a884;
-    --accent: #e8b64c;
-    --dark: #241b12;
+    --bg: #000;
+    --panel: #000;
+    --panel-line: #555;
+    --text: #fff;
+    --dim: #bbb;
+    --accent: #fff;
+    --dark: #000;
   }
 
   html, body { height: 100%; }
   html, body { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; touch-action: manipulation; }
   body {
     min-height: 100vh;
-    background: radial-gradient(1200px 700px at 50% 0%, #3a2f20, var(--bg));
+    background: var(--bg);
     color: var(--text);
     font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
     font-size: 14px;
@@ -37,7 +37,7 @@
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
     gap: 14px 28px;
     padding: 14px 24px;
-    background: rgba(0, 0, 0, .25);
+    background: var(--bg);
     border-bottom: 1px solid var(--panel-line);
   }
   header.topbar h1 { font-size: 23px; letter-spacing: 2px; }
@@ -55,8 +55,8 @@
   button { cursor: pointer; }
   button:hover, select:hover { border-color: var(--accent); }
   button:active { transform: translateY(1px); }
-  button.primary { background: #4a3a20; border-color: var(--accent); color: var(--accent); font-weight: 600; }
-  button.primary:hover { background: #5c4a28; }
+  button.primary { background: #3b3b3b; border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  button.primary:hover { background: #4b4b4b; }
   button:disabled { opacity: .45; cursor: not-allowed; }
 
   /* ---------------- 主体布局 ---------------- */
@@ -129,8 +129,8 @@
   /* 对局计时 */
   .clocks { display: flex; gap: 14px; justify-content: center; margin: 4px 0 6px; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .clocks .clk { padding: 1px 10px; border-radius: 6px; background: rgba(0,0,0,.18); color: var(--dim); }
-  .clocks .clk.active { color: #fff; background: var(--accent); }
-  .clocks .clk.low { color: #ff8d80; }
+  .clocks .clk.active { color: #000000; background: var(--accent); }
+  .clocks .clk.low { color: #a4a4a4; }
   .hint { font-size: 13px; color: var(--dim); }
 
   /* ---------------- 侧栏 ---------------- */
@@ -170,20 +170,20 @@
     width: 30px; height: 30px; border-radius: 50%;
     display: inline-flex; align-items: center; justify-content: center;
     font-family: "KaiTi","STKaiti","SimSun",serif; font-weight: 700; font-size: 16px;
-    background: radial-gradient(circle at 36% 30%, #fdf4dd, #efd3a0 55%, #dbb678);
-    border: 1.5px solid #6b4423; cursor: pointer;
+    background: radial-gradient(circle at 36% 30%, #f4f4f4, #d5d5d5 55%, #b9b9b9);
+    border: 1.5px solid #4a4a4a; cursor: pointer;
     transition: transform .1s, box-shadow .1s;
   }
   .pchip:hover { transform: scale(1.12); }
-  .pchip.redc { color: #b3202a; }
-  .pchip.blackc { color: #17130d; }
+  .pchip.redc { color: #404040; }
+  .pchip.blackc { color: #131313; }
   .pchip.active { box-shadow: 0 0 0 2.5px var(--accent); }
   .pchip.off { opacity: .4; text-decoration: line-through; }
   #toolErase.active { border-color: var(--accent); color: var(--accent); }
 
   /* 棋子列表与单棋子编辑器 */
   .plist { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-  .plist .pchip { width: auto; min-width: 34px; padding: 0 6px; font-size: 15px; color: #17130d; }
+  .plist .pchip { width: auto; min-width: 34px; padding: 0 6px; font-size: 15px; color: #131313; }
   .pe-slot { border: 1px solid var(--panel-line); border-radius: 8px; padding: 6px 8px; margin: 6px 0; background: rgba(0,0,0,.15); }
   .pe-slot-title { font-size: 12px; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
   .pe-dirs { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -193,7 +193,7 @@
     border: 1px solid var(--panel-line); border-radius: 5px;
     padding: 1px 5px; cursor: pointer;
   }
-  .pe-chip.on { color: var(--accent); border-color: var(--accent); background: rgba(232,182,76,.08); }
+  .pe-chip.on { color: var(--accent); border-color: var(--accent); background: rgba(185,185,185,.08); }
   .pe-chip input { display: none; }
   .pe-patrow.knight .pe-dirs, .pe-patrow.tian .pe-dirs, .pe-patrow.mu .pe-dirs, .pe-patrow.slash .pe-dirs { display: none; }
   .pe-patrow.knight [data-dist], .pe-patrow.tian [data-dist], .pe-patrow.mu [data-dist], .pe-patrow.slash [data-dist] { display: none; }
@@ -205,7 +205,7 @@
   .pe-off button { padding: 0 3px; font-size: 10px; }
   .pe-offs { display: inline-flex; gap: 4px; align-items: center; flex-wrap: wrap; }
   .pe-patrow { border: 1px solid var(--panel-line); border-radius: 8px; padding: 6px 8px; margin: 6px 0; background: rgba(0,0,0,.15); }
-  .pe-patrow .pe-delpat { margin-left: 6px; padding: 1px 8px; color: #ff8d80; }
+  .pe-patrow .pe-delpat { margin-left: 6px; padding: 1px 8px; color: #a4a4a4; }
   .pe-opts { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; margin-top: 5px; font-size: 12px; color: var(--dim); }
   .pe-opts select { padding: 2px 6px; font-size: 12px; }
   .pe-opts input[type=checkbox] { accent-color: var(--accent); }
@@ -219,7 +219,7 @@
     border-radius: 12px; padding: 14px 16px;
   }
   .panel summary { cursor: pointer; font-weight: 700; color: var(--accent); font-size: 14px; }
-  .panel summary:hover { color: #f2cd7a; }
+  .panel summary:hover { color: #cfcfcf; }
   .panel summary::marker { color: var(--accent); }
 
   .ptools { display: flex; gap: 8px; margin: 10px 0 12px; flex-wrap: wrap; }
@@ -234,8 +234,8 @@
     font-family: "KaiTi","STKaiti","SimSun",serif; font-weight: 700; font-size: 13px;
     border: 1px solid rgba(0,0,0,.4);
   }
-  .chip.redc { background: #b3202a; color: #fff2ee; }
-  .chip.blackc { background: #2c261e; color: var(--text); }
+  .chip.redc { background: #404040; color: #f4f4f4; }
+  .chip.blackc { background: #272727; color: var(--text); }
   .rcard h4 em { font-style: normal; color: var(--dim); font-size: 11.5px; font-weight: 400; }
   .rrow { display: flex; align-items: center; gap: 8px; padding: 2.5px 0; font-size: 13px; color: var(--text); cursor: pointer; }
   .rrow input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
@@ -244,10 +244,10 @@
   /* 兵卒阶段表 */
   .pgrid { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 2px; }
   .pgrid th, .pgrid td { border: 1px solid var(--panel-line); padding: 3px 6px; text-align: center; }
-  .pgrid th { color: var(--accent); font-weight: 600; background: rgba(232,182,76,.07); }
+  .pgrid th { color: var(--accent); font-weight: 600; background: rgba(185,185,185,.07); }
   .pgrid td { color: var(--text); }
-  .pgrid .ok { color: #6fae5e; }
-  .pgrid .no { color: #7a6f58; }
+  .pgrid .ok { color: #9b9b9b; }
+  .pgrid .no { color: #707070; }
   .pgrid input { accent-color: var(--accent); }
 
   /* 状态栏 */
@@ -255,16 +255,16 @@
     font-size: 16px; font-weight: 700;
     padding: 11px 14px; border-radius: 10px;
     background: var(--dark); border: 1px solid var(--panel-line);
-    border-left: 4px solid #8a6d45;
+    border-left: 4px solid #707070;
   }
-  .status.check { border-left-color: #d64a4a; animation: statusFlash 1.2s ease-in-out infinite; }
-  .status.win-red { border-left-color: #c62828; color: #ff8d80; }
+  .status.check { border-left-color: #686868; animation: statusFlash 1.2s ease-in-out infinite; }
+  .status.win-red { border-left-color: #494949; color: #a4a4a4; }
   .status.win-black { border-left-color: #d6d6d6; color: #e8e8e8; }
   .status.draw, .status.think { border-left-color: var(--accent); }
-  .status.pause { border-left-color: #6fa3d8; color: #cfe4ff; }
+  .status.pause { border-left-color: #9c9c9c; color: #e2e2e2; }
   @keyframes statusFlash {
     0%, 100% { background: var(--dark); }
-    50%      { background: #3a2622; }
+    50%      { background: #2a2a2a; }
   }
 
   .captures { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--dim); }
@@ -274,28 +274,28 @@
   #moveLog {
     max-height: 150px; overflow-y: auto;
     font-size: 13px; line-height: 1.7;
-    background: #1d160e; border-radius: 8px; padding: 8px 10px;
+    background: #111; border-radius: 8px; padding: 8px 10px;
     font-family: Consolas, monospace;
   }
   #moveLog div:nth-child(odd) { background: rgba(255,255,255,.03); }
-  #moveLog .rd { color: #ff9d92; }
+  #moveLog .rd { color: #b1b1b1; }
   #moveLog .bd { color: #e6e6e6; }
-  #moveLog .num { color: #8a7a58; margin-right: 6px; }
+  #moveLog .num { color: #7b7b7b; margin-right: 6px; }
 
   /* 批量自对弈 */
   .ap-tools { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 8px; align-items: center; }
   .ap-tools label { color: var(--dim); font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; }
-  #ap-progress { height: 10px; background: #1d160e; border: 1px solid var(--panel-line); border-radius: 6px; overflow: hidden; margin: 6px 0 10px; }
-  #ap-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #8a6d45, var(--accent)); transition: width .15s; }
+  #ap-progress { height: 10px; background: #111; border: 1px solid var(--panel-line); border-radius: 6px; overflow: hidden; margin: 6px 0 10px; }
+  #ap-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #707070, var(--accent)); transition: width .15s; }
   #ap-progress-text { font-size: 12px; color: var(--dim); margin-bottom: 4px; }
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
   .st-box { background: rgba(0,0,0,.22); border: 1px solid var(--panel-line); border-radius: 8px; padding: 4px 6px; text-align: center; overflow: hidden; }
   .st-box .v { font-size: 12.5px; font-weight: 700; white-space: nowrap; }
   .st-box .k { font-size: 10px; color: var(--dim); margin-top: 1px; }
-  .st-box .v.red { color: #ff8d80; } .st-box .v.blue { color: #9ecbff; } .st-box .v.gray { color: #c9c0a8; }
+  .st-box .v.red { color: #a4a4a4; } .st-box .v.blue { color: #c5c5c5; } .st-box .v.gray { color: #c0c0c0; }
   .bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--dim); margin: 3px 0; }
   .bar-row .lbl { width: 44px; flex: none; text-align: right; }
-  .bar-row .track { flex: 1; height: 12px; background: #1d160e; border-radius: 6px; overflow: hidden; border: 1px solid var(--panel-line); }
+  .bar-row .track { flex: 1; height: 12px; background: #111; border-radius: 6px; overflow: hidden; border: 1px solid var(--panel-line); }
   .bar-row .fill { height: 100%; border-radius: 5px; }
   .bar-row .pct { width: 52px; flex: none; }
 
@@ -307,6 +307,12 @@
     #board { width: min(92vmin, 560px); }
     #side { max-height: none; }
   }
+
+
+:root { color-scheme: dark; accent-color: #fff; }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+#boardSvg { filter: grayscale(1); }
+.clocks .clk.active.low { color: #000; }
 
 </style>
 </head>
@@ -415,7 +421,7 @@
         <div class="ptools" style="margin:8px 0 0">
           <button id="btnResetPiece">恢复传统走法</button>
           <button id="btnRestorePiece" style="display:none">恢复该棋子</button>
-          <button id="btnDelPiece" style="color:#ff8d80">删除该棋子</button>
+          <button id="btnDelPiece" style="color:#fff">删除该棋子</button>
         </div>
       </div>
 
@@ -460,7 +466,7 @@
     </details>
 
     <details class="panel" id="netPanel" style="display:none">
-      <summary>局域网对战（创建 / 加入房间）</summary>
+      <summary>局域网对战（创建或加入房间）</summary>
       <div class="ptools" style="margin-bottom:0">
         <button id="netCreate">创建房间</button>
         <input id="netRoomInput" placeholder="房间号" style="width:86px">
@@ -474,7 +480,7 @@
       </div>
       <p class="note" id="netStatus"></p>
       <p class="note" id="lanIpList" style="color:var(--dim)"></p>
-      <p class="note">局域网联机：同一 WiFi 下，手机/其他电脑浏览器访问 <span id="lanIp" style="color:var(--accent)">http://本机IP:8765</span> 即可进入本页面创建/加入房间（无需另外启动服务）。若无法访问，请尝试下方面板提示的其他地址。房主创建时上传当前规则，加入方自动应用；联机禁悔棋/暂停/改配置。</p>
+      <p class="note">局域网联机：同一 WiFi 下，手机或其他电脑的浏览器访问 <span id="lanIp" style="color:var(--accent)">http://本机IP:8765</span> 即可进入本页面创建或加入房间（无需另外启动服务）。若无法访问，请尝试下方面板提示的其他地址。房主创建时上传当前规则，加入方自动应用；联机禁止悔棋、暂停和更改配置。</p>
     </details>
 
     <details class="panel" id="aiPanel" open>
@@ -489,7 +495,7 @@
           <option value="solid">稳健</option>
           <option value="random">随机</option>
         </select></label>
-        <label>引擎 <select id="aiEngine" title="Fairy-Stockfish 仅支持 10×9 标准/地荒类变体，无法映射时自动回退 JS AI">
+        <label>引擎 <select id="aiEngine" title="Fairy-Stockfish 仅支持 10×9 标准及地荒类变体，无法映射时自动回退 JS AI">
           <option value="js" selected>JS AI</option>
           <option value="fsf">Fairy-Stockfish</option>
         </select></label>
@@ -497,7 +503,7 @@
       <div class="ap-tools">
         <button id="apStart" class="primary">一键自对弈</button>
       </div>
-      <p class="note" id="fsfNote" style="display:none">FSF 强度由自身 Skill Level 控制：稳健=20 / 平衡=16 / 随机=12+多主变；深度由思考时间近似（深度下拉在 FSF 模式隐藏）。</p>
+      <p class="note" id="fsfNote" style="display:none">FSF 强度由自身 Skill Level 控制：稳健为 20，平衡为 16，随机为 12 并使用多主变；深度由思考时间近似（深度下拉在 FSF 模式隐藏）。</p>
       <p class="note">自对弈在新标签页运行，局数等参数在新标签页设置。开始前请先点「保存并导出预设」。FSF 引擎逐步行请求较慢，批量自对弈建议 ≤10 局。</p>
       <div id="apStatus" class="note warn"></div>
     </details>
@@ -517,8 +523,8 @@
       <button id="spStart" class="primary">开始自对弈</button>
       <button id="spStop" style="display:none">停止</button>
     </div>
-    <div id="spProgress" style="display:none;height:10px;background:#1d160e;border:1px solid var(--panel-line);border-radius:6px;overflow:hidden;margin:8px 0 4px">
-      <div id="spProgressFill" style="height:100%;width:0%;background:linear-gradient(90deg,#8a6d45,var(--accent));transition:width .15s"></div>
+    <div id="spProgress" style="display:none;height:10px;background:#111;border:1px solid var(--panel-line);border-radius:6px;overflow:hidden;margin:8px 0 4px">
+      <div id="spProgressFill" style="height:100%;width:0%;background:var(--accent);transition:width .15s"></div>
     </div>
     <div id="spProgressText" class="note" style="margin-bottom:10px"></div>
     <div class="stats">
@@ -527,7 +533,7 @@
       <div class="st-box"><div class="v gray" id="spDraw">—</div><div class="k">和棋率</div></div>
       <div class="st-box"><div class="v" id="spTotal">—</div><div class="k">总回合数</div></div>
       <div class="st-box"><div class="v" id="spAvg">—</div><div class="k">平均回合数</div></div>
-      <div class="st-box"><div class="v" id="spMax">—</div><div class="k">最长 / 最短</div></div>
+      <div class="st-box"><div class="v" id="spMax">—</div><div class="k">最长和最短</div></div>
     </div>
     <div class="bar-row"><span class="lbl">红</span><div class="track"><div class="fill" id="spBarRed" style="width:0%;background:#c62828"></div></div><span class="pct" id="spBarRedTxt">0%</span></div>
     <div class="bar-row"><span class="lbl">黑</span><div class="track"><div class="fill" id="spBarBlack" style="width:0%;background:#d6d6d6"></div></div><span class="pct" id="spBarBlackTxt">0%</span></div>
@@ -539,7 +545,7 @@
       <button id="spExportJson">导出对局明细（json）</button>
       <button id="spClose">关闭此标签页</button>
     </div>
-    <div id="spLog" style="display:none;max-height:220px;overflow-y:auto;font-size:12px;color:var(--dim);background:#1d160e;border-radius:8px;padding:8px 10px;margin-top:10px;line-height:1.7"></div>
+    <div id="spLog" style="display:none;max-height:220px;overflow-y:auto;font-size:12px;color:var(--dim);background:#111;border-radius:8px;padding:8px 10px;margin-top:10px;line-height:1.7"></div>
   </div>
 </main>
 
@@ -2764,7 +2770,7 @@ function statusText() {
     return (st.winner === RED ? '红方' : '黑方') + '获胜（' + st.reason + '）';
   }
   var t = (state.turn === RED ? '红方' : '黑方') + '走棋';
-  if (st.check) t += ' · 将军！';
+  if (st.check) t += '，将军！';
   if (state.paused) t += '（已暂停）';
   return t;
 }
@@ -2846,8 +2852,8 @@ function syncUIFromRules() {
 }
 
 var DIR_LABELS = { u:'上', d:'下', l:'左', r:'右', ul:'左上', ur:'右上', dl:'左下', dr:'右下' };
-var ED_SLOTS = [ ['moveB','过河前 · 移动'], ['capB','过河前 · 吃子'], ['moveA','过河后 · 移动'], ['capA','过河后 · 吃子'],
-                 ['moveF','前x步 · 移动'], ['capF','前x步 · 吃子'] ];
+var ED_SLOTS = [ ['moveB','过河前移动'], ['capB','过河前吃子'], ['moveA','过河后移动'], ['capA','过河后吃子'],
+                 ['moveF','前x步移动'], ['capF','前x步吃子'] ];
 var BUILTIN_TYPES = ['k','a','e','h','r','c','p'];   // 盾非内置：仅地荒预设以自定义棋子出现
 
 function allPieceTypes() {           // 棋子列表（含已删除的内置棋子，供恢复）
@@ -3056,13 +3062,13 @@ function fillPieceEditor(t) {
   html += '<div class="pe-page" data-page="base">';
   html += '<label class="rrow">名称 <input type="text" id="peName" maxlength="4" value="' + (cfg.name || '').replace(/"/g, '&quot;') + '" style="width:90px"></label>';
   html += '<label class="rrow">子力价值 <input type="number" id="peValue" min="0" max="100000" value="' + cfg.value + '" style="width:84px"></label>';
-  html += '<p class="note">子力价值参考：帅/将 10000 · 车 950 · 炮 500 · 马 450 · 相/仕 220 · 兵 110 · 自定义建议 300~500。</p>';
+  html += '<p class="note">子力价值参考：将帅 10000、车 950、炮 500、马 450、相和仕 220、兵 110。自定义棋子建议 300 至 500。</p>';
   html += '</div>';
 
   html += '<div class="pe-page" data-page="moves">';
   var moveGroups = [];
-  if (cfg.diffFirst) moveGroups.push(['moveF', '前' + fNv + '步 · 走法']);
-  if (cfg.diffPhase) moveGroups.push(['moveB', '过河前 · 常规走法'], ['moveA', '过河后 · 常规走法']);
+  if (cfg.diffFirst) moveGroups.push(['moveF', '前' + fNv + '步走法']);
+  if (cfg.diffPhase) moveGroups.push(['moveB', '过河前常规走法'], ['moveA', '过河后常规走法']);
   else moveGroups.push(['moveB', cfg.diffFirst ? '常规走法' : '走法']);
   moveGroups.forEach(function(g) { html += buildSlotBlock(g[0], g[1], false); });
   var noteM = '每行走法可叠加组合（如 直线滑行 + 四周一步）。<br>'
@@ -3090,9 +3096,9 @@ function fillPieceEditor(t) {
   }
   html += '<label class="rrow"><input type="checkbox" id="peChain"' + (cfg.chainCapture ? ' checked' : '') + '> 连吃<span class="desc">吃子后若仍可吃则本回合继续吃</span></label>';
   var capGroups = [];
-  if (cfg.diffFirst && (cfg.canCaptureB !== false || cfg.canCaptureA !== false)) capGroups.push(['capF', '前' + fNv + '步 · 吃法']);
+  if (cfg.diffFirst && (cfg.canCaptureB !== false || cfg.canCaptureA !== false)) capGroups.push(['capF', '前' + fNv + '步吃法']);
   if (cfg.diffCap) {
-    if (cfg.diffPhase) capGroups.push(['capB','过河前 · 吃法'],['capA','过河后 · 吃法']);
+    if (cfg.diffPhase) capGroups.push(['capB','过河前吃法'],['capA','过河后吃法']);
     else capGroups.push(['capB','吃法']);
   }
   capGroups.forEach(function(g) {
@@ -3941,7 +3947,7 @@ function spLoadRules() {
   var start = function(data) {
     RULES = applyRules(deepMergeRules(DEFAULT_RULES, data));
     $('spName').textContent = RULES.name || '变体';
-    $('spRuleInfo').textContent = '规则读取自 preset 文件（可直接修改局数 / AI 深度后开始）';
+    $('spRuleInfo').textContent = '规则读取自 preset 文件（可直接修改局数和 AI 深度后开始）';
     $('spStart').disabled = false;
     if (autoStart) {
       $('spRuleInfo').textContent = '规则：' + RULES.name + '，即将自动开始 ' + n + ' 局（深度 ' + d + '）…';
@@ -3986,7 +3992,7 @@ function selfplayBootstrap() {
   // 兜底：任何 JS 错误直接显示在页面上（便于定位问题，避免"空白页"）
   window.addEventListener('error', function(ev) {
     var info = $('spRuleInfo');
-    if (info) { info.textContent = '页面出错：' + (ev.message || ev.type) + (ev.filename ? ' @' + ev.filename.split('/').pop() + ':' + ev.lineno : ''); info.style.color = '#ff8d80'; }
+    if (info) { info.textContent = '页面出错：' + (ev.message || ev.type) + (ev.filename ? ' @' + ev.filename.split('/').pop() + ':' + ev.lineno : ''); info.style.color = '#fff'; }
   });
   spLoadRules();
 }
@@ -4113,7 +4119,7 @@ function spOnGame(msg) {
   s.minPlies = Math.min(s.minPlies, g.plies);
   var w = g.winner === RED ? '红胜' : g.winner === BLACK ? '黑胜' : '和棋';
   $('spProgressFill').style.width = (i / games * 100) + '%';
-  $('spProgressText').textContent = '第 ' + i + ' / ' + games + ' 局：' + g.reason + '（' + w + '，' + g.plies + ' 半着）';
+  $('spProgressText').textContent = '共 ' + games + ' 局，当前第 ' + i + ' 局：' + g.reason + '（' + w + '，' + g.plies + ' 半着）';
   // 逐局实时日志
   var logEl = $('spLog');
   logEl.textContent += (i === 1 ? '' : '\n') + '第 ' + i + ' 局：' + g.reason + '（' + w + '）' + g.plies + ' 半着';
@@ -4187,7 +4193,7 @@ function spRenderStats() {
   $('spDraw').textContent = pct(s.draw);
   $('spTotal').textContent = (s.totalPlies / 2).toFixed(1);
   $('spAvg').textContent = (s.totalPlies / 2 / s.total).toFixed(1);
-  $('spMax').textContent = (s.maxPlies / 2).toFixed(1) + ' / ' + (s.minPlies / 2).toFixed(1);
+  $('spMax').textContent = (s.maxPlies / 2).toFixed(1) + ' 与 ' + (s.minPlies / 2).toFixed(1);
   $('spBarRed').style.width = pct(s.red); $('spBarRedTxt').textContent = pct(s.red);
   $('spBarBlack').style.width = pct(s.black); $('spBarBlackTxt').textContent = pct(s.black);
   $('spBarDraw').style.width = pct(s.draw); $('spBarDrawTxt').textContent = pct(s.draw);
@@ -4202,7 +4208,7 @@ function spBuildReport() {
   var name = RULES.name || '变体';
   var L = [];
   L.push('============================================');
-  L.push('          棋匠 · 自对弈报告');
+  L.push('          棋匠自对弈报告');
   L.push('============================================');
   L.push('1. 规则名称：' + name);
   L.push('2. 对弈局数：' + s.total + ' 局（AI 深度 ' + s.depth + '）');
@@ -4262,13 +4268,13 @@ function buildStandaloneHTML(rules, desc) {
   t += '<!DOCTYPE html>\n';
   t += '<html lang="zh-CN">\n<head>\n<meta charset="UTF-8">\n';
   t += '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n';
-  t += '<title>棋匠 · ' + esc(name) + '</title>\n';
+  t += '<title>棋匠 ' + esc(name) + '</title>\n';
   t += '<style>\n';
   t += '* { box-sizing: border-box; margin: 0; padding: 0; }\n';
-  t += ':root { --bg:#241d15; --panel:#362a1c; --panel-line:#5d4a2f; --text:#efe3c8; --dim:#b9a884; --accent:#e8b64c; --dark:#241b12; }\n';
+  t += ':root { --bg:#000; --panel:#000; --panel-line:#555; --text:#fff; --dim:#bbb; --accent:#fff; --dark:#000; }\n';
   t += 'html, body { height: 100%; }\n';
-  t += 'body { min-height: 100vh; background: radial-gradient(1200px 700px at 50% 0%, #3a2f20, var(--bg)); color: var(--text); font-family: "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 14px; line-height: 1.6; }\n';
-  t += 'header.topbar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding: 14px 24px; background: rgba(0,0,0,.25); border-bottom: 1px solid var(--panel-line); }\n';
+  t += 'body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 14px; line-height: 1.6; }\n';
+  t += 'header.topbar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding: 14px 24px; background: var(--bg); border-bottom: 1px solid var(--panel-line); }\n';
   t += 'header.topbar h1 { font-size: 22px; letter-spacing: 2px; } header.topbar h1 small { font-size: 12px; color: var(--dim); font-weight: 400; margin-left: 8px; }\n';
   t += '.ctl { font-size: 13px; color: var(--dim); display: inline-flex; align-items: center; gap: 6px; }\n';
   t += 'select, button, input[type=number] { background: var(--dark); color: var(--text); border: 1px solid var(--panel-line); border-radius: 8px; padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none; cursor: pointer; }\n';
@@ -4290,18 +4296,22 @@ function buildStandaloneHTML(rules, desc) {
   t += '.mark.move { width: calc(3.4cqw / var(--scale)); aspect-ratio: 1; background: rgba(34,118,58,.6); }\n';
   t += '.mark.capture { width: calc(8.6cqw / var(--scale)); aspect-ratio: 1; border: calc(0.6cqw / var(--scale)) solid rgba(204,60,50,.85); background: rgba(204,60,50,.18); }\n';
   t += '.clocks { display: flex; gap: 14px; justify-content: center; margin: 4px 0 6px; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }\n';
-  t += '.clocks .clk { padding: 1px 10px; border-radius: 6px; background: rgba(0,0,0,.18); color: var(--dim); } .clocks .clk.active { color: #fff; background: var(--accent); } .clocks .clk.low { color: #ff8d80; }\n';
+  t += '.clocks .clk { padding: 1px 10px; border-radius: 6px; background: rgba(0,0,0,.18); color: var(--dim); } .clocks .clk.active { color: #000000; background: var(--accent); } .clocks .clk.low { color: #a4a4a4; }\n';
   t += '#side { width: 330px; max-width: 94vw; display: flex; flex-direction: column; gap: 14px; max-height: calc(100vh - 120px); overflow-y: auto; }\n';
   t += '.panel { background: var(--panel); border: 1px solid var(--panel-line); border-radius: 12px; padding: 14px 16px; }\n';
-  t += '.status { font-size: 16px; font-weight: 700; padding: 11px 14px; border-radius: 10px; background: var(--dark); border: 1px solid var(--panel-line); border-left: 4px solid #8a6d45; }\n';
-  t += '.status.check { border-left-color: #d64a4a; } .status.win-red { border-left-color: #c62828; color: #ff8d80; } .status.win-black { border-left-color: #d6d6d6; color: #e8e8e8; } .status.draw, .status.think { border-left-color: var(--accent); } .status.pause { border-left-color: #6fa3d8; color: #cfe4ff; }\n';
+  t += '.status { font-size: 16px; font-weight: 700; padding: 11px 14px; border-radius: 10px; background: var(--dark); border: 1px solid var(--panel-line); border-left: 4px solid #707070; }\n';
+  t += '.status.check { border-left-color: #686868; } .status.win-red { border-left-color: #494949; color: #a4a4a4; } .status.win-black { border-left-color: #d6d6d6; color: #e8e8e8; } .status.draw, .status.think { border-left-color: var(--accent); } .status.pause { border-left-color: #9c9c9c; color: #e2e2e2; }\n';
   t += '.captures { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--dim); } .captures b { font-weight: 400; margin-right: 4px; } .captures .items { color: var(--text); letter-spacing: 2px; min-height: 1.2em; word-break: break-all; }\n';
-  t += '#moveLog { max-height: 150px; overflow-y: auto; font-size: 13px; line-height: 1.7; background: #1d160e; border-radius: 8px; padding: 8px 10px; font-family: Consolas, monospace; } #moveLog div:nth-child(odd) { background: rgba(255,255,255,.03); } #moveLog .rd { color: #ff9d92; } #moveLog .bd { color: #e6e6e6; } #moveLog .num { color: #8a7a58; margin-right: 6px; }\n';
+  t += '#moveLog { max-height: 150px; overflow-y: auto; font-size: 13px; line-height: 1.7; background: #111; border-radius: 8px; padding: 8px 10px; font-family: Consolas, monospace; } #moveLog div:nth-child(odd) { background: rgba(255,255,255,.03); } #moveLog .rd { color: #b1b1b1; } #moveLog .bd { color: #e6e6e6; } #moveLog .num { color: #7b7b7b; margin-right: 6px; }\n';
   t += '.hint { font-size: 13px; color: var(--dim); }\n';
   t += '@media (max-width: 940px) { main.layout { flex-direction: column; align-items: center; } #board { width: min(92vmin, 560px); } }\n';
+  t += ':root { color-scheme: dark; accent-color: #fff; }\n';
+  t += ':focus-visible { outline: 2px solid #fff; outline-offset: 3px; }\n';
+  t += '#boardSvg { filter: grayscale(1); }\n';
+  t += '.clocks .clk.active.low { color: #000; }\n';
   t += '</style>\n</head>\n<body>\n';
   t += '<header class="topbar">\n';
-  t += '  <h1>棋匠 · ' + esc(name) + '<small></small></h1>\n';
+  t += '  <h1>棋匠 ' + esc(name) + '<small></small></h1>\n';
   t += '  <label class="ctl">模式 <select id="mode"><option value="pvp" selected>本地对战</option><option value="ai">人机对战</option><option value="watch">AI对战</option></select></label>\n';
   t += '  <label class="ctl">AI 深度 <select id="diff"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>\n';
   t += '  <label class="ctl">风格 <select id="aiStyle"><option value="balanced" selected>平衡</option><option value="solid">稳健</option><option value="random">随机</option></select></label>\n';
@@ -4338,7 +4348,7 @@ function buildStandaloneHTML(rules, desc) {
   t += 'function cellPos(r, c) { var g = boardGeom(); if (state.flip) { var bd = RULES.board || DEFAULT_RULES.board; r = (bd.rows - 1) - r; c = (bd.cols - 1) - c; } return { left: ((c * CELL + g.VB_X) / g.VB_W) * 100 + \'%\', top: ((r * CELL + g.VB_Y) / g.VB_H) * 100 + \'%\' }; }\n';
   t += 'function renderPieces() { var html = \'\', checkKings = {}; var rotSide = !!($(\'chkFlipSide\') && $(\'chkFlipSide\').checked); var mySide = $(\'flipMenu\') && $(\'flipMenu\').value === \'black\' ? BLACK : RED; if (state.st && state.st.check) { var k = findKing(state.board, state.turn); if (k) checkKings[k.r + \',\' + k.c] = true; } var bd = RULES.board || DEFAULT_RULES.board; for (var r = 0; r < bd.rows; r++) for (var c = 0; c < bd.cols; c++) { var p = state.board[r][c]; if (!p) continue; var pos = cellPos(r, c); var cls = \'piece \' + (p.s === RED ? \'red\' : \'black\'); if (state.sel && state.sel.r === r && state.sel.c === c) cls += \' selected\'; if (checkKings[r + \',\' + c]) cls += \' check\'; var rot = (rotSide && p.s !== mySide) ? 180 : 0; var nm = pieceName(p.t, p.s); var fs = nm.length > 2 ? \'calc(2.6cqw / var(--scale))\' : nm.length > 1 ? \'calc(3.6cqw / var(--scale))\' : \'calc(5.55cqw / var(--scale))\'; html += \'<div class="\' + cls + \'" style="left:\' + pos.left + \';top:\' + pos.top + \';font-size:\' + fs + \';--rot:\' + rot + \'deg">\' + nm + \'</div>\'; } piecesEl.innerHTML = html; }\n';
   t += 'function renderMarks() { var html = \'\'; if (state.history.length) { var last = state.history[state.history.length - 1].mv; var p1 = cellPos(last.from.r, last.from.c), p2 = cellPos(last.to.r, last.to.c); html += \'<div class="mark last" style="left:\' + p1.left + \';top:\' + p1.top + \'"></div>\' + \'<div class="mark last" style="left:\' + p2.left + \';top:\' + p2.top + \'"></div>\'; } if (state.sel) { state.legal.forEach(function(m) { var pos = cellPos(m.r, m.c); var cls = state.board[m.r][m.c] ? \'capture\' : \'move\'; html += \'<div class="mark \' + cls + \'" style="left:\' + pos.left + \';top:\' + pos.top + \'"></div>\'; }); } marksEl.innerHTML = html; }\n';
-  t += 'function statusText() { var st = state.st; if (!st) return \'红方走棋\'; if (st.over) { if (st.winner === -1) return \'和棋（\' + st.reason + \'）\'; return (st.winner === RED ? \'红方\' : \'黑方\') + \'获胜（\' + st.reason + \'）\'; } var t = (state.turn === RED ? \'红方\' : \'黑方\') + \'走棋\'; if (st.check) t += \' · 将军！\'; if (state.paused) t += \'（已暂停）\'; return t; }\n';
+  t += 'function statusText() { var st = state.st; if (!st) return \'红方走棋\'; if (st.over) { if (st.winner === -1) return \'和棋（\' + st.reason + \'）\'; return (st.winner === RED ? \'红方\' : \'黑方\') + \'获胜（\' + st.reason + \'）\'; } var t = (state.turn === RED ? \'红方\' : \'黑方\') + \'走棋\'; if (st.check) t += \'，将军！\'; if (state.paused) t += \'（已暂停）\'; return t; }\n';
   t += 'function renderStatus() { var el = $(\'status\'), st = state.st; el.textContent = state.thinking && !st.over ? (state.turn === RED ? \'红方\' : \'黑方\') + \'思考中…\' : statusText(); el.className = \'status\'; if (st && st.over) el.className += st.winner === -1 ? \' draw\' : (st.winner === RED ? \' win-red\' : \' win-black\'); else if (st && st.check) el.className += \' check\'; if (state.paused && !st.over) el.className += \' pause\'; if (state.thinking && st && !st.over) el.className += \' think\'; }\n';
   t += 'function renderLog() { var html = \'\'; for (var i = 0; i < state.history.length; i += 2) { var rd = i / 2 + 1; var a = notate(state.history[i].mv); var b = state.history[i + 1] ? notate(state.history[i + 1].mv) : \'\'; html += \'<div><span class="num">\' + rd + \'.</span><span class="rd">\' + a + \'</span> <span class="bd">\' + b + \'</span></div>\'; } $(\'moveLog\').innerHTML = html; $(\'moveLog\').scrollTop = $(\'moveLog\').scrollHeight; }\n';
   t += 'function renderCaptured() { var redCap = [], blackCap = []; state.history.forEach(function(h) { if (h.cap) (h.cap.s === RED ? blackCap : redCap).push(pieceName(h.cap.t, h.cap.s)); }); $(\'capRed\').textContent = redCap.length ? redCap.join(\' \') : \'—\'; $(\'capBlack\').textContent = blackCap.length ? blackCap.join(\' \') : \'—\'; }\n';
@@ -4450,7 +4460,7 @@ function updateSetupMsg() {
   else if (setupTool) msgs.push('放置 ' + pieceName(setupTool.t, setupTool.s) + '，点棋盘格子落子');
   if (!findKing(state.board, RED)) msgs.push('红方缺少帅');
   if (!findKing(state.board, BLACK)) msgs.push('黑方缺少将');
-  $('setupMsg').textContent = msgs.join(' · ');
+  $('setupMsg').textContent = msgs.join('、');
 }
 
 // 从当前棋盘收集摆子
@@ -4506,7 +4516,7 @@ function toggleDress() {
     setupTool = null;
     refreshToolUI();
     state.sel = null; state.legal = [];
-    toast('预演模式：可随便走子测试走法/吃法（不限红黑），退出后恢复');
+    toast('预演模式：可随便走子测试走法和吃法（不限红黑），退出后恢复');
   } else {
     if (dressSave) state.board = dressSave;
     dressSave = null;
@@ -4553,7 +4563,7 @@ function toast(msg) {
   if (!el) {
     el = document.createElement('div');
     el.id = 'toast';
-    el.style.cssText = 'position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:rgba(20,14,8,.94);color:#efe3c8;border:1px solid var(--panel-line);border-left:4px solid var(--accent);padding:9px 18px;border-radius:8px;font-size:13px;z-index:999;max-width:82vw;box-shadow:0 8px 30px rgba(0,0,0,.5);transition:opacity .4s';
+    el.style.cssText = 'position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.94);color:#fff;border:1px solid var(--panel-line);border-left:4px solid var(--accent);padding:9px 18px;border-radius:8px;font-size:13px;z-index:999;max-width:82vw;box-shadow:0 8px 30px rgba(0,0,0,.5);transition:opacity .4s';
     document.body.appendChild(el);
   }
   el.textContent = msg;
@@ -4905,7 +4915,7 @@ window.__chesscraftServerReady.then(function () {
             var ipNote = $('lanIpList');
             if (ipNote && res.list && res.list.length > 1) {
               var cands = res.list.map(function(x) { return 'http://' + x.ip + ':8765' + (x.virt ? '（' + x.name + '，虚拟网卡）' : ''); });
-              ipNote.textContent = '其他地址：' + cands.join(' · ');
+              ipNote.textContent = '其他地址：' + cands.join('、');
             }
           }
         }).catch(function() {});
@@ -4935,7 +4945,7 @@ window.addEventListener('load', function() {
 
   function netGetServer() {
     // 联机服务已合并进主服务（同端口 8765）：从哪台机器访问页面（http://<IP>:8765）就连哪台，
-    // 手机/局域网设备直接访问房主电脑地址即可创建/加入房间
+    // 手机/局域网设备直接访问房主电脑地址即可创建或加入房间
     var h = location.hostname || 'localhost';
     if (h === '' || h === 'localhost' || h === '127.0.0.1') h = 'localhost';
     return 'http://' + h + ':8765';

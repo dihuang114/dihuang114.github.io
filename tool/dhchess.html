@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>棋匠 · 地荒象棋</title>
+<title>地荒象棋</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --bg:#241d15; --panel:#362a1c; --panel-line:#5d4a2f; --text:#efe3c8; --dim:#b9a884; --accent:#e8b64c; --dark:#241b12; }
+:root { --bg:#000; --panel:#000; --panel-line:#555; --text:#fff; --dim:#bbb; --accent:#fff; --dark:#000; }
 html, body { height: 100%; }
-body { min-height: 100vh; background: radial-gradient(1200px 700px at 50% 0%, #3a2f20, var(--bg)); color: var(--text); font-family: "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 14px; line-height: 1.6; }
-header.topbar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding: 14px 24px; background: rgba(0,0,0,.25); border-bottom: 1px solid var(--panel-line); }
+body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: "Microsoft YaHei", "PingFang SC", sans-serif; font-size: 14px; line-height: 1.6; }
+header.topbar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding: 14px 24px; background: var(--bg); border-bottom: 1px solid var(--panel-line); }
 header.topbar h1 { font-size: 22px; letter-spacing: 2px; } header.topbar h1 small { font-size: 12px; color: var(--dim); font-weight: 400; margin-left: 8px; }
 .ctl { font-size: 13px; color: var(--dim); display: inline-flex; align-items: center; gap: 6px; }
 select, button, input[type=number] { background: var(--dark); color: var(--text); border: 1px solid var(--panel-line); border-radius: 8px; padding: 7px 12px; font-size: 13px; font-family: inherit; outline: none; cursor: pointer; }
@@ -31,20 +31,26 @@ main.layout { display: flex; gap: 26px; justify-content: center; align-items: fl
 .mark.move { width: calc(3.4cqw / var(--scale)); aspect-ratio: 1; background: rgba(34,118,58,.6); }
 .mark.capture { width: calc(8.6cqw / var(--scale)); aspect-ratio: 1; border: calc(0.6cqw / var(--scale)) solid rgba(204,60,50,.85); background: rgba(204,60,50,.18); }
 .clocks { display: flex; gap: 14px; justify-content: center; margin: 4px 0 6px; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.clocks .clk { padding: 1px 10px; border-radius: 6px; background: rgba(0,0,0,.18); color: var(--dim); } .clocks .clk.active { color: #fff; background: var(--accent); } .clocks .clk.low { color: #ff8d80; }
+.clocks .clk { padding: 1px 10px; border-radius: 6px; background: rgba(0,0,0,.18); color: var(--dim); } .clocks .clk.active { color: #000000; background: var(--accent); } .clocks .clk.low { color: #a4a4a4; }
 #side { width: 330px; max-width: 94vw; display: flex; flex-direction: column; gap: 14px; max-height: calc(100vh - 120px); overflow-y: auto; }
 .panel { background: var(--panel); border: 1px solid var(--panel-line); border-radius: 12px; padding: 14px 16px; }
-.status { font-size: 16px; font-weight: 700; padding: 11px 14px; border-radius: 10px; background: var(--dark); border: 1px solid var(--panel-line); border-left: 4px solid #8a6d45; }
-.status.check { border-left-color: #d64a4a; } .status.win-red { border-left-color: #c62828; color: #ff8d80; } .status.win-black { border-left-color: #d6d6d6; color: #e8e8e8; } .status.draw, .status.think { border-left-color: var(--accent); } .status.pause { border-left-color: #6fa3d8; color: #cfe4ff; }
+.status { font-size: 16px; font-weight: 700; padding: 11px 14px; border-radius: 10px; background: var(--dark); border: 1px solid var(--panel-line); border-left: 4px solid #707070; }
+.status.check { border-left-color: #686868; } .status.win-red { border-left-color: #494949; color: #a4a4a4; } .status.win-black { border-left-color: #d6d6d6; color: #e8e8e8; } .status.draw, .status.think { border-left-color: var(--accent); } .status.pause { border-left-color: #9c9c9c; color: #e2e2e2; }
 .captures { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--dim); } .captures b { font-weight: 400; margin-right: 4px; } .captures .items { color: var(--text); letter-spacing: 2px; min-height: 1.2em; word-break: break-all; }
-#moveLog { max-height: 150px; overflow-y: auto; font-size: 13px; line-height: 1.7; background: #1d160e; border-radius: 8px; padding: 8px 10px; font-family: Consolas, monospace; } #moveLog div:nth-child(odd) { background: rgba(255,255,255,.03); } #moveLog .rd { color: #ff9d92; } #moveLog .bd { color: #e6e6e6; } #moveLog .num { color: #8a7a58; margin-right: 6px; }
+#moveLog { max-height: 150px; overflow-y: auto; font-size: 13px; line-height: 1.7; background: #111; border-radius: 8px; padding: 8px 10px; font-family: Consolas, monospace; } #moveLog div:nth-child(odd) { background: rgba(255,255,255,.03); } #moveLog .rd { color: #b1b1b1; } #moveLog .bd { color: #e6e6e6; } #moveLog .num { color: #7b7b7b; margin-right: 6px; }
 .hint { font-size: 13px; color: var(--dim); }
 @media (max-width: 940px) { main.layout { flex-direction: column; align-items: center; } #board { width: min(92vmin, 560px); } }
+
+:root { color-scheme: dark; accent-color: #fff; }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+#boardSvg { filter: grayscale(1); }
+.clocks .clk.active.low { color: #000; }
+
 </style>
 </head>
 <body>
 <header class="topbar">
-  <h1>棋匠 · 地荒象棋<small></small></h1>
+  <h1>地荒象棋<small></small></h1>
   <label class="ctl">模式 <select id="mode"><option value="pvp" selected>本地对战</option><option value="ai">人机对战</option><option value="watch">AI对战</option></select></label>
   <label class="ctl">AI 深度 <select id="diff"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>
   <label class="ctl">风格 <select id="aiStyle"><option value="balanced" selected>平衡</option><option value="solid">稳健</option><option value="random">随机</option></select></label>
@@ -2112,7 +2118,7 @@ function buildBoardSvg() { var g = boardGeom(), bd = RULES.board || DEFAULT_RULE
 function cellPos(r, c) { var g = boardGeom(); if (state.flip) { var bd = RULES.board || DEFAULT_RULES.board; r = (bd.rows - 1) - r; c = (bd.cols - 1) - c; } return { left: ((c * CELL + g.VB_X) / g.VB_W) * 100 + '%', top: ((r * CELL + g.VB_Y) / g.VB_H) * 100 + '%' }; }
 function renderPieces() { var html = '', checkKings = {}; var rotSide = !!($('chkFlipSide') && $('chkFlipSide').checked); var mySide = $('flipMenu') && $('flipMenu').value === 'black' ? BLACK : RED; if (state.st && state.st.check) { var k = findKing(state.board, state.turn); if (k) checkKings[k.r + ',' + k.c] = true; } var bd = RULES.board || DEFAULT_RULES.board; for (var r = 0; r < bd.rows; r++) for (var c = 0; c < bd.cols; c++) { var p = state.board[r][c]; if (!p) continue; var pos = cellPos(r, c); var cls = 'piece ' + (p.s === RED ? 'red' : 'black'); if (state.sel && state.sel.r === r && state.sel.c === c) cls += ' selected'; if (checkKings[r + ',' + c]) cls += ' check'; var rot = (rotSide && p.s !== mySide) ? 180 : 0; var nm = pieceName(p.t, p.s); var fs = nm.length > 2 ? 'calc(2.6cqw / var(--scale))' : nm.length > 1 ? 'calc(3.6cqw / var(--scale))' : 'calc(5.55cqw / var(--scale))'; html += '<div class="' + cls + '" style="left:' + pos.left + ';top:' + pos.top + ';font-size:' + fs + ';--rot:' + rot + 'deg">' + nm + '</div>'; } piecesEl.innerHTML = html; }
 function renderMarks() { var html = ''; if (state.history.length) { var last = state.history[state.history.length - 1].mv; var p1 = cellPos(last.from.r, last.from.c), p2 = cellPos(last.to.r, last.to.c); html += '<div class="mark last" style="left:' + p1.left + ';top:' + p1.top + '"></div>' + '<div class="mark last" style="left:' + p2.left + ';top:' + p2.top + '"></div>'; } if (state.sel) { state.legal.forEach(function(m) { var pos = cellPos(m.r, m.c); var cls = state.board[m.r][m.c] ? 'capture' : 'move'; html += '<div class="mark ' + cls + '" style="left:' + pos.left + ';top:' + pos.top + '"></div>'; }); } marksEl.innerHTML = html; }
-function statusText() { var st = state.st; if (!st) return '红方走棋'; if (st.over) { if (st.winner === -1) return '和棋（' + st.reason + '）'; return (st.winner === RED ? '红方' : '黑方') + '获胜（' + st.reason + '）'; } var t = (state.turn === RED ? '红方' : '黑方') + '走棋'; if (st.check) t += ' · 将军！'; if (state.paused) t += '（已暂停）'; return t; }
+function statusText() { var st = state.st; if (!st) return '红方走棋'; if (st.over) { if (st.winner === -1) return '和棋（' + st.reason + '）'; return (st.winner === RED ? '红方' : '黑方') + '获胜（' + st.reason + '）'; } var t = (state.turn === RED ? '红方' : '黑方') + '走棋'; if (st.check) t += '，将军！'; if (state.paused) t += '（已暂停）'; return t; }
 function renderStatus() { var el = $('status'), st = state.st; el.textContent = state.thinking && !st.over ? (state.turn === RED ? '红方' : '黑方') + '思考中…' : statusText(); el.className = 'status'; if (st && st.over) el.className += st.winner === -1 ? ' draw' : (st.winner === RED ? ' win-red' : ' win-black'); else if (st && st.check) el.className += ' check'; if (state.paused && !st.over) el.className += ' pause'; if (state.thinking && st && !st.over) el.className += ' think'; }
 function renderLog() { var html = ''; for (var i = 0; i < state.history.length; i += 2) { var rd = i / 2 + 1; var a = notate(state.history[i].mv); var b = state.history[i + 1] ? notate(state.history[i + 1].mv) : ''; html += '<div><span class="num">' + rd + '.</span><span class="rd">' + a + '</span> <span class="bd">' + b + '</span></div>'; } $('moveLog').innerHTML = html; $('moveLog').scrollTop = $('moveLog').scrollHeight; }
 function renderCaptured() { var redCap = [], blackCap = []; state.history.forEach(function(h) { if (h.cap) (h.cap.s === RED ? blackCap : redCap).push(pieceName(h.cap.t, h.cap.s)); }); $('capRed').textContent = redCap.length ? redCap.join(' ') : '—'; $('capBlack').textContent = blackCap.length ? blackCap.join(' ') : '—'; }

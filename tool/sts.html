@@ -3,22 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>杀戮尖塔 - 随机卡牌</title>
+<title>杀戮尖塔随机卡牌</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     min-height: 100vh;
-    background: #0a0a0f;
-    background-image:
-      radial-gradient(ellipse at 50% 0%, rgba(120, 40, 40, 0.2) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 80%, rgba(40, 40, 120, 0.15) 0%, transparent 50%);
+    background: #000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", "STSong", "Microsoft YaHei", serif;
-    color: #d4c8a0;
+    color: #fff;
     overflow-x: hidden;
     user-select: none;
     padding: 2rem 1rem;
@@ -27,8 +24,8 @@
   .title {
     font-size: 2.2rem;
     letter-spacing: 0.3em;
-    color: #c9a84c;
-    text-shadow: 0 0 20px rgba(200, 160, 60, 0.5);
+    color: #fff;
+    text-shadow: 0 0 20px rgba(161,161,161, 0.5);
     margin-bottom: 2rem;
     text-align: center;
   }
@@ -54,12 +51,12 @@
     border-radius: 3px;
     flex-shrink: 0;
   }
-  .legend-dot.ironclad  { background: #d94444; box-shadow: 0 0 8px rgba(217,68,68,0.5); }
-  .legend-dot.silent    { background: #3db85c; box-shadow: 0 0 8px rgba(61,184,92,0.5); }
-  .legend-dot.defect    { background: #4499dd; box-shadow: 0 0 8px rgba(68,153,221,0.5); }
-  .legend-dot.watcher   { background: #a54fda; box-shadow: 0 0 8px rgba(165,79,218,0.5); }
+  .legend-dot.ironclad  { background: #636363; box-shadow: 0 0 8px rgba(99,99,99,0.5); }
+  .legend-dot.silent    { background: #979797; box-shadow: 0 0 8px rgba(151,151,151,0.5); }
+  .legend-dot.defect    { background: #8c8c8c; box-shadow: 0 0 8px rgba(140,140,140,0.5); }
+  .legend-dot.watcher   { background: #6b6b6b; box-shadow: 0 0 8px rgba(107,107,107,0.5); }
   .legend-dot.colorless { background: #c8c8c8; box-shadow: 0 0 8px rgba(200,200,200,0.4); }
-  .legend-dot.status    { background: #777;    box-shadow: 0 0 6px rgba(120,120,120,0.4); }
+  .legend-dot.status    { background: #777777;    box-shadow: 0 0 6px rgba(120,120,120,0.4); }
   .legend-dot.curse     { background: #3a3a3a; box-shadow: 0 0 6px rgba(40,40,40,0.4); }
 
   /* ===== 卡牌容器 ===== */
@@ -83,19 +80,19 @@
   .card-placeholder {
     width: 220px;
     height: 340px;
-    border: 2px dashed rgba(200, 160, 60, 0.2);
+    border: 2px dashed rgba(161,161,161, 0.2);
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 3.5rem;
-    color: rgba(200, 160, 60, 0.15);
+    color: rgba(161,161,161, 0.15);
     animation: pulse 2s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { border-color: rgba(200, 160, 60, 0.12); }
-    50% { border-color: rgba(200, 160, 60, 0.3); }
+    0%, 100% { border-color: rgba(161,161,161, 0.12); }
+    50% { border-color: rgba(161,161,161, 0.3); }
   }
 
   /* ===== 卡牌本体 ===== */
@@ -110,8 +107,8 @@
     position: relative;
     overflow: hidden;
     /* 默认色 (会被class覆盖) */
-    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
-    border: 2px solid #888;
+    background: linear-gradient(160deg, #1b1b1b 0%, #212121 40%, #2f2f2f 100%);
+    border: 2px solid #888888;
     box-shadow: 0 0 20px rgba(0,0,0,0.4), inset 0 0 50px rgba(0,0,0,0.5);
   }
 
@@ -141,95 +138,95 @@
 
   /* ---- 战士 (铁甲战士) - 红色 ---- */
   .card.ironclad {
-    background: linear-gradient(160deg, #2a1518 0%, #1f1218 35%, #1a1018 100%);
-    border-color: #d94444;
-    box-shadow: 0 0 24px rgba(217,68,68,0.25), 0 0 60px rgba(200,50,50,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #1a1a1a 0%, #151515 35%, #131313 100%);
+    border-color: #636363;
+    box-shadow: 0 0 24px rgba(99,99,99,0.25), 0 0 60px rgba(82,82,82,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.ironclad .card-name {
-    color: #f0c8c0;
-    text-shadow: 0 0 12px rgba(230,120,100,0.5);
+    color: #d0d0d0;
+    text-shadow: 0 0 12px rgba(142,142,142,0.5);
   }
   .card.ironclad .card-class-label {
-    color: #e07070;
-    background: rgba(200,60,60,0.15);
-    border-color: rgba(217,68,68,0.3);
+    color: #888888;
+    background: rgba(90,90,90,0.15);
+    border-color: rgba(99,99,99,0.3);
   }
   .card.ironclad .card-desc {
-    color: #c8a0a0;
+    color: #a8a8a8;
   }
   .card.ironclad .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(217,68,68,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(99,99,99,0.4), transparent);
   }
 
   /* ---- 静默猎手 - 绿色 ---- */
   .card.silent {
-    background: linear-gradient(160deg, #152a18 0%, #121f16 35%, #101a14 100%);
-    border-color: #3db85c;
-    box-shadow: 0 0 24px rgba(61,184,92,0.25), 0 0 60px rgba(50,180,80,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #242424 0%, #1c1c1c 35%, #171717 100%);
+    border-color: #979797;
+    box-shadow: 0 0 24px rgba(151,151,151,0.25), 0 0 60px rgba(145,145,145,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.silent .card-name {
-    color: #c0f0c8;
-    text-shadow: 0 0 12px rgba(80,210,110,0.5);
+    color: #e3e3e3;
+    text-shadow: 0 0 12px rgba(175,175,175,0.5);
   }
   .card.silent .card-class-label {
-    color: #60c878;
-    background: rgba(50,170,80,0.15);
-    border-color: rgba(61,184,92,0.3);
+    color: #acacac;
+    background: rgba(138,138,138,0.15);
+    border-color: rgba(151,151,151,0.3);
   }
   .card.silent .card-desc {
-    color: #a0c8a8;
+    color: #bdbdbd;
   }
   .card.silent .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(61,184,92,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(151,151,151,0.4), transparent);
   }
 
   /* ---- 故障机器人 - 蓝色 ---- */
   .card.defect {
-    background: linear-gradient(160deg, #151a2a 0%, #121820 35%, #101620 100%);
-    border-color: #4499dd;
-    box-shadow: 0 0 24px rgba(68,153,221,0.25), 0 0 60px rgba(60,140,210,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #1a1a1a 0%, #171717 35%, #151515 100%);
+    border-color: #8c8c8c;
+    box-shadow: 0 0 24px rgba(140,140,140,0.25), 0 0 60px rgba(128,128,128,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.defect .card-name {
-    color: #c0d8f0;
-    text-shadow: 0 0 12px rgba(80,160,230,0.5);
+    color: #d5d5d5;
+    text-shadow: 0 0 12px rgba(148,148,148,0.5);
   }
   .card.defect .card-class-label {
-    color: #68a8e0;
-    background: rgba(50,130,200,0.15);
-    border-color: rgba(68,153,221,0.3);
+    color: #9f9f9f;
+    background: rgba(118,118,118,0.15);
+    border-color: rgba(140,140,140,0.3);
   }
   .card.defect .card-desc {
-    color: #a0b8d0;
+    color: #b5b5b5;
   }
   .card.defect .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(68,153,221,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(140,140,140,0.4), transparent);
   }
 
   /* ---- 观者 - 紫色 ---- */
   .card.watcher {
-    background: linear-gradient(160deg, #20182a 0%, #1a1422 35%, #16101e 100%);
-    border-color: #a54fda;
-    box-shadow: 0 0 24px rgba(165,79,218,0.25), 0 0 60px rgba(150,70,200,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #1b1b1b 0%, #161616 35%, #121212 100%);
+    border-color: #6b6b6b;
+    box-shadow: 0 0 24px rgba(107,107,107,0.25), 0 0 60px rgba(97,97,97,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.watcher .card-name {
-    color: #e0c8f0;
-    text-shadow: 0 0 12px rgba(160,100,230,0.5);
+    color: #d0d0d0;
+    text-shadow: 0 0 12px rgba(122,122,122,0.5);
   }
   .card.watcher .card-class-label {
-    color: #b878e0;
-    background: rgba(140,60,200,0.15);
-    border-color: rgba(165,79,218,0.3);
+    color: #8d8d8d;
+    background: rgba(87,87,87,0.15);
+    border-color: rgba(107,107,107,0.3);
   }
   .card.watcher .card-desc {
-    color: #c0a8d8;
+    color: #b1b1b1;
   }
   .card.watcher .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(165,79,218,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(107,107,107,0.4), transparent);
   }
 
   /* ---- 无色牌 - 银白 ---- */
   .card.colorless {
-    background: linear-gradient(160deg, #202020 0%, #1c1c1e 35%, #18181c 100%);
+    background: linear-gradient(160deg, #202020 0%, #1c1c1c 35%, #181818 100%);
     border-color: #b0b0b0;
     box-shadow: 0 0 24px rgba(180,180,180,0.2), 0 0 60px rgba(160,160,160,0.06), inset 0 0 50px rgba(0,0,0,0.55);
   }
@@ -252,15 +249,15 @@
   /* ---- 状态牌 - 灰色 ---- */
   .card.status {
     background: linear-gradient(160deg, #1a1a1a 0%, #161616 35%, #121212 100%);
-    border-color: #777;
+    border-color: #777777;
     box-shadow: 0 0 16px rgba(100,100,100,0.2), inset 0 0 40px rgba(0,0,0,0.5);
   }
   .card.status .card-name {
-    color: #aaa;
+    color: #aaaaaa;
     text-shadow: none;
   }
   .card.status .card-class-label {
-    color: #888;
+    color: #888888;
     background: rgba(120,120,120,0.12);
     border-color: rgba(120,120,120,0.25);
   }
@@ -278,19 +275,19 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.6);
   }
   .card.curse .card-name {
-    color: #705050;
-    text-shadow: 0 0 6px rgba(120,40,40,0.3);
+    color: #575757;
+    text-shadow: 0 0 6px rgba(57,57,57,0.3);
   }
   .card.curse .card-class-label {
-    color: #604040;
-    background: rgba(80,30,30,0.15);
-    border-color: rgba(80,40,40,0.25);
+    color: #474747;
+    background: rgba(41,41,41,0.15);
+    border-color: rgba(48,48,48,0.25);
   }
   .card.curse .card-desc {
-    color: #604040;
+    color: #474747;
   }
   .card.curse .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(80,50,50,0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(56,56,56,0.3), transparent);
   }
 
   /* ---- 卡牌内部布局 ---- */
@@ -317,31 +314,31 @@
   /* 锻造 + 号 */
   .forge-plus {
     display: inline-block;
-    color: #ffd700;
+    color: #cfcfcf;
     font-size: 1.3rem;
     font-weight: bold;
     margin-left: 2px;
-    text-shadow: 0 0 14px rgba(255,215,0,0.8), 0 0 28px rgba(255,200,0,0.5);
+    text-shadow: 0 0 14px rgba(207,207,207,0.8), 0 0 28px rgba(197,197,197,0.5);
     animation: forgeGlow 0.8s ease-in-out infinite alternate;
     position: relative;
     top: -2px;
   }
   @keyframes forgeGlow {
-    0%   { text-shadow: 0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,200,0,0.3); }
-    100% { text-shadow: 0 0 18px rgba(255,215,0,1), 0 0 36px rgba(255,200,0,0.7); }
+    0%   { text-shadow: 0 0 10px rgba(207,207,207,0.6), 0 0 20px rgba(197,197,197,0.3); }
+    100% { text-shadow: 0 0 18px rgba(207,207,207,1), 0 0 36px rgba(197,197,197,0.7); }
   }
 
   /* 锻造后卡牌边框更亮 */
   .card.forged {
     border-width: 2.5px;
   }
-  .card.forged.ironclad  { border-color: #f06060; box-shadow: 0 0 30px rgba(240,80,80,0.35), 0 0 60px rgba(200,50,50,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.silent    { border-color: #50d870; box-shadow: 0 0 30px rgba(80,210,100,0.35), 0 0 60px rgba(50,180,80,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.defect    { border-color: #5cb0f0; box-shadow: 0 0 30px rgba(90,170,240,0.35), 0 0 60px rgba(60,140,210,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.watcher   { border-color: #c070f0; box-shadow: 0 0 30px rgba(190,100,240,0.35), 0 0 60px rgba(150,70,200,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.colorless { border-color: #ddd;    box-shadow: 0 0 30px rgba(210,210,210,0.3), 0 0 60px rgba(180,180,180,0.1), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.status    { border-color: #999;    box-shadow: 0 0 20px rgba(140,140,140,0.25), inset 0 0 40px rgba(0,0,0,0.5); }
-  .card.forged.curse     { border-color: #5a4040; box-shadow: 0 0 14px rgba(100,40,40,0.3), inset 0 0 30px rgba(0,0,0,0.6); }
+  .card.forged.ironclad  { border-color: #7e7e7e; box-shadow: 0 0 30px rgba(114,114,114,0.35), 0 0 60px rgba(82,82,82,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.silent    { border-color: #b4b4b4; box-shadow: 0 0 30px rgba(174,174,174,0.35), 0 0 60px rgba(145,145,145,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.defect    { border-color: #a3a3a3; box-shadow: 0 0 30px rgba(158,158,158,0.35), 0 0 60px rgba(128,128,128,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.watcher   { border-color: #8a8a8a; box-shadow: 0 0 30px rgba(129,129,129,0.35), 0 0 60px rgba(97,97,97,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.colorless { border-color: #dddddd;    box-shadow: 0 0 30px rgba(210,210,210,0.3), 0 0 60px rgba(180,180,180,0.1), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.status    { border-color: #999999;    box-shadow: 0 0 20px rgba(140,140,140,0.25), inset 0 0 40px rgba(0,0,0,0.5); }
+  .card.forged.curse     { border-color: #454545; box-shadow: 0 0 14px rgba(53,53,53,0.3), inset 0 0 30px rgba(0,0,0,0.6); }
 
   .card-divider {
     width: 60%;
@@ -383,34 +380,34 @@
     font-size: 1.1rem;
     letter-spacing: 0.2em;
     font-family: inherit;
-    color: #0a0a0f;
-    background: linear-gradient(135deg, #c9a84c, #e2c86e);
+    color: #000;
+    background: linear-gradient(135deg, #fff, #eee);
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(200, 160, 60, 0.3);
+    box-shadow: 0 4px 20px rgba(161,161,161, 0.3);
     z-index: 10;
     position: relative;
   }
 
   .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 28px rgba(200, 160, 60, 0.5);
+    box-shadow: 0 6px 28px rgba(161,161,161, 0.5);
   }
   .btn:active { transform: translateY(0); }
   .btn:disabled {
     opacity: 0.45;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 2px 8px rgba(200, 160, 60, 0.15);
+    box-shadow: 0 2px 8px rgba(161,161,161, 0.15);
   }
 
   /* ===== 计数器 & 历史 ===== */
   .counter {
     margin-top: 1.2rem;
     font-size: 0.85rem;
-    color: rgba(200, 160, 60, 0.45);
+    color: rgba(161,161,161, 0.45);
     letter-spacing: 0.1em;
   }
 
@@ -424,7 +421,7 @@
   }
   .result-history span {
     font-size: 0.8rem;
-    color: rgba(200, 160, 60, 0.35);
+    color: rgba(161,161,161, 0.35);
     letter-spacing: 0.05em;
     animation: fadeIn 0.5s ease-out;
   }
@@ -465,20 +462,20 @@
     font-size: 1rem;
     font-family: inherit;
     letter-spacing: 0.1em;
-    color: #f0e6c8;
-    background: rgba(20, 20, 30, 0.7);
-    border: 1px solid rgba(200, 160, 60, 0.35);
+    color: #e6e6e6;
+    background: rgba(21,21,21, 0.7);
+    border: 1px solid rgba(161,161,161, 0.35);
     border-radius: 4px;
     text-align: center;
     outline: none;
     transition: border-color 0.3s;
   }
   .seed-input:focus {
-    border-color: rgba(200, 160, 60, 0.7);
-    box-shadow: 0 0 12px rgba(200, 160, 60, 0.15);
+    border-color: rgba(161,161,161, 0.7);
+    box-shadow: 0 0 12px rgba(161,161,161, 0.15);
   }
   .seed-input::placeholder {
-    color: rgba(200, 160, 60, 0.3);
+    color: rgba(161,161,161, 0.3);
     letter-spacing: 0.05em;
   }
   .seed-btn {
@@ -486,17 +483,17 @@
     font-size: 0.9rem;
     letter-spacing: 0.15em;
     font-family: inherit;
-    color: #0a0a0f;
-    background: linear-gradient(135deg, #c9a84c, #e2c86e);
+    color: #000;
+    background: linear-gradient(135deg, #fff, #eee);
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  .seed-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,160,60,0.4); }
+  .seed-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(161,161,161,0.4); }
   .seed-hint {
     font-size: 0.75rem;
-    color: rgba(200, 160, 60, 0.4);
+    color: rgba(161,161,161, 0.4);
     letter-spacing: 0.08em;
     white-space: nowrap;
   }
@@ -504,7 +501,7 @@
     width: 100%;
     text-align: center;
     font-size: 0.75rem;
-    color: #e06050;
+    color: #7a7a7a;
     margin-top: 0.2rem;
     min-height: 1.2em;
     letter-spacing: 0.05em;
@@ -521,7 +518,7 @@
       font-size: 1.3rem;
       letter-spacing: 0.2em;
       margin-bottom: 0.5rem;
-      text-shadow: 0 0 12px rgba(200, 160, 60, 0.4);
+      text-shadow: 0 0 12px rgba(161,161,161, 0.4);
     }
 
     .legend {
@@ -622,6 +619,10 @@
     .seed-btn { padding: 6px 14px; font-size: 0.75rem; }
     .seed-hint { font-size: 0.6rem; }
   }
+
+:root { color-scheme: dark; accent-color: #fff; }
+:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
 </style>
 </head>
 <body>
@@ -1178,7 +1179,7 @@ function drawCards() {
       `;
 
       // 粒子颜色: 锻造的用金色粒子
-      spawnParticles(slot, isForged ? '#ffd700' : getClassColor(card.cls));
+      spawnParticles(slot, isForged ? '#fff' : getClassColor(card.cls));
 
       // 全部展示完毕
       if (index === 2) {
@@ -1191,7 +1192,7 @@ function drawCards() {
         // 历史记录 (锻造卡牌名后带+)
         const history = document.getElementById('history');
         const span = document.createElement('span');
-        span.textContent = '#' + drawCount + '  ' + picked.map(c => c.name + (c._forged ? '+' : '')).join(' · ');
+        span.textContent = '#' + drawCount + '  ' + picked.map(c => c.name + (c._forged ? '+' : '')).join('、');
         history.prepend(span);
         if (history.children.length > 10) {
           history.removeChild(history.lastChild);
@@ -1253,7 +1254,7 @@ function lookupCards() {
         <div class="card-divider"></div>
         <span class="card-desc">${card.desc}</span>
       `;
-      spawnParticles(slot, isForged ? '#ffd700' : getClassColor(card.cls));
+      spawnParticles(slot, isForged ? '#fff' : getClassColor(card.cls));
 
       if (index === 2) {
         drawCount++;
@@ -1264,7 +1265,7 @@ function lookupCards() {
 
         const history = document.getElementById('history');
         const span = document.createElement('span');
-        span.textContent = '#' + drawCount + '  [' + nums.join(' ') + '] ' + picked.map(c => c.name + (c._forged ? '+' : '')).join(' · ');
+        span.textContent = '#' + drawCount + '  [' + nums.join(' ') + '] ' + picked.map(c => c.name + (c._forged ? '+' : '')).join('、');
         history.prepend(span);
         if (history.children.length > 10) history.removeChild(history.lastChild);
       }
@@ -1282,10 +1283,10 @@ function getClassLabel(cls) {
 
 function getClassColor(cls) {
   const map = {
-    ironclad:'#d94444', silent:'#3db85c', defect:'#4499dd',
-    watcher:'#a54fda', colorless:'#c8c8c8', status:'#777', curse:'#4a3030'
+    ironclad:'#aaa', silent:'#bbb', defect:'#999',
+    watcher:'#888', colorless:'#ccc', status:'#777', curse:'#666'
   };
-  return map[cls] || '#c9a84c';
+  return map[cls] || '#fff';
 }
 
 </script>
