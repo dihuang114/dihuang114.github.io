@@ -623,6 +623,22 @@
 :root { color-scheme: dark; accent-color: #fff; }
 :focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 
+/* 类别颜色与强化标记保留语义，文字标签同时提供区分。 */
+.ironclad { --card-accent:#ef7777; --card-tint:#351b20; }
+.silent { --card-accent:#79d98a; --card-tint:#192e20; }
+.defect { --card-accent:#72baff; --card-tint:#18283d; }
+.watcher { --card-accent:#c69aff; --card-tint:#2d1f3c; }
+.colorless { --card-accent:#d8dce5; --card-tint:#26282d; }
+.status { --card-accent:#e8bf70; --card-tint:#342b1b; }
+.curse { --card-accent:#b3a4bd; --card-tint:#251f2b; }
+.legend-dot { background:var(--card-accent) !important; box-shadow:0 0 8px var(--card-tint) !important; }
+.card:is(.ironclad,.silent,.defect,.watcher,.colorless,.status,.curse) { border-color:var(--card-accent); background:linear-gradient(160deg,var(--card-tint),#121212); box-shadow:0 0 22px var(--card-tint); }
+.card[class] .card-name, .card[class] .card-class-label { color:var(--card-accent); text-shadow:none; }
+.card[class] .card-class-label { border-color:var(--card-accent); background:var(--card-tint); }
+.card[class] .card-desc { color:#e4e4e7; }
+.card[class] .card-divider { background:linear-gradient(90deg,transparent,var(--card-accent),transparent); }
+.card.forged[class] { border-color:var(--card-accent); box-shadow:0 0 28px var(--card-tint); }
+.forge-plus { color:#8ee99c; text-shadow:none; animation:none; }
 </style>
 </head>
 <body>

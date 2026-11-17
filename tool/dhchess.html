@@ -46,12 +46,16 @@ main.layout { display: flex; gap: 26px; justify-content: center; align-items: fl
 #boardSvg { filter: grayscale(1); }
 .clocks .clk.active.low { color: #000; }
 
+.net-panel { max-width:960px; margin:16px auto; padding:16px; border:1px solid var(--panel-line); border-radius:10px; width:calc(100% - 40px); }
+.net-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+.net-actions input { width:130px; min-height:40px; padding:8px; background:#111; color:#fff; border:1px solid #777; border-radius:8px; }
+#netStatus { margin-top:10px; color:var(--dim); }
 </style>
 </head>
 <body>
 <header class="topbar">
   <h1>地荒象棋<small></small></h1>
-  <label class="ctl">模式 <select id="mode"><option value="pvp" selected>本地对战</option><option value="ai">人机对战</option><option value="watch">AI对战</option></select></label>
+  <label class="ctl">模式 <select id="mode"><option value="pvp" selected>本地对战</option><option value="ai">人机对战</option><option value="watch">AI对战</option><option value="net" disabled hidden>联机对战</option></select></label>
   <label class="ctl">AI 深度 <select id="diff"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>
   <label class="ctl">风格 <select id="aiStyle"><option value="balanced" selected>平衡</option><option value="solid">稳健</option><option value="random">随机</option></select></label>
   <label class="ctl">引擎 <select id="aiEngine"><option value="js" selected>JS AI</option><option value="fsf">Fairy-Stockfish</option></select></label>
@@ -63,6 +67,15 @@ main.layout { display: flex; gap: 26px; justify-content: center; align-items: fl
   <button id="btnUndo">悔棋</button>
 </header>
 <div class="rulesDesc">三条特殊规则(其余同传统象棋):<br>1.象(相)可过河，仍走”田”字，被塞象眼不能走。<br>2.兵(卒)过河前可前进、横走,过河后前进、横走、后退均可。<br>3.盾不可被吃,不可吃子;可横走、前进;不能过河</div>
+<section class="net-panel" aria-label="联机对战">
+  <div class="net-actions">
+    <strong>联机对战</strong><span>最多 10 个房间</span>
+    <button id="netCreate">创建房间</button>
+    <label for="netRoom">房间号</label><input id="netRoom" inputmode="numeric" maxlength="6" placeholder="6 位房间号">
+    <button id="netJoin">加入房间</button><button id="netCopy" disabled>复制邀请</button><button id="netLeave" disabled>退出房间</button>
+  </div>
+  <p id="netStatus" role="status" aria-live="polite">创建房间执红，加入房间执黑</p>
+</section>
 <main class="layout">
   <section id="boardArea">
     <div id="board"><svg id="boardSvg" viewBox="-70 -62 940 1024" preserveAspectRatio="xMidYMid meet"></svg><div id="marks"></div><div id="pieces"></div></div>
@@ -2128,12 +2141,12 @@ function tickClocks() { if (state.over || state.paused || state.thinking) { rend
 function renderClocks() { var fmt = function (ms) { if (ms <= 0 && !(RULES.global.timeMinutes | 0)) return '--:--'; var m = Math.floor(ms / 60000), s2 = Math.floor((ms % 60000) / 1000); return (m < 10 ? '0' : '') + m + ':' + (s2 < 10 ? '0' : '') + s2; }; var elR = $('clkRed'), elB = $('clkBlack'); if (!elR || !elB) return; elR.textContent = fmt(state.clocks[RED]); elB.textContent = fmt(state.clocks[BLACK]); elR.className = 'clk red' + (state.turn === RED && !state.over ? ' active' : ''); elB.className = 'clk black' + (state.turn === BLACK && !state.over ? ' active' : ''); }
 function refreshStatus() { var k = positionKey(state.board, state.turn); var e = state.rep[k]; var prev = e ? e.n - 1 : 0; state.st = status(state.board, state.turn, prev, longJiangOf(state.rep, state.board, state.turn), state.pliesNoCap, longChaseOf(state.rep, state.board, state.turn)); state.over = state.st.over; if (state.over) { state.sel = null; state.legal = []; } }
 function newGame() { state.board = initialBoard(); state.turn = RED; state.history = []; state.rep = {}; state.plies = 0; setPlies(0); state.pliesNoCap = 0; state.rep[positionKey(state.board, RED)] = newRepEntry(false, -1); state.over = false; state.paused = false; state.thinking = false; state.sel = null; state.legal = []; resetClocks(); refreshStatus(); renderAll(); scheduleAI(); }
-function doMove(mv) { setPlies(state.plies); var wasCheckBefore = isInCheck(state.board, state.turn); var cap = makeMove(state.board, mv); state.history.push({ mv: mv, cap: cap }); state.turn = 1 - state.turn; state.plies++; setPlies(state.plies); var wasChk = isInCheck(state.board, state.turn); applyTransforms(state.board); var wasChase = RULES.global.chaseIsLoss && !wasCheckBefore && !wasChk && mv.piece && mv.piece.t !== K && moveIsChase(state.board, mv); recordPosition(state.rep, state.board, state.turn, wasChk, wasChase); state.pliesNoCap = cap ? 0 : state.pliesNoCap + 1; state.sel = null; state.legal = []; refreshStatus(); renderAll(); if (!state.over) scheduleAI(); }
+function doMove(mv) { if (window.dhChessNet && window.dhChessNet.active()) { window.dhChessNet.move(mv); return; } setPlies(state.plies); var wasCheckBefore = isInCheck(state.board, state.turn); var cap = makeMove(state.board, mv); state.history.push({ mv: mv, cap: cap }); state.turn = 1 - state.turn; state.plies++; setPlies(state.plies); var wasChk = isInCheck(state.board, state.turn); applyTransforms(state.board); var wasChase = RULES.global.chaseIsLoss && !wasCheckBefore && !wasChk && mv.piece && mv.piece.t !== K && moveIsChase(state.board, mv); recordPosition(state.rep, state.board, state.turn, wasChk, wasChase); state.pliesNoCap = cap ? 0 : state.pliesNoCap + 1; state.sel = null; state.legal = []; refreshStatus(); renderAll(); if (!state.over) scheduleAI(); }
 function select(r, c) { state.sel = { r: r, c: c }; state.legal = legalMoves(state.board, r, c); renderPieces(); renderMarks(); }
 function deselect() { state.sel = null; state.legal = []; renderPieces(); renderMarks(); }
-function clickBoard(e) { var g = boardGeom(), bd = RULES.board || DEFAULT_RULES.board; var rect = boardEl.getBoundingClientRect(); var x = (e.clientX - rect.left) / rect.width * g.VB_W - g.VB_X; var y = (e.clientY - rect.top) / rect.height * g.VB_H - g.VB_Y; var c = Math.round(x / CELL), r = Math.round(y / CELL); if (c < 0 || c >= bd.cols || r < 0 || r >= bd.rows) return; if (state.flip) { r = (bd.rows - 1) - r; c = (bd.cols - 1) - c; } if (state.over || state.paused) return; if (state.mode === 'watch') return; if (state.mode === 'ai' && state.turn === BLACK) return; var p = state.board[r][c]; if (state.sel) { if (p && p.s === state.turn) { select(r, c); return; } var found = null; state.legal.forEach(function(m) { if (m.r === r && m.c === c) found = m; }); if (found) { if (found.chain) { doMove(found); return; } var sp = state.board[state.sel.r][state.sel.c]; var mv2 = { from: { r: state.sel.r, c: state.sel.c }, to: { r: found.r, c: found.c }, piece: sp, cap: state.board[found.r][found.c] || null }; if (found.stay) mv2.stay = true; if (found.hop) mv2.hop = found.hop; doMove(mv2); } else deselect(); } else if (p && p.s === state.turn) select(r, c); }
+function clickBoard(e) { if (window.dhChessNet && window.dhChessNet.active() && !window.dhChessNet.canMove()) return; var g = boardGeom(), bd = RULES.board || DEFAULT_RULES.board; var rect = boardEl.getBoundingClientRect(); var x = (e.clientX - rect.left) / rect.width * g.VB_W - g.VB_X; var y = (e.clientY - rect.top) / rect.height * g.VB_H - g.VB_Y; var c = Math.round(x / CELL), r = Math.round(y / CELL); if (c < 0 || c >= bd.cols || r < 0 || r >= bd.rows) return; if (state.flip) { r = (bd.rows - 1) - r; c = (bd.cols - 1) - c; } if (state.over || state.paused) return; if (state.mode === 'watch') return; if (state.mode === 'ai' && state.turn === BLACK) return; var p = state.board[r][c]; if (state.sel) { if (p && p.s === state.turn) { select(r, c); return; } var found = null; state.legal.forEach(function(m) { if (m.r === r && m.c === c) found = m; }); if (found) { if (found.chain) { doMove(found); return; } var sp = state.board[state.sel.r][state.sel.c]; var mv2 = { from: { r: state.sel.r, c: state.sel.c }, to: { r: found.r, c: found.c }, piece: sp, cap: state.board[found.r][found.c] || null }; if (found.stay) mv2.stay = true; if (found.hop) mv2.hop = found.hop; doMove(mv2); } else deselect(); } else if (p && p.s === state.turn) select(r, c); }
 function scheduleAI() { if (state.over || state.paused || state.thinking) return; var needAI = (state.mode === 'ai' && state.turn === BLACK) || state.mode === 'watch'; if (!needAI) return; state.thinking = true; renderStatus(); var delay = state.mode === 'watch' ? 500 : 400; setTimeout(function() { doAIMove(); }, delay); }
-function doAIMove() { state.thinking = false; if (state.over || state.paused) return; var depth = parseInt($('diff').value, 10) || 3; var counts = new Map(Object.keys(state.rep).map(function(k) { return [k, state.rep[k].n]; })); var mv = aiMove(state.board, state.turn, depth, 2500, counts); if (!mv) { refreshStatus(); renderAll(); return; } doMove(mv); }
+function doAIMove() { if (window.dhChessNet && window.dhChessNet.active()) return; state.thinking = false; if (state.over || state.paused) return; var depth = parseInt($('diff').value, 10) || 3; var counts = new Map(Object.keys(state.rep).map(function(k) { return [k, state.rep[k].n]; })); var mv = aiMove(state.board, state.turn, depth, 2500, counts); if (!mv) { refreshStatus(); renderAll(); return; } doMove(mv); }
 function undo() { if (state.history.length === 0 || state.thinking) return; var times = state.mode === 'ai' ? 2 : 1; if (state.mode === 'watch') times = 2; for (var i = 0; i < times && state.history.length > 0; i++) state.history.pop(); var b = initialBoard(); state.rep = {}; state.pliesNoCap = 0; state.rep[positionKey(b, RED)] = newRepEntry(false, -1); for (var j = 0; j < state.history.length; j++) { var h = state.history[j]; var moverSide = j % 2 === 0 ? RED : BLACK; var wasCheckBefore = isInCheck(b, moverSide); makeMove(b, h.mv); var side = j % 2 === 0 ? BLACK : RED; applyTransforms(b); var wasChk = isInCheck(b, side); var wasChase = RULES.global.chaseIsLoss && !wasCheckBefore && !wasChk && h.mv.piece && h.mv.piece.t !== K && moveIsChase(b, h.mv); recordPosition(state.rep, b, side, wasChk, wasChase); state.pliesNoCap = h.cap ? 0 : state.pliesNoCap + 1; } state.board = b; state.turn = state.history.length % 2 === 0 ? RED : BLACK; state.plies = state.history.length; setPlies(state.plies); state.over = false; state.sel = null; state.legal = []; resetClocks(); refreshStatus(); renderAll(); scheduleAI(); }
 function toggleFlip() { state.flip = !state.flip; boardEl.classList.toggle('flipped', state.flip); renderPieces(); renderMarks(); }
 function togglePause() { state.paused = !state.paused; $('btnPause').textContent = state.paused ? '继续' : '暂停'; renderStatus(); if (!state.paused) scheduleAI(); }
@@ -2147,8 +2160,14 @@ $('btnHint').addEventListener('click', aiHint);
 $('btnPause').addEventListener('click', togglePause);
 $('mode').addEventListener('change', function() { state.mode = this.value; $('btnHint').style.display = state.mode === 'pvp' || state.mode === 'ai' ? '' : 'none'; newGame(); });
 boardEl.addEventListener('click', clickBoard);
+window.dhChess = {
+  enter: function(side) { state.mode = 'net'; state.thinking = false; state.paused = false; state.sel = null; state.legal = []; if (state.clockTimer) clearInterval(state.clockTimer); $('mode').value = 'net'; $('flipMenu').value = side === 1 ? 'black' : 'red'; applyView(); },
+  receive: function(game) { Object.assign(state, game); state.mode = 'net'; state.sel = null; state.legal = []; state.thinking = false; state.paused = false; setPlies(state.plies); renderAll(); },
+  leave: function(reset) { state.mode = 'pvp'; $('mode').value = 'pvp'; if (reset) newGame(); }
+};
 applyBoardGeometry(); newGame();
 })();
 </script>
+<script src="/tool/dhchess-net.js"></script>
 </body>
 </html>
