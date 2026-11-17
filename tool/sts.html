@@ -9,13 +9,16 @@
 
   body {
     min-height: 100vh;
-    background: #000;
+    background: #0a0a0f;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(120, 40, 40, 0.2) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(40, 40, 120, 0.15) 0%, transparent 50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: "Noto Serif SC", "Source Han Serif SC", "SimSun", "STSong", "Microsoft YaHei", serif;
-    color: #fff;
+    color: #d4c8a0;
     overflow-x: hidden;
     user-select: none;
     padding: 2rem 1rem;
@@ -24,8 +27,8 @@
   .title {
     font-size: 2.2rem;
     letter-spacing: 0.3em;
-    color: #fff;
-    text-shadow: 0 0 20px rgba(161,161,161, 0.5);
+    color: #c9a84c;
+    text-shadow: 0 0 20px rgba(200, 160, 60, 0.5);
     margin-bottom: 2rem;
     text-align: center;
   }
@@ -51,12 +54,12 @@
     border-radius: 3px;
     flex-shrink: 0;
   }
-  .legend-dot.ironclad  { background: #636363; box-shadow: 0 0 8px rgba(99,99,99,0.5); }
-  .legend-dot.silent    { background: #979797; box-shadow: 0 0 8px rgba(151,151,151,0.5); }
-  .legend-dot.defect    { background: #8c8c8c; box-shadow: 0 0 8px rgba(140,140,140,0.5); }
-  .legend-dot.watcher   { background: #6b6b6b; box-shadow: 0 0 8px rgba(107,107,107,0.5); }
+  .legend-dot.ironclad  { background: #d94444; box-shadow: 0 0 8px rgba(217,68,68,0.5); }
+  .legend-dot.silent    { background: #3db85c; box-shadow: 0 0 8px rgba(61,184,92,0.5); }
+  .legend-dot.defect    { background: #4499dd; box-shadow: 0 0 8px rgba(68,153,221,0.5); }
+  .legend-dot.watcher   { background: #a54fda; box-shadow: 0 0 8px rgba(165,79,218,0.5); }
   .legend-dot.colorless { background: #c8c8c8; box-shadow: 0 0 8px rgba(200,200,200,0.4); }
-  .legend-dot.status    { background: #777777;    box-shadow: 0 0 6px rgba(120,120,120,0.4); }
+  .legend-dot.status    { background: #777;    box-shadow: 0 0 6px rgba(120,120,120,0.4); }
   .legend-dot.curse     { background: #3a3a3a; box-shadow: 0 0 6px rgba(40,40,40,0.4); }
 
   /* ===== 卡牌容器 ===== */
@@ -80,19 +83,19 @@
   .card-placeholder {
     width: 220px;
     height: 340px;
-    border: 2px dashed rgba(161,161,161, 0.2);
+    border: 2px dashed rgba(200, 160, 60, 0.2);
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 3.5rem;
-    color: rgba(161,161,161, 0.15);
+    color: rgba(200, 160, 60, 0.15);
     animation: pulse 2s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { border-color: rgba(161,161,161, 0.12); }
-    50% { border-color: rgba(161,161,161, 0.3); }
+    0%, 100% { border-color: rgba(200, 160, 60, 0.12); }
+    50% { border-color: rgba(200, 160, 60, 0.3); }
   }
 
   /* ===== 卡牌本体 ===== */
@@ -107,8 +110,8 @@
     position: relative;
     overflow: hidden;
     /* 默认色 (会被class覆盖) */
-    background: linear-gradient(160deg, #1b1b1b 0%, #212121 40%, #2f2f2f 100%);
-    border: 2px solid #888888;
+    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 40%, #0f3460 100%);
+    border: 2px solid #888;
     box-shadow: 0 0 20px rgba(0,0,0,0.4), inset 0 0 50px rgba(0,0,0,0.5);
   }
 
@@ -138,95 +141,95 @@
 
   /* ---- 战士 (铁甲战士) - 红色 ---- */
   .card.ironclad {
-    background: linear-gradient(160deg, #1a1a1a 0%, #151515 35%, #131313 100%);
-    border-color: #636363;
-    box-shadow: 0 0 24px rgba(99,99,99,0.25), 0 0 60px rgba(82,82,82,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #2a1518 0%, #1f1218 35%, #1a1018 100%);
+    border-color: #d94444;
+    box-shadow: 0 0 24px rgba(217,68,68,0.25), 0 0 60px rgba(200,50,50,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.ironclad .card-name {
-    color: #d0d0d0;
-    text-shadow: 0 0 12px rgba(142,142,142,0.5);
+    color: #f0c8c0;
+    text-shadow: 0 0 12px rgba(230,120,100,0.5);
   }
   .card.ironclad .card-class-label {
-    color: #888888;
-    background: rgba(90,90,90,0.15);
-    border-color: rgba(99,99,99,0.3);
+    color: #e07070;
+    background: rgba(200,60,60,0.15);
+    border-color: rgba(217,68,68,0.3);
   }
   .card.ironclad .card-desc {
-    color: #a8a8a8;
+    color: #c8a0a0;
   }
   .card.ironclad .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(99,99,99,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(217,68,68,0.4), transparent);
   }
 
   /* ---- 静默猎手 - 绿色 ---- */
   .card.silent {
-    background: linear-gradient(160deg, #242424 0%, #1c1c1c 35%, #171717 100%);
-    border-color: #979797;
-    box-shadow: 0 0 24px rgba(151,151,151,0.25), 0 0 60px rgba(145,145,145,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #152a18 0%, #121f16 35%, #101a14 100%);
+    border-color: #3db85c;
+    box-shadow: 0 0 24px rgba(61,184,92,0.25), 0 0 60px rgba(50,180,80,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.silent .card-name {
-    color: #e3e3e3;
-    text-shadow: 0 0 12px rgba(175,175,175,0.5);
+    color: #c0f0c8;
+    text-shadow: 0 0 12px rgba(80,210,110,0.5);
   }
   .card.silent .card-class-label {
-    color: #acacac;
-    background: rgba(138,138,138,0.15);
-    border-color: rgba(151,151,151,0.3);
+    color: #60c878;
+    background: rgba(50,170,80,0.15);
+    border-color: rgba(61,184,92,0.3);
   }
   .card.silent .card-desc {
-    color: #bdbdbd;
+    color: #a0c8a8;
   }
   .card.silent .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(151,151,151,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(61,184,92,0.4), transparent);
   }
 
   /* ---- 故障机器人 - 蓝色 ---- */
   .card.defect {
-    background: linear-gradient(160deg, #1a1a1a 0%, #171717 35%, #151515 100%);
-    border-color: #8c8c8c;
-    box-shadow: 0 0 24px rgba(140,140,140,0.25), 0 0 60px rgba(128,128,128,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #151a2a 0%, #121820 35%, #101620 100%);
+    border-color: #4499dd;
+    box-shadow: 0 0 24px rgba(68,153,221,0.25), 0 0 60px rgba(60,140,210,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.defect .card-name {
-    color: #d5d5d5;
-    text-shadow: 0 0 12px rgba(148,148,148,0.5);
+    color: #c0d8f0;
+    text-shadow: 0 0 12px rgba(80,160,230,0.5);
   }
   .card.defect .card-class-label {
-    color: #9f9f9f;
-    background: rgba(118,118,118,0.15);
-    border-color: rgba(140,140,140,0.3);
+    color: #68a8e0;
+    background: rgba(50,130,200,0.15);
+    border-color: rgba(68,153,221,0.3);
   }
   .card.defect .card-desc {
-    color: #b5b5b5;
+    color: #a0b8d0;
   }
   .card.defect .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(140,140,140,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(68,153,221,0.4), transparent);
   }
 
   /* ---- 观者 - 紫色 ---- */
   .card.watcher {
-    background: linear-gradient(160deg, #1b1b1b 0%, #161616 35%, #121212 100%);
-    border-color: #6b6b6b;
-    box-shadow: 0 0 24px rgba(107,107,107,0.25), 0 0 60px rgba(97,97,97,0.08), inset 0 0 50px rgba(0,0,0,0.55);
+    background: linear-gradient(160deg, #20182a 0%, #1a1422 35%, #16101e 100%);
+    border-color: #a54fda;
+    box-shadow: 0 0 24px rgba(165,79,218,0.25), 0 0 60px rgba(150,70,200,0.08), inset 0 0 50px rgba(0,0,0,0.55);
   }
   .card.watcher .card-name {
-    color: #d0d0d0;
-    text-shadow: 0 0 12px rgba(122,122,122,0.5);
+    color: #e0c8f0;
+    text-shadow: 0 0 12px rgba(160,100,230,0.5);
   }
   .card.watcher .card-class-label {
-    color: #8d8d8d;
-    background: rgba(87,87,87,0.15);
-    border-color: rgba(107,107,107,0.3);
+    color: #b878e0;
+    background: rgba(140,60,200,0.15);
+    border-color: rgba(165,79,218,0.3);
   }
   .card.watcher .card-desc {
-    color: #b1b1b1;
+    color: #c0a8d8;
   }
   .card.watcher .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(107,107,107,0.4), transparent);
+    background: linear-gradient(90deg, transparent, rgba(165,79,218,0.4), transparent);
   }
 
   /* ---- 无色牌 - 银白 ---- */
   .card.colorless {
-    background: linear-gradient(160deg, #202020 0%, #1c1c1c 35%, #181818 100%);
+    background: linear-gradient(160deg, #202020 0%, #1c1c1e 35%, #18181c 100%);
     border-color: #b0b0b0;
     box-shadow: 0 0 24px rgba(180,180,180,0.2), 0 0 60px rgba(160,160,160,0.06), inset 0 0 50px rgba(0,0,0,0.55);
   }
@@ -249,15 +252,15 @@
   /* ---- 状态牌 - 灰色 ---- */
   .card.status {
     background: linear-gradient(160deg, #1a1a1a 0%, #161616 35%, #121212 100%);
-    border-color: #777777;
+    border-color: #777;
     box-shadow: 0 0 16px rgba(100,100,100,0.2), inset 0 0 40px rgba(0,0,0,0.5);
   }
   .card.status .card-name {
-    color: #aaaaaa;
+    color: #aaa;
     text-shadow: none;
   }
   .card.status .card-class-label {
-    color: #888888;
+    color: #888;
     background: rgba(120,120,120,0.12);
     border-color: rgba(120,120,120,0.25);
   }
@@ -275,19 +278,19 @@
     box-shadow: 0 0 10px rgba(0,0,0,0.6), inset 0 0 30px rgba(0,0,0,0.6);
   }
   .card.curse .card-name {
-    color: #575757;
-    text-shadow: 0 0 6px rgba(57,57,57,0.3);
+    color: #705050;
+    text-shadow: 0 0 6px rgba(120,40,40,0.3);
   }
   .card.curse .card-class-label {
-    color: #474747;
-    background: rgba(41,41,41,0.15);
-    border-color: rgba(48,48,48,0.25);
+    color: #604040;
+    background: rgba(80,30,30,0.15);
+    border-color: rgba(80,40,40,0.25);
   }
   .card.curse .card-desc {
-    color: #474747;
+    color: #604040;
   }
   .card.curse .card-divider {
-    background: linear-gradient(90deg, transparent, rgba(56,56,56,0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(80,50,50,0.3), transparent);
   }
 
   /* ---- 卡牌内部布局 ---- */
@@ -314,31 +317,31 @@
   /* 锻造 + 号 */
   .forge-plus {
     display: inline-block;
-    color: #cfcfcf;
+    color: #ffd700;
     font-size: 1.3rem;
     font-weight: bold;
     margin-left: 2px;
-    text-shadow: 0 0 14px rgba(207,207,207,0.8), 0 0 28px rgba(197,197,197,0.5);
+    text-shadow: 0 0 14px rgba(255,215,0,0.8), 0 0 28px rgba(255,200,0,0.5);
     animation: forgeGlow 0.8s ease-in-out infinite alternate;
     position: relative;
     top: -2px;
   }
   @keyframes forgeGlow {
-    0%   { text-shadow: 0 0 10px rgba(207,207,207,0.6), 0 0 20px rgba(197,197,197,0.3); }
-    100% { text-shadow: 0 0 18px rgba(207,207,207,1), 0 0 36px rgba(197,197,197,0.7); }
+    0%   { text-shadow: 0 0 10px rgba(255,215,0,0.6), 0 0 20px rgba(255,200,0,0.3); }
+    100% { text-shadow: 0 0 18px rgba(255,215,0,1), 0 0 36px rgba(255,200,0,0.7); }
   }
 
   /* 锻造后卡牌边框更亮 */
   .card.forged {
     border-width: 2.5px;
   }
-  .card.forged.ironclad  { border-color: #7e7e7e; box-shadow: 0 0 30px rgba(114,114,114,0.35), 0 0 60px rgba(82,82,82,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.silent    { border-color: #b4b4b4; box-shadow: 0 0 30px rgba(174,174,174,0.35), 0 0 60px rgba(145,145,145,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.defect    { border-color: #a3a3a3; box-shadow: 0 0 30px rgba(158,158,158,0.35), 0 0 60px rgba(128,128,128,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.watcher   { border-color: #8a8a8a; box-shadow: 0 0 30px rgba(129,129,129,0.35), 0 0 60px rgba(97,97,97,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.colorless { border-color: #dddddd;    box-shadow: 0 0 30px rgba(210,210,210,0.3), 0 0 60px rgba(180,180,180,0.1), inset 0 0 50px rgba(0,0,0,0.55); }
-  .card.forged.status    { border-color: #999999;    box-shadow: 0 0 20px rgba(140,140,140,0.25), inset 0 0 40px rgba(0,0,0,0.5); }
-  .card.forged.curse     { border-color: #454545; box-shadow: 0 0 14px rgba(53,53,53,0.3), inset 0 0 30px rgba(0,0,0,0.6); }
+  .card.forged.ironclad  { border-color: #f06060; box-shadow: 0 0 30px rgba(240,80,80,0.35), 0 0 60px rgba(200,50,50,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.silent    { border-color: #50d870; box-shadow: 0 0 30px rgba(80,210,100,0.35), 0 0 60px rgba(50,180,80,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.defect    { border-color: #5cb0f0; box-shadow: 0 0 30px rgba(90,170,240,0.35), 0 0 60px rgba(60,140,210,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.watcher   { border-color: #c070f0; box-shadow: 0 0 30px rgba(190,100,240,0.35), 0 0 60px rgba(150,70,200,0.12), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.colorless { border-color: #ddd;    box-shadow: 0 0 30px rgba(210,210,210,0.3), 0 0 60px rgba(180,180,180,0.1), inset 0 0 50px rgba(0,0,0,0.55); }
+  .card.forged.status    { border-color: #999;    box-shadow: 0 0 20px rgba(140,140,140,0.25), inset 0 0 40px rgba(0,0,0,0.5); }
+  .card.forged.curse     { border-color: #5a4040; box-shadow: 0 0 14px rgba(100,40,40,0.3), inset 0 0 30px rgba(0,0,0,0.6); }
 
   .card-divider {
     width: 60%;
@@ -380,34 +383,34 @@
     font-size: 1.1rem;
     letter-spacing: 0.2em;
     font-family: inherit;
-    color: #000;
-    background: linear-gradient(135deg, #fff, #eee);
+    color: #0a0a0f;
+    background: linear-gradient(135deg, #c9a84c, #e2c86e);
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(161,161,161, 0.3);
+    box-shadow: 0 4px 20px rgba(200, 160, 60, 0.3);
     z-index: 10;
     position: relative;
   }
 
   .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 28px rgba(161,161,161, 0.5);
+    box-shadow: 0 6px 28px rgba(200, 160, 60, 0.5);
   }
   .btn:active { transform: translateY(0); }
   .btn:disabled {
     opacity: 0.45;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 2px 8px rgba(161,161,161, 0.15);
+    box-shadow: 0 2px 8px rgba(200, 160, 60, 0.15);
   }
 
   /* ===== 计数器 & 历史 ===== */
   .counter {
     margin-top: 1.2rem;
     font-size: 0.85rem;
-    color: rgba(161,161,161, 0.45);
+    color: rgba(200, 160, 60, 0.45);
     letter-spacing: 0.1em;
   }
 
@@ -421,7 +424,7 @@
   }
   .result-history span {
     font-size: 0.8rem;
-    color: rgba(161,161,161, 0.35);
+    color: rgba(200, 160, 60, 0.35);
     letter-spacing: 0.05em;
     animation: fadeIn 0.5s ease-out;
   }
@@ -462,20 +465,20 @@
     font-size: 1rem;
     font-family: inherit;
     letter-spacing: 0.1em;
-    color: #e6e6e6;
-    background: rgba(21,21,21, 0.7);
-    border: 1px solid rgba(161,161,161, 0.35);
+    color: #f0e6c8;
+    background: rgba(20, 20, 30, 0.7);
+    border: 1px solid rgba(200, 160, 60, 0.35);
     border-radius: 4px;
     text-align: center;
     outline: none;
     transition: border-color 0.3s;
   }
   .seed-input:focus {
-    border-color: rgba(161,161,161, 0.7);
-    box-shadow: 0 0 12px rgba(161,161,161, 0.15);
+    border-color: rgba(200, 160, 60, 0.7);
+    box-shadow: 0 0 12px rgba(200, 160, 60, 0.15);
   }
   .seed-input::placeholder {
-    color: rgba(161,161,161, 0.3);
+    color: rgba(200, 160, 60, 0.3);
     letter-spacing: 0.05em;
   }
   .seed-btn {
@@ -483,17 +486,17 @@
     font-size: 0.9rem;
     letter-spacing: 0.15em;
     font-family: inherit;
-    color: #000;
-    background: linear-gradient(135deg, #fff, #eee);
+    color: #0a0a0f;
+    background: linear-gradient(135deg, #c9a84c, #e2c86e);
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  .seed-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(161,161,161,0.4); }
+  .seed-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,160,60,0.4); }
   .seed-hint {
     font-size: 0.75rem;
-    color: rgba(161,161,161, 0.4);
+    color: rgba(200, 160, 60, 0.4);
     letter-spacing: 0.08em;
     white-space: nowrap;
   }
@@ -501,7 +504,7 @@
     width: 100%;
     text-align: center;
     font-size: 0.75rem;
-    color: #7a7a7a;
+    color: #e06050;
     margin-top: 0.2rem;
     min-height: 1.2em;
     letter-spacing: 0.05em;
@@ -518,7 +521,7 @@
       font-size: 1.3rem;
       letter-spacing: 0.2em;
       margin-bottom: 0.5rem;
-      text-shadow: 0 0 12px rgba(161,161,161, 0.4);
+      text-shadow: 0 0 12px rgba(200, 160, 60, 0.4);
     }
 
     .legend {
@@ -619,26 +622,6 @@
     .seed-btn { padding: 6px 14px; font-size: 0.75rem; }
     .seed-hint { font-size: 0.6rem; }
   }
-
-:root { color-scheme: dark; accent-color: #fff; }
-:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
-
-/* 类别颜色与强化标记保留语义，文字标签同时提供区分。 */
-.ironclad { --card-accent:#ef7777; --card-tint:#351b20; }
-.silent { --card-accent:#79d98a; --card-tint:#192e20; }
-.defect { --card-accent:#72baff; --card-tint:#18283d; }
-.watcher { --card-accent:#c69aff; --card-tint:#2d1f3c; }
-.colorless { --card-accent:#d8dce5; --card-tint:#26282d; }
-.status { --card-accent:#e8bf70; --card-tint:#342b1b; }
-.curse { --card-accent:#b3a4bd; --card-tint:#251f2b; }
-.legend-dot { background:var(--card-accent) !important; box-shadow:0 0 8px var(--card-tint) !important; }
-.card:is(.ironclad,.silent,.defect,.watcher,.colorless,.status,.curse) { border-color:var(--card-accent); background:linear-gradient(160deg,var(--card-tint),#121212); box-shadow:0 0 22px var(--card-tint); }
-.card[class] .card-name, .card[class] .card-class-label { color:var(--card-accent); text-shadow:none; }
-.card[class] .card-class-label { border-color:var(--card-accent); background:var(--card-tint); }
-.card[class] .card-desc { color:#e4e4e7; }
-.card[class] .card-divider { background:linear-gradient(90deg,transparent,var(--card-accent),transparent); }
-.card.forged[class] { border-color:var(--card-accent); box-shadow:0 0 28px var(--card-tint); }
-.forge-plus { color:#8ee99c; text-shadow:none; animation:none; }
 </style>
 </head>
 <body>
