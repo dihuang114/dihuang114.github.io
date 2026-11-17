@@ -3,12 +3,16 @@
   'use strict';
   const board = window.dhChess;
   const el = id => document.getElementById(id);
-  const key = 'dhchess-room-v1';
+  const key = 'dhchess-room-v2';
   let session = null, latest = null, version = -1, busy = false, online = false, timer;
   function store() { try { session ? sessionStorage.setItem(key, JSON.stringify(session)) : sessionStorage.removeItem(key); } catch (_) {} }
   function message(text) { el('netStatus').textContent = text; }
   function controls() {
-    for (const id of ['mode', 'diff', 'aiStyle', 'aiEngine', 'btnNew', 'btnUndo', 'btnPause', 'btnHint']) el(id).disabled = !!session || busy;
+    const netMode = el('mode').value === 'net';
+    el('netPanel').hidden = !netMode;
+    el('mode').disabled = !!session || busy;
+    for (const id of ['btnNew', 'btnUndo', 'btnPause', 'btnHint']) el(id).disabled = netMode || busy;
+    for (const id of ['diff', 'aiStyle', 'aiEngine']) el(id).closest('label').hidden = netMode;
     el('netCreate').disabled = el('netJoin').disabled = !!session || busy;
     el('netLeave').disabled = !session || busy;
     el('netCopy').disabled = !session;
@@ -30,7 +34,7 @@
   }
   function detach(reset) {
     session = null; latest = null; version = -1; online = false;
-    clearTimeout(timer); store(); controls(); board.leave(reset);
+    clearTimeout(timer); store(); board.leave(reset); controls();
   }
   async function poll() {
     const current = session;
@@ -47,7 +51,7 @@
   async function enter(action) {
     if (busy || session) return;
     const roomId = el('netRoom').value.trim();
-    if (action === 'join' && !/^\d{6}$/.test(roomId)) { message('请输入 6 位房间号'); return; }
+    if (action === 'join' && !/^\d{4}$/.test(roomId)) { message('请输入 4 位房间号'); return; }
     busy = true; controls(); message('正在连接…');
     try {
       const result = await api(action, { roomId });
@@ -69,6 +73,7 @@
       finally { busy = false; controls(); }
     }
   };
+  el('mode').addEventListener('change', controls);
   el('netCreate').onclick = () => enter('create');
   el('netJoin').onclick = () => enter('join');
   el('netLeave').onclick = async () => {
@@ -88,7 +93,9 @@
   el('netRoom').value = new URLSearchParams(location.search).get('room') || '';
   try {
     const saved = JSON.parse(sessionStorage.getItem(key));
-    if (saved && /^\d{6}$/.test(saved.roomId) && /^[a-f0-9]{64}$/.test(saved.token) && [0, 1].includes(saved.side)) session = saved;
+    if (saved && /^\d{4}$/.test(saved.roomId) && /^[a-f0-9]{64}$/.test(saved.token) && [0, 1].includes(saved.side)) session = saved;
   } catch (_) {}
-  if (session) { board.enter(session.side); controls(); message('正在恢复对局…'); poll(); }
+  if (session) { board.enter(session.side); message('正在恢复对局…'); poll(); }
+  else if (/^\d{4}$/.test(el('netRoom').value)) { el('mode').value = 'net'; el('mode').dispatchEvent(new Event('change')); }
+  controls();
 })();

@@ -389,6 +389,11 @@
     font-weight: 700;
   }
 </style>
+<script>
+if (location.hostname === 'dihuang.vip' || location.hostname === 'www.dihuang.vip') {
+  location.replace('https://cloud.dihuang.vip' + location.pathname + location.search + location.hash);
+}
+</script>
 </head>
 <body>
 
@@ -434,9 +439,8 @@
 </footer>
 
 <script src="/writing/marked.min.js"></script>
-<script src="/writing/posts.js"></script>
 <script>
-(function() {
+(async function() {
   /* --- 字体为系统本地字体，无需等待，直接显示 --- */
   (function() {
     document.documentElement.classList.add('fonts-ready');
@@ -521,17 +525,16 @@
     return;
   }
 
-  /* 从 window.POSTS 中查找文章（内容已由 build-posts.js 嵌入，无需 fetch） */
-  var fileName = file.replace(/^.*[\\\/]/, '');
-  var post = null;
-  (window.POSTS || []).forEach(function(p) {
-    if (p.file === fileName) post = p;
-  });
-
-  if (!post || !post.content) {
-    body.innerHTML = '<p class="status">文章加载失败或未找到文章数据</p>';
-    return;
+  if (file.includes('/') || file.includes('\\') || file.startsWith('.')) {
+    body.textContent = '文章不存在'; return;
   }
+  var fileName = file;
+  var post;
+  try {
+    var response = await fetch('/api/writing/posts/' + encodeURIComponent(fileName), { cache:'no-store' });
+    if (!response.ok) throw new Error('文章不存在');
+    post = await response.json();
+  } catch (_) { body.textContent = '文章加载失败或不存在，请刷新重试'; return; }
 
   var title = post.title || '';
   var meta = '';

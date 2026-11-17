@@ -406,6 +406,11 @@
     .article-excerpt { font-size: 0.9rem; }
   }
 </style>
+<script>
+if (location.hostname === 'dihuang.vip' || location.hostname === 'www.dihuang.vip') {
+  location.replace('https://cloud.dihuang.vip' + location.pathname + location.search + location.hash);
+}
+</script>
 </head>
 <body>
 
@@ -449,9 +454,8 @@
   <p class="copyright">© 地荒 · 本站内容均为原创</p>
 </footer>
 
-<script src="posts.js"></script>
 <script>
-(function() {
+(async function() {
   var list = document.getElementById('articleList');
   var input = document.getElementById('searchInput');
   var emptyState = document.getElementById('emptyState');
@@ -461,7 +465,12 @@
   var nextBtn = document.getElementById('nextPage');
   var pageInfo = document.getElementById('pageInfo');
 
-  var posts = window.POSTS || [];
+  var posts;
+  try {
+    var response = await fetch('/api/writing/posts', { cache:'no-store' });
+    if (!response.ok) throw new Error('加载失败');
+    posts = await response.json();
+  } catch (_) { emptyState.textContent = '文章加载失败，请刷新重试'; emptyState.style.display = ''; return; }
   var currentCollection = '全部';
   var currentSort = 'latest'; // latest=最新 / oldest=最旧
   var PER_PAGE = 10;
