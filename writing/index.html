@@ -4,14 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>地荒的小世界</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/writing/fonts/writing-fonts.css">
+<script src="/writing/fonts/writing-fonts.js" defer></script>
 <style>
-  /* 字体为系统本地字体，无需等待 */
-  html.fonts-ready body {
-    visibility: visible;
-  }
   :root {
     --bg: #ffffff;
     --text: #1a1a1a;          /* 主文字（加重） */
@@ -40,7 +35,8 @@
     min-height: 100vh;
     background: var(--bg);
     color: var(--text);
-    font-family: "Noto Serif SC", "Source Han Serif SC", "Noto Serif CJK SC", "思源宋体", "Songti SC", SimSun, serif;
+    font-family: "Songti SC", SimSun, "Noto Serif CJK SC", "Source Han Serif SC", serif;
+    font-weight: 400;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -472,11 +468,6 @@
   var PER_PAGE = 10;
   var currentPage = 1;
   var filtered = [];
-
-  /* --- 字体为系统本地字体（Noto Serif SC），无需等待，直接显示 --- */
-  (function() {
-    document.documentElement.classList.add('fonts-ready');
-  })();
 
   /* --- 黑夜模式 --- */
   (function() {
