@@ -4,11 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>地荒象棋</title>
-<script>
-if (location.hostname === 'dihuang.vip' || location.hostname === 'www.dihuang.vip') {
-  location.replace('https://cloud.dihuang.vip/tool/dhchess.html' + location.search + location.hash);
-}
-</script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root { --bg:#000; --panel:#000; --panel-line:#555; --text:#fff; --dim:#bbb; --accent:#fff; --dark:#000; }
@@ -76,7 +71,7 @@ button:hover { background:#ead4ae; }
 <body>
 <header class="topbar">
   <h1>地荒象棋<small></small></h1>
-  <label class="ctl">模式 <select id="mode"><option value="pvp" selected>本地对战</option><option value="ai">人机对战</option><option value="watch">AI对战</option><option value="net">联机对战</option></select></label>
+  <label class="ctl">模式 <select id="mode"><option value="pvp" selected>本地对战</option><option value="ai">人机对战</option><option value="watch">AI对战</option><option value="net" disabled>联机对战（备用站不可用）</option></select></label>
   <label class="ctl">AI 深度 <select id="diff"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>
   <label class="ctl">风格 <select id="aiStyle"><option value="balanced" selected>平衡</option><option value="solid">稳健</option><option value="random">随机</option></select></label>
   <label class="ctl">引擎 <select id="aiEngine"><option value="js" selected>JS AI</option><option value="fsf">Fairy-Stockfish</option></select></label>
@@ -2189,6 +2184,6 @@ window.dhChess = {
 applyBoardGeometry(); newGame();
 })();
 </script>
-<script src="/tool/dhchess-net.js"></script>
+
 </body>
 </html>

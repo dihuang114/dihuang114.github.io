@@ -102,7 +102,8 @@ window.addEventListener("load", () => {
     container: "#algolia-hits",
     templates: {
       item(data) {
-        const link = data.permalink ? data.permalink : GLOBAL_CONFIG.root + data.path;
+        const sourceLink = data.permalink ? data.permalink : GLOBAL_CONFIG.root + data.path;
+        const link = sourceLink.replace(/^https?:\/\/(?:www\.)?dihuang\.vip(?=\/)/, '');
         const result = data._highlightResult;
         const loadingLogo = document.querySelector("#algolia-hits .anzhiyu-spin");
         if (loadingLogo) {

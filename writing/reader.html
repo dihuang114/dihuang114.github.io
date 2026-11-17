@@ -389,11 +389,7 @@
     font-weight: 700;
   }
 </style>
-<script>
-if (location.hostname === 'dihuang.vip' || location.hostname === 'www.dihuang.vip') {
-  location.replace('https://cloud.dihuang.vip' + location.pathname + location.search + location.hash);
-}
-</script>
+<script src="/site-runtime.js"></script>
 </head>
 <body>
 
@@ -531,7 +527,7 @@ if (location.hostname === 'dihuang.vip' || location.hostname === 'www.dihuang.vi
   var fileName = file;
   var post;
   try {
-    var response = await fetch('/api/writing/posts/' + encodeURIComponent(fileName), { cache:'no-store' });
+    var response = await fetch(window.DH_STATIC_BACKUP ? '/writing/data/' + encodeURIComponent(fileName) + '.json' : '/api/writing/posts/' + encodeURIComponent(fileName), { cache:'no-store' });
     if (!response.ok) throw new Error('文章不存在');
     post = await response.json();
   } catch (_) { body.textContent = '文章加载失败或不存在，请刷新重试'; return; }
